@@ -20,7 +20,8 @@
 			// Build the URL
 			$url = "http://forecast.weather.gov/product.php?site=NWS&issuedby=$office&product=HWO&format=txt&version=1&glossary=0";
 			// Grab the page
-			$response = get_url($url);
+			$web = new php_web();
+			$response = $web->get_url_reponse($url);
 
 			// Strip out the contents inside the <pre> tags and get the $data
 			preg_match_all(REGEX_HWO_REPORT, $response, $data, PREG_PATTERN_ORDER);
@@ -94,18 +95,4 @@
 			echo 'For the National Weather Service office serving the ', ucwords($office_row['city']), ', ', strtoupper($office_row['state']), ' area: <br />', ucwords($statement);
 			exit;
 			break;
-	}
-
-#
-# Functions
-#
-	function get_url($url) {
-		$ch = curl_init();
-		$timeout = 5;
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-		$data = curl_exec($ch);
-		curl_close($ch);
-		return $data;
 	}
