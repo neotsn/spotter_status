@@ -6,8 +6,6 @@
 	 * Time: 3:43 PM
 	 */
 
-	// Server
-	define('DB_PASSWORD', 'ysqNCgkX;!;a');
 	// PATHS
 	define('PATH_INCLUDES', PATH_ROOT . 'includes/');
 	define('PATH_TEMPLATES', PATH_ROOT . 'templates/');
