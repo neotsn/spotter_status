@@ -30,35 +30,43 @@
 			if ($addFooter) {
 				$this->htmlout .= file_get_contents(PATH_TEMPLATES . 'footer.html');
 			}
-
-			$this->prepare_template_vars();
 		}
 
+		/**
+		 * Stores the field-value pairs for translation into the html template
+		 *
+		 * @param string|array $field The variable text to replace in the html template
+		 * @param string       $value The HTML value to substitute in place of the $field
+		 */
 		public function set_template_vars($field, $value = '') {
 			if (is_array($field)) {
 				foreach ($field as $f => $v) {
 					$v = (is_array($v)) ? implode('', $v) : $v;
-					$this->template_vars[$f] = $v;
+					$this->template_vars['{' . $f . '}'] = $v;
 				}
 			} else {
 				$value = (is_array($value)) ? implode('', $value) : $value;
-				$this->template_vars[$field] = $value;
+				$this->template_vars['{' . $field . '}'] = $value;
 			}
 		}
 
-		public function build_template() {
-			$this->htmlout = strtr($this->htmlout, $this->template_vars);
-		}
-
+		/**
+		 * Echos out the html result
+		 */
 		public function display() {
+			$this->build_template();
 			echo $this->htmlout;
 		}
 
-		private function prepare_template_vars() {
-			switch ($this->filename) {
-				case 'main':
-					$this->template_vars['{I_OFFICE_SELECT}'] = '[Insert Office Select Box]';
-					break;
-			}
+		public function compile() {
+			$this->build_template();
+			return $this->htmlout;
+		}
+
+		/**
+		 * Replaces variables with html content and generates the html string
+		 */
+		private function build_template() {
+			$this->htmlout = strtr($this->htmlout, $this->template_vars);
 		}
 	}

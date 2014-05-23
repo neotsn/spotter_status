@@ -16,17 +16,18 @@
 
 		public $db = null;
 		public $query = null;
+		public $results = array();
 
 		/**
 		 * @param string|null $db_name Database Name to connect to
 		 */
 		public function __construct($db_name = null) {
 
-			$db_conn_info = parse_ini_file("./db_connect.ini");
+			$conn_info = parse_ini_file("./connection_info.ini", true);
 
-			$this->database = (is_null($db_name)) ? $db_conn_info['database'] : $db_name;
+			$this->database = (is_null($db_name)) ? $conn_info['db']['database'] : $db_name;
 
-			$this->db = new PDO('mysql:host=' . $db_conn_info['hostname'] . ';dbname=' . $this->database . ';charset=utf8', $db_conn_info['username'], $db_conn_info['password']);
+			$this->db = new PDO('mysql:host=' . $conn_info['db']['hostname'] . ';dbname=' . $this->database . ';charset=utf8', $conn_info['db']['username'], $conn_info['db']['password']);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		}
@@ -40,7 +41,8 @@
 		public function query($statement, $params = array()) {
 			$this->query = $this->db->prepare($statement);
 			$this->query->execute($params);
-			return $this->query->fetchAll(PDO::FETCH_ASSOC);
+			$this->results = $this->query->fetchAll(PDO::FETCH_ASSOC);
+			return $this->results;
 		}
 
 		/**
@@ -61,34 +63,31 @@
 
 			$results = false;
 			try {
+				// Start the transaction
+				$this->db->beginTransaction();
 
-				if (defined($table)) {
-					// Start the transaction
-					$this->db->beginTransaction();
+				// Prepare the SQL statement
+				$sql = strtr($sql, array(
+						'%t' => $table,
+						'%c' => implode(', ', array_unique($field_str)),
+						'%v' => implode(', ', array_unique($value_str)))
+				);
+				$this->query = $this->db->prepare($sql);
 
-					// Prepare the SQL statement
-					$sql = strtr($sql, array(
-							'%t' => $table,
-							'%c' => implode(', ', array_unique($field_str)),
-							'%v' => implode(', ', array_unique($value_str)))
-					);
-					$this->query = $this->db->prepare($sql);
-
-					// loop through to bind the variable variable name for each field
-					foreach ($value_str as $f => $v) {
-						$this->query->bindParam($v, $$f); // Intentional variable variable
-					}
-					// loop through to assign the variable variable's value, and execute
-					foreach ($fv_pairs as $f => $v) {
-						$$f = $v; // set the variable variable
-					}
-					$this->query->execute(); // execute the replace query
-
-					// attempt to commit the transaction
-					$this->db->commit();
-					// return # rows affected
-					$results = $this->db->lastInsertId();
+				// loop through to bind the variable variable name for each field
+				foreach ($value_str as $f => $v) {
+					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
+				// loop through to assign the variable variable's value, and execute
+				foreach ($fv_pairs as $f => $v) {
+					$$f = $v; // set the variable variable
+				}
+				$this->query->execute(); // execute the replace query
+
+				// attempt to commit the transaction
+				$this->db->commit();
+				// return # rows affected
+				$results = $this->db->lastInsertId();
 			} catch (PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
@@ -147,5 +146,9 @@
 			}
 
 			return $results;
+		}
+
+		public function get_next() {
+			return (!empty($this->results)) ? array_shift($this->results) : array();
 		}
 	}

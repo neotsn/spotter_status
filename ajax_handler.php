@@ -7,7 +7,7 @@
 	 */
 
 	define('PATH_ROOT', './');
-	require_once PATH_ROOT . 'includes/common.inc.php';
+	require_once('config.php');
 
 	// Get the request vars
 	$mode = get_request('mode', '');
@@ -88,8 +88,8 @@
 			}
 
 			// Get the Office City
-			$office_row = $db->query(SQL_SELECT_ALL_FROM_OFFICE_IDS_BY_ID, array($office));
-			$office_row = array_shift($office_row);
+			$db->query(SQL_SELECT_ALL_FROM_OFFICE_IDS_BY_ID, array($office));
+			$office_row = $db->get_next();
 
 			ob_clean();
 			echo 'For the National Weather Service office serving the ', ucwords($office_row['city']), ', ', strtoupper($office_row['state']), ' area: <br />', ucwords($statement);

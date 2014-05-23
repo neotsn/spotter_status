@@ -7,7 +7,7 @@
 	 */
 
 	define('PATH_ROOT', './');
-	require_once PATH_ROOT . 'includes/common.inc.php';
+	require_once('config.php');
 
 	$db = new db_pdo();
 
@@ -25,13 +25,12 @@
 
 	// Display the page
 	$template_vars = array(
-		'{I_OFFICE_SELECT}' => $officeSelect,
-		'{I_FETCH_REPORT}'  => $fetch_button
+		'I_OFFICE_SELECT' => $officeSelect,
+		'I_FETCH_REPORT'  => $fetch_button
 	);
 
-	$output = new template('main');
+	$output = new template('fetch_hwo');
 	$output->set_template_vars($template_vars);
-	$output->build_template();
 	$output->display();
 
 
