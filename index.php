@@ -17,8 +17,7 @@
 	define('PATH_ROOT', './');
 	require_once('config.php');
 
-	// TODO Add template toggle to setup if session contains sid and distant sid_expire
-
+// TODO Add tweet from NOAAAlerts that it is checking for new reports on cron.
 	$session_id = get_session('sid', null, 'string');
 	$session_expire = get_session('sid_expire', null, 'string');
 	$user_id = get_session('userid', null, 'string');
@@ -32,15 +31,14 @@
 
 		$template_vars = array(
 			'IMG_USER_PROFILE'     => get_array_value($user_row, USERS_PROFILE_IMAGE_URL_HTTPS, ''),
-			'TXT_USER_SCREEN_NAME' => '@' . get_array_value($user_row, USERS_SCREEN_NAME, '')
+			'TXT_USER_SCREEN_NAME' => '@' . get_array_value($user_row, USERS_SCREEN_NAME, ''),
+			'TXT_LOGOUT_USER'      => 'Logout'
 		);
 
 		$template = new template('setup');
 		$template->set_template_vars($template_vars);
 		$template->display();
 	} else {
-		echo "couldn't do it";
-		print_r($_SESSION);
 		$template = new template('splash');
 		$template->display();
 	}

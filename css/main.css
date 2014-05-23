@@ -87,6 +87,8 @@ div.twitter_signup {
 	width: 100%;
 	float: left;
 	padding-top: 12px;
+	position: fixed;
+	box-shadow: 0 3px 10px rgba(51, 51, 51, 0.5);
 }
 
 span.setup_headline {
@@ -122,6 +124,27 @@ span.setup_profile_name {
 	line-height: 25px;
 	vertical-align: middle;
 	text-align: left;
+	padding-right: 15px;
+	border-right: 1px solid #aaa;
+}
+
+span.setup_profile_logout {
+	color: #ccc;
+	display: inline-block;
+	margin-left: 15px;
+	margin-right: 15px;
+	text-align: left;
+	vertical-align: middle;
+	line-height: 25px;
+}
+
+span.setup_profile_logout a {
+	color: #ccc;
+	text-decoration: none;
+}
+
+span.setup_profile_logout a:hover {
+	text-decoration: underline;
 }
 
 #setup {
@@ -133,12 +156,13 @@ span.setup_profile_name {
 	background-origin: padding-box;
 	background: #222 url('../images/header_image.jpg') no-repeat bottom center;
 	text-align: center;
+	margin-top: 50px;
 }
 
 #setup_content {
 	float: left;
 	width: 100%;
-	text-align: center;
+	/*text-align: center;*/
 }
 
 div.setup_header_border {
@@ -147,4 +171,39 @@ div.setup_header_border {
 	height: 15px;
 	margin-bottom: 20px;
 	background-color: #333;
+}
+
+div.setup_step {
+	margin: 10px auto 20px;
+	width: 50%;
+	box-shadow: 0 3px 10px #666;
+	border-radius: 5px;
+	background-color: #eee;
+	padding: 1px 10px 10px;
+	display: block;
+}
+
+div.setup_step h2 {
+	border-bottom: 1px solid #aaa;
+}
+
+p.setup_step_instructions {
+	line-height: 1.5em;
+	color: #333;
+	margin: 10px 10px 20px;
+}
+
+span.setup_step_check {
+	display: block;
+	text-align: center;
+	margin: 0 auto 20px;
+	border-radius: 10px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	width: 50%;
+	padding: 10px;
+}
+
+span.setup_step_check label {
+	cursor: pointer;
 }
