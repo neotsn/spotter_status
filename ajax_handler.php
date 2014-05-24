@@ -15,7 +15,7 @@
 	$office = get_request('nws_office', '');
 
 	// Toggle the mode
-	switch ($mode) {
+	switch($mode) {
 		case 'getOutlook':
 			// Build the URL
 			$url = "http://forecast.weather.gov/product.php?site=NWS&issuedby=$office&product=HWO&format=txt&version=1&glossary=0";
@@ -35,10 +35,14 @@
 			// flatten it into a single line of text
 			$outlook = preg_replace('/\s+/', ' ', $orig_outlook);
 
+			preg_match_all(REGEX_TIMESTAMP, $outlook, $ts, PREG_PATTERN_ORDER);
+			$hrmin = ((strlen($ts[1][0]) > 3) ? substr($ts[1][0], 0, 2) : substr($ts[1][0], 0, 1)).':'.substr($ts[1][0], -2);
+			$time = strtotime($hrmin.' '.$ts[2][0].' '.$ts[3][0].' '.$ts[5][0].' '.$ts[6][0].' '.$ts[7][0]);
+
 			// extract the county list for the outlook and spool into county array
 			preg_match_all(REGEX_COUNTY_LIST, $outlook, $county_data, PREG_PATTERN_ORDER);
 			$counties = array();
-			foreach ($county_data[1] as $c_data) {
+			foreach($county_data[1] as $c_data) {
 				$counties = array_merge($counties, explode('-', $c_data));
 			}
 			sort(array_unique($counties)); // Sort and unique it
@@ -53,10 +57,10 @@
 			$db = new db_pdo();
 			$result = $db->query(SQL_SELECT_REPORT_BY_HASH, array($hash));
 
-			if (!count($result)) {
+			if(!count($result)) {
 				// Update the county list
 				$params = array();
-				foreach ($counties as $county) {
+				foreach($counties as $county) {
 					$params[] = array(
 						'office_id'   => $office,
 						'county_name' => trim($county)
@@ -72,9 +76,10 @@
 
 				// Save the report
 				$params = array(
-					'office_id'   => $office,
-					'report_hash' => $hash,
-					'report_text' => $orig_outlook
+					'office_id'        => $office,
+					'report_hash'      => $hash,
+					'report_text'      => $orig_outlook,
+					'report_timestamp' => $time
 				);
 				$outlook_id = $db->insert(TABLE_REPORTS, $params);
 

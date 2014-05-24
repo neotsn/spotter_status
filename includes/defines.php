@@ -12,7 +12,10 @@
 	define('PATH_CLASSES', PATH_ROOT . 'includes/classes/');
 	// Tables
 	define('TABLE_COUNTIES', 'counties');
+	// Cron_Offices Table
 	define('TABLE_CRON_OFFICE_CHECK', 'cron_office_check');
+	define('CRON_OFFICES_ID', 'office_id');
+	define('CRON_OFFICES_LAST_CHECK', 'last_check');
 	define('TABLE_OFFICES', 'offices');
 	define('TABLE_SPOTTER_STATUS', 'spotter_status');
 	define('TABLE_REPORTS', 'reports');
@@ -41,6 +44,10 @@
 	define('SQL_SELECT_USER_BY_OAUTH_TOKEN', "SELECT * FROM ".TABLE_USERS." WHERE ".USERS_OAUTH_TOKEN."=?");
 	define('SQL_SELECT_USER_BY_ID', "SELECT * FROM ".TABLE_USERS." WHERE ".USERS_ID."=?");
 	define('SQL_SELECT_OFFICE_IDS_BY_USER_ID', "SELECT * FROM ".TABLE_USERS_OFFICES." WHERE ".USERS_OFFICES_USER_ID."=?");
+	define('SQL_SELECT_ALL_FROM_OUTDATED_ACTIVE_CRON_OFFICES', "SELECT DISTINCT c.".CRON_OFFICES_ID." FROM ".TABLE_CRON_OFFICE_CHECK." c, ".TABLE_USERS_OFFICES." uo WHERE ".CRON_OFFICES_LAST_CHECK."<=? AND c.".CRON_OFFICES_ID."=uo.".USERS_OFFICES_OFFICE_ID);
+	define('SQL_SELECT_USER_IDS_BY_OFFICE_ID', "SELECT DISTINCT ".USERS_OFFICES_USER_ID." FROM ".TABLE_USERS_OFFICES." WHERE ".USERS_OFFICES_OFFICE_ID."=?");
+	define('SQL_SELECT_USER_ROWS_BY_OFFICE_ID', "SELECT DISTINCT *.u FROM ".TABLE_USERS_OFFICES." uo, ".TABLE_USERS." u WHERE uo.".USERS_OFFICES_OFFICE_ID."=? AND u.".USERS_ID."=uo.".USERS_OFFICES_USER_ID);
+
 	// Modify
 	define('SQL_INSERT_GENERIC', "INSERT INTO %t (%c) VALUES (%v)");
 	define('SQL_REPLACE_GENERIC', "REPLACE INTO %t (%c) VALUES (%v)");
@@ -49,6 +56,7 @@
 
 	// REGEX
 	define('REGEX_HWO_REPORT', '/<pre.+?>(.*)<\/pre>/ms');
+	define('REGEX_TIMESTAMP', '/([\d]{3,4}) (AM|PM) ([\w]{3}) ([\w]{3}) ([\w]{3}) ([\d]{1,2}) ([\d]{4})/ms');
 	define('REGEX_COUNTY_LIST', '/(?:[0-9]{6}\- )(.+?)(?:\- [0-9]{3,4} (AM|PM))/ms');
 	define('REGEX_SPOTTER_STATEMENT', '/(?:\.SPOTTER INFORMATION STATEMENT\.\.\. )(.+?)\$\$/');
 	define('REGEX_TEMPLATE_INCLUDE', '/<!-- INCLUDE (.+?) -->/ms');

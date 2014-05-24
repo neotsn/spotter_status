@@ -63,7 +63,7 @@
 		 * @return bool|int Last Inserted ID or false
 		 */
 		public function insert($table, $fv_pairs) {
-			return $this->send_modify_query(SQL_INSERT_GENERIC, $table, $fv_pairs);
+			return $this->modify_single(SQL_INSERT_GENERIC, $table, $fv_pairs);
 		}
 
 		/**
@@ -78,7 +78,7 @@
 		 * @return bool|int Last Inserted ID or false
 		 */
 		public function replace($table, $fv_pairs) {
-			return $this->send_modify_query(SQL_REPLACE_GENERIC, $table, $fv_pairs);
+			return $this->modify_single(SQL_REPLACE_GENERIC, $table, $fv_pairs);
 		}
 
 		/**
@@ -236,9 +236,88 @@
 		 * @return bool|int Last Modified Row ID or false
 		 */
 		public function replace_multiple($table, $fv_pairs_array) {
+			return $this->modify_multiple(SQL_REPLACE_GENERIC, $table, $fv_pairs_array);
+		}
 
-			$sql = SQL_REPLACE_GENERIC;
+		/**
+		 * Executes multiple INSERT statements in a transaction on TABLE with an Array of Field=>Value pair Arrays
+		 *
+		 * @param string $table          DB TABLE DEFINE
+		 * @param array  $fv_pairs_array Array of Field => Value pair arrays (two dimensional)
+		 *                               $fv_pairs_array[] = array('userid' => 123, 'name' => 'Billy');
+		 *                               $fv_pairs_array[] = array('userid' => 456, 'name' => 'Lucy');
+		 *
+		 * @return bool|int Last Modified Row ID or false
+		 */
+		public function insert_multiple($table, $fv_pairs_array) {
+			return $this->modify_multiple(SQL_INSERT_GENERIC, $table, $fv_pairs_array);
+		}
 
+		/**
+		 * Gets the next top-element from the results array of a query
+		 *
+		 * @return array|mixed Value of the next top-element in the results array
+		 */
+		public function get_next() {
+			return (!empty($this->results)) ? array_shift($this->results) : array();
+		}
+
+		/**
+		 * Abstraction of the INSERT/REPLACE methods, since they are
+		 * functionally the same, except for the SQL statement
+		 * Performs the SQL statement with field-value pairs in a single-execute transaction
+		 *
+		 * @param string $sql      SQL DEFINE statement
+		 * @param string $table    DB TABLE DEFINE
+		 * @param array  $fv_pairs Array of field => value pairs, only one dimensional
+		 *                         $fv_pairs = array('userid' => 123, 'name' => 'Billy');
+		 *
+		 * @return bool|int Last Inserted ID or false
+		 */
+		private function modify_single($sql, $table, $fv_pairs) {
+			// Build the field assignment strings
+			$field_str = $value_str = array();
+			foreach($fv_pairs as $f => $v) {
+				$field_str[$f] = $f;
+				$value_str[$f] = ':'.$f;
+			}
+
+			$results = false;
+			try {
+				// Start the transaction
+				$this->db->beginTransaction();
+
+				// Prepare the SQL statement
+				$sql = strtr($sql, array(
+						'%t' => $table,
+						'%c' => implode(', ', array_unique($field_str)),
+						'%v' => implode(', ', array_unique($value_str)))
+				);
+				$this->query = $this->db->prepare($sql);
+
+				// loop through to bind the variable variable name for each field
+				foreach($value_str as $f => $v) {
+					$this->query->bindParam($v, $$f); // Intentional variable variable
+				}
+				// loop through to assign the variable variable's value, and execute
+				foreach($fv_pairs as $f => $v) {
+					$$f = $v; // set the variable variable
+				}
+				$this->query->execute(); // execute the replace query
+
+				// attempt to commit the transaction
+				$this->db->commit();
+				// return # rows affected
+				$results = $this->db->lastInsertId($this->return_id_column($table));
+			} catch(PDOException $e) {
+				$this->db->rollBack();
+				echo $e->getMessage();
+			}
+
+			return $results;
+		}
+
+		private function modify_multiple($sql, $table, $fv_pairs_array) {
 			// Build the field assignment strings
 			$field_str = $value_str = array();
 			foreach($fv_pairs_array as $fv_pairs) {
@@ -282,67 +361,16 @@
 			return $results;
 		}
 
-		/**
-		 * Gets the next top-element from the results array of a query
-		 *
-		 * @return array|mixed Value of the next top-element in the results array
-		 */
-		public function get_next() {
-			return (!empty($this->results)) ? array_shift($this->results) : array();
-		}
-
-		/**
-		 * Abstraction of the INSERT/REPLACE methods, since they are
-		 * functionally the same, except for the SQL statement
-		 * Performs the SQL statement with field-value pairs in a single-execute transaction
-		 *
-		 * @param string $sql      SQL DEFINE statement
-		 * @param string $table    DB TABLE DEFINE
-		 * @param array  $fv_pairs Array of field => value pairs, only one dimensional
-		 *                         $fv_pairs = array('userid' => 123, 'name' => 'Billy');
-		 *
-		 * @return bool|int Last Inserted ID or false
-		 */
-		private function send_modify_query($sql, $table, $fv_pairs) {
-			// Build the field assignment strings
-			$field_str = $value_str = array();
-			foreach($fv_pairs as $f => $v) {
-				$field_str[$f] = $f;
-				$value_str[$f] = ':'.$f;
+		private function return_id_column($table) {
+			$name = '';
+			switch($table) {
+				case TABLE_REPORTS:
+					$name = 'id';
+					break;
+				case TABLE_USERS:
+					$name = 'id';
+					break;
 			}
-
-			$results = false;
-			try {
-				// Start the transaction
-				$this->db->beginTransaction();
-
-				// Prepare the SQL statement
-				$sql = strtr($sql, array(
-						'%t' => $table,
-						'%c' => implode(', ', array_unique($field_str)),
-						'%v' => implode(', ', array_unique($value_str)))
-				);
-				$this->query = $this->db->prepare($sql);
-
-				// loop through to bind the variable variable name for each field
-				foreach($value_str as $f => $v) {
-					$this->query->bindParam($v, $$f); // Intentional variable variable
-				}
-				// loop through to assign the variable variable's value, and execute
-				foreach($fv_pairs as $f => $v) {
-					$$f = $v; // set the variable variable
-				}
-				$this->query->execute(); // execute the replace query
-
-				// attempt to commit the transaction
-				$this->db->commit();
-				// return # rows affected
-				$results = $this->db->lastInsertId();
-			} catch(PDOException $e) {
-				$this->db->rollBack();
-				echo $e->getMessage();
-			}
-
-			return $results;
+			return $name;
 		}
 	}
