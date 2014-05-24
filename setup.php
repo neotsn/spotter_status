@@ -15,7 +15,7 @@
 	require_once('config.php');
 
 	// If access tokens are not available redirect to connect page.
-	if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
+	if(empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
 		// Lost the access token in session somehow, destroy and start again
 		header('Location: ./clearsessions.php');
 	}
@@ -32,8 +32,14 @@
 	/* If method is set change API call made. Test is called by default. */
 	$content = $connection->get('account/verify_credentials');
 
+	// Get the relationship status
+	$relation_result = $connection->get('friendships/show', array('source_id' => $t->app_twitter_id, 'target_id' => $content->id));
+
+	// Did the user want to follow and aren't already following?
+	$is_following = $relation_result->relationship->source->followed_by;
+
 	// Compile the user's data for database entry
-	$sid = sha1($access_token['oauth_token'] . $access_token['oauth_token_secret'] . time() . $content->screen_name);
+	$sid = sha1($access_token['oauth_token'].$access_token['oauth_token_secret'].time().$content->screen_name);
 	$sid_expire = time() + (86400 * 7); // 7 days from now
 
 	$user_params = array(
@@ -44,7 +50,8 @@
 		'oauth_token'             => $access_token['oauth_token'],
 		'oauth_token_secret'      => $access_token['oauth_token_secret'],
 		'sid'                     => $sid,
-		'sid_expire'              => $sid_expire
+		'sid_expire'  => $sid_expire,
+		'is_follower' => ($is_following) ? 1 : 0
 	);
 
 	// Update the user's database entry with the new info
