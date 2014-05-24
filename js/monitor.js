@@ -18,3 +18,20 @@ function monitor_fetch_report_button() {
 		});
 	});
 }
+
+function monitor_setup_form() {
+	$('span[class^="nws_office_city"]').unbind().on('click', function () {
+		var thisClass = $(this).attr('class');
+		var officeId = $(this).attr('data-id');
+
+		if (thisClass == "nws_office_city_selected") {
+			// Currently selected, remove selection and remove input element for it
+			$('input[name="offices\\[' + officeId + '\\]"]').remove();
+			$(this).addClass('nws_office_city').removeClass('nws_office_city_selected');
+		} else {
+			var hiddenOfficeIdField = $('<input type="hidden" />').val(officeId).attr('name', 'offices[' + officeId + ']');
+			$("#setup_offices_container").append(hiddenOfficeIdField);
+			$(this).removeClass('nws_office_city').addClass('nws_office_city_selected');
+		}
+	});
+}

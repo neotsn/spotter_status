@@ -67,6 +67,25 @@
 		 * Replaces variables with html content and generates the html string
 		 */
 		private function build_template() {
+
+			$this->htmlout = $this->parse_template($this->htmlout);
+
 			$this->htmlout = strtr($this->htmlout, $this->template_vars);
+		}
+
+		private function parse_template($template_html) {
+			preg_match_all(REGEX_TEMPLATE_INCLUDE, $template_html, $includes, PREG_PATTERN_ORDER);
+
+			if(!empty($includes[0])) {
+				$x = 0;
+				foreach($includes[1] as $template_filename) {
+					if(file_exists(PATH_TEMPLATES.$template_filename)) {
+						$template_data = file_get_contents(PATH_TEMPLATES.$template_filename);
+						$template_html = str_replace($includes[0][$x], $this->parse_template($template_data), $template_html);
+					}
+					$x++;
+				}
+			}
+			return $template_html;
 		}
 	}

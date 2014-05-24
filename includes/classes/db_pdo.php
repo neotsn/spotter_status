@@ -12,31 +12,37 @@
 	 */
 	class db_pdo {
 
-		private $database = '';
-
 		public $db = null;
 		public $query = null;
 		public $results = array();
+		private $database = '';
 
 		/**
-		 * @param string|null $db_name Database Name to connect to
+		 * Construct method
+		 *
+		 * @param string|null $db_name Database Name override
 		 */
 		public function __construct($db_name = null) {
 
+			// Get the connection info from the .ini file
 			$conn_info = parse_ini_file("./connection_info.ini", true);
 
+			// Set the object's database property if overriden in construct
 			$this->database = (is_null($db_name)) ? $conn_info['db']['database'] : $db_name;
 
-			$this->db = new PDO('mysql:host=' . $conn_info['db']['hostname'] . ';dbname=' . $this->database . ';charset=utf8', $conn_info['db']['username'], $conn_info['db']['password']);
+			// Create the database connection with attributes
+			$this->db = new PDO('mysql:host='.$conn_info['db']['hostname'].';dbname='.$this->database.';charset=utf8', $conn_info['db']['username'], $conn_info['db']['password']);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		}
 
 		/**
-		 * @param       $statement
-		 * @param array $params
+		 * Performs the Query statement, substituting ? for values in $params
 		 *
-		 * @return array
+		 * @param string $statement SQL DEFINE statement
+		 * @param array  $params    Array of values to translate into the string
+		 *
+		 * @return array Array of 0 or More results
 		 */
 		public function query($statement, $params = array()) {
 			$this->query = $this->db->prepare($statement);
@@ -46,19 +52,76 @@
 		}
 
 		/**
-		 * @param $sql
-		 * @param $table
-		 * @param $fv_pairs
+		 * Executes REPLACE statement on TABLE with Field-Value pairs
+		 * Was originally called ->update, but SQL UPDATE is handled differently than INSERT/REPLACE
+		 * So they were split and abstracted
 		 *
-		 * @return bool|int
+		 * @param string $table    DB TABLE DEFINE
+		 * @param array  $fv_pairs Array of field => value pairs, only one dimensional
+		 *                         $fv_pairs = array('userid' => 123, 'name' => 'Billy');
+		 *
+		 * @return bool|int Last Inserted ID or false
 		 */
-		public function update($sql, $table, $fv_pairs) {
+		public function insert($table, $fv_pairs) {
+			return $this->send_modify_query(SQL_INSERT_GENERIC, $table, $fv_pairs);
+		}
 
-			// Build the field assignment strings
-			$field_str = $value_str = array();
-			foreach ($fv_pairs as $f => $v) {
-				$field_str[$f] = $f;
-				$value_str[$f] = ':' . $f;
+		/**
+		 * Executes REPLACE statement on TABLE with Field-Value pairs
+		 * Was originally called ->update, but SQL UPDATE is handled differently than INSERT/REPLACE
+		 * So they were split and abstracted
+		 *
+		 * @param string $table    DB TABLE DEFINE
+		 * @param array  $fv_pairs Array of field => value pairs, only one dimensional
+		 *                         $fv_pairs = array('userid' => 123, 'name' => 'Billy');
+		 *
+		 * @return bool|int Last Inserted ID or false
+		 */
+		public function replace($table, $fv_pairs) {
+			return $this->send_modify_query(SQL_REPLACE_GENERIC, $table, $fv_pairs);
+		}
+
+		/**
+		 * Executes an UPDATE statement on TABLE with field-value pairs and criteria-pairs
+		 *
+		 * @param string $table               DB TABLE DEFINE
+		 * @param array  $fv_pairs            Array of field => value pairs, only ONE dimensional
+		 *                                    $updates = array('name' => 'Billy-Bob');
+		 * @param array  $criteria_pairs      Array of [field, op, value] arrays, TWO dimensional
+		 *                                    $criteria_pairs[] = array('field' => 'userid', 'op' => '=', 'value' => 123);
+		 *
+		 * @return bool|string
+		 */
+		public function update($table, $fv_pairs, $criteria_pairs) {
+			$sql = SQL_UPDATE_GENERIC;
+
+			/*
+			 * Basically we need to run two variable variable construction loops
+			 * 1.) for the UPDATE pairing
+			 * 2.) for the CRITERIA pairing
+			 *
+			 * Iterate over the SET field-value pairs and build arrays for implosion and assignment
+			 * Then do the same for the CRITERIA field-op-value sets
+			 *
+			 * Then implode the update/criteria_str arrays into the statement with appropriate concatenation
+			 * Then iterate the *_value_str arrays to bindParam with variable variables for each field
+			 * Then assign the variable variables the value for that field from the original pairing array
+			 *
+			 * Execute in a loop, and commit the transaction.
+			 */
+			$u_value_str = $update_str = $criteria_str = array();
+			foreach($fv_pairs as $f => $v) {
+				$u_value_str[$f] = ':'.$f;
+				$update_str[$f] = $f.'=:'.$f;
+			}
+
+			$c_value_str = $criteria_str = array();
+			foreach($criteria_pairs as $criteria) {
+				$f = $criteria['field'];
+				$o = $criteria['op'];
+
+				$c_value_str[$f.'_c'] = ':'.$f.'_c';
+				$criteria_str[$f.'_c'] = $f.$o.':'.$f.'_c';
 			}
 
 			$results = false;
@@ -68,19 +131,28 @@
 
 				// Prepare the SQL statement
 				$sql = strtr($sql, array(
-						'%t' => $table,
-						'%c' => implode(', ', array_unique($field_str)),
-						'%v' => implode(', ', array_unique($value_str)))
-				);
+					'%t'   => $table,
+					'%ufv' => implode(', ', array_unique($update_str)),
+					'%cfv' => implode(' AND ', array_unique($criteria_str))
+				));
+
 				$this->query = $this->db->prepare($sql);
 
 				// loop through to bind the variable variable name for each field
-				foreach ($value_str as $f => $v) {
+				foreach($u_value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
-				// loop through to assign the variable variable's value, and execute
-				foreach ($fv_pairs as $f => $v) {
+				foreach($c_value_str as $f => $v) {
+					$this->query->bindParam($v, $$f); // Intentional variable variable
+				}
+
+				// loop through to assign the variable variable's value
+				foreach($fv_pairs as $f => $v) {
 					$$f = $v; // set the variable variable
+				}
+				foreach($criteria_pairs as $criteria) {
+					$f = $criteria['field'].'_c';
+					$$f = $criteria['value']; // set the variable variable
 				}
 				$this->query->execute(); // execute the replace query
 
@@ -88,7 +160,7 @@
 				$this->db->commit();
 				// return # rows affected
 				$results = $this->db->lastInsertId();
-			} catch (PDOException $e) {
+			} catch(PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
 			}
@@ -97,20 +169,82 @@
 		}
 
 		/**
-		 * @param $sql
-		 * @param $table
-		 * @param $fv_pairs_array
+		 * Executes delete statement with field-value pairs criteria
 		 *
-		 * @return bool|int
+		 * @param string $table    DB TABLE DEFINE
+		 * @param array  $fv_pairs Array of field => value pairs, only one dimensional
+		 *                         $fv_pairs = array('userid' => 123, 'name' => 'Billy');
+		 *
+		 * @return bool Success/Fail
 		 */
-		public function update_multiple($sql, $table, $fv_pairs_array) {
+		public function delete($table, $fv_pairs) {
+
+			$sql = SQL_DELETE_GENERIC;
 
 			// Build the field assignment strings
 			$field_str = $value_str = array();
-			foreach ($fv_pairs_array as $fv_pairs) {
-				foreach ($fv_pairs as $f => $v) {
+			$criteria = array();
+			foreach($fv_pairs as $f => $v) {
+
+				$criteria[$f] = $f.'=:'.$f;
+				$field_str[$f] = $f;
+				$value_str[$f] = ':'.$f;
+			}
+
+			$results = false;
+			try {
+				// Start the transaction
+				$this->db->beginTransaction();
+
+				// Prepare the SQL statement
+				$sql = strtr($sql, array(
+					'%t' => $table,
+					'%c' => implode(' AND ', array_unique($criteria))
+				));
+				$this->query = $this->db->prepare($sql);
+
+				// loop through to bind the variable variable name for each field
+				foreach($value_str as $f => $v) {
+					$this->query->bindParam($v, $$f); // Intentional variable variable
+				}
+				// loop through to assign the variable variable's value, and execute
+				foreach($fv_pairs as $f => $v) {
+					$$f = $v; // set the variable variable
+				}
+				$this->query->execute(); // execute the replace query
+
+				// attempt to commit the transaction
+				$this->db->commit();
+				// return # rows affected
+				$results = true;
+			} catch(PDOException $e) {
+				$this->db->rollBack();
+				echo $e->getMessage();
+			}
+
+			return $results;
+		}
+
+		/**
+		 * Executes multiple REPLACE statements in a transaction on TABLE with an Array of Field=>Value pair Arrays
+		 *
+		 * @param string $table          DB TABLE DEFINE
+		 * @param array  $fv_pairs_array Array of Field => Value pair arrays (two dimensional)
+		 *                               $fv_pairs_array[] = array('userid' => 123, 'name' => 'Billy');
+		 *                               $fv_pairs_array[] = array('userid' => 456, 'name' => 'Lucy');
+		 *
+		 * @return bool|int Last Modified Row ID or false
+		 */
+		public function replace_multiple($table, $fv_pairs_array) {
+
+			$sql = SQL_REPLACE_GENERIC;
+
+			// Build the field assignment strings
+			$field_str = $value_str = array();
+			foreach($fv_pairs_array as $fv_pairs) {
+				foreach($fv_pairs as $f => $v) {
 					$field_str[$f] = $f;
-					$value_str[$f] = ':' . $f;
+					$value_str[$f] = ':'.$f;
 				}
 			}
 			$results = 0;
@@ -127,12 +261,12 @@
 				$this->query = $this->db->prepare($sql);
 
 				// loop through to bind the variable variable name for each field
-				foreach ($value_str as $f => $v) {
+				foreach($value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
 				// loop through to assign the variable variable's value, and execute
-				foreach ($fv_pairs_array as $fv_pairs) {
-					foreach ($fv_pairs as $f => $v) {
+				foreach($fv_pairs_array as $fv_pairs) {
+					foreach($fv_pairs as $f => $v) {
 						$$f = $v; // set the variable variable
 					}
 					$this->query->execute(); // execute the replace query
@@ -140,7 +274,7 @@
 				}
 				// attempt to commit the transaction
 				$this->db->commit();
-			} catch (PDOException $e) {
+			} catch(PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
 			}
@@ -148,7 +282,67 @@
 			return $results;
 		}
 
+		/**
+		 * Gets the next top-element from the results array of a query
+		 *
+		 * @return array|mixed Value of the next top-element in the results array
+		 */
 		public function get_next() {
 			return (!empty($this->results)) ? array_shift($this->results) : array();
+		}
+
+		/**
+		 * Abstraction of the INSERT/REPLACE methods, since they are
+		 * functionally the same, except for the SQL statement
+		 * Performs the SQL statement with field-value pairs in a single-execute transaction
+		 *
+		 * @param string $sql      SQL DEFINE statement
+		 * @param string $table    DB TABLE DEFINE
+		 * @param array  $fv_pairs Array of field => value pairs, only one dimensional
+		 *                         $fv_pairs = array('userid' => 123, 'name' => 'Billy');
+		 *
+		 * @return bool|int Last Inserted ID or false
+		 */
+		private function send_modify_query($sql, $table, $fv_pairs) {
+			// Build the field assignment strings
+			$field_str = $value_str = array();
+			foreach($fv_pairs as $f => $v) {
+				$field_str[$f] = $f;
+				$value_str[$f] = ':'.$f;
+			}
+
+			$results = false;
+			try {
+				// Start the transaction
+				$this->db->beginTransaction();
+
+				// Prepare the SQL statement
+				$sql = strtr($sql, array(
+						'%t' => $table,
+						'%c' => implode(', ', array_unique($field_str)),
+						'%v' => implode(', ', array_unique($value_str)))
+				);
+				$this->query = $this->db->prepare($sql);
+
+				// loop through to bind the variable variable name for each field
+				foreach($value_str as $f => $v) {
+					$this->query->bindParam($v, $$f); // Intentional variable variable
+				}
+				// loop through to assign the variable variable's value, and execute
+				foreach($fv_pairs as $f => $v) {
+					$$f = $v; // set the variable variable
+				}
+				$this->query->execute(); // execute the replace query
+
+				// attempt to commit the transaction
+				$this->db->commit();
+				// return # rows affected
+				$results = $this->db->lastInsertId();
+			} catch(PDOException $e) {
+				$this->db->rollBack();
+				echo $e->getMessage();
+			}
+
+			return $results;
 		}
 	}

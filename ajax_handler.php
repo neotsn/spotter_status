@@ -62,13 +62,13 @@
 						'county_name' => trim($county)
 					);
 				}
-				$counties_updated = $db->update_multiple(SQL_REPLACE_GENERIC, TABLE_COUNTIES, $params);
+				$counties_updated = $db->replace_multiple(TABLE_COUNTIES, $params);
 
 				// Add this office to the list of reports to check for with CRON
 				$params = array(
 					'office_id' => $office
 				);
-				$db->update(SQL_REPLACE_GENERIC, TABLE_CRON_OFFICE_CHECK, $params);
+				$db->replace(TABLE_CRON_OFFICE_CHECK, $params);
 
 				// Save the report
 				$params = array(
@@ -76,7 +76,7 @@
 					'report_hash' => $hash,
 					'report_text' => $orig_outlook
 				);
-				$outlook_id = $db->update(SQL_INSERT_GENERIC, TABLE_REPORTS, $params);
+				$outlook_id = $db->insert(TABLE_REPORTS, $params);
 
 				// Update the spotter status for this report - should never update
 				$params = array(
@@ -84,11 +84,11 @@
 					'report_id'       => $outlook_id,
 					'spotter_message' => $statement
 				);
-				$db->update(SQL_REPLACE_GENERIC, TABLE_SPOTTER_STATUS, $params);
+				$db->replace(TABLE_SPOTTER_STATUS, $params);
 			}
 
 			// Get the Office City
-			$db->query(SQL_SELECT_ALL_FROM_OFFICE_IDS_BY_ID, array($office));
+			$db->query(SQL_SELECT_ALL_FROM_OFFICE_BY_ID, array($office));
 			$office_row = $db->get_next();
 
 			ob_clean();

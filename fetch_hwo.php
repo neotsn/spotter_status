@@ -11,13 +11,13 @@
 
 	$db = new db_pdo();
 
-	$results = $db->query(SQL_SELECT_ALL_FROM_OFFICE_IDS);
+	$results = $db->query(SQL_SELECT_ALL_FROM_OFFICE);
 
 	// Get all the Office IDs and put into Select Box
 	$officeSelect = array();
 	$officeSelect[] = '<select name="nws_office" id="nws_office">';
-	foreach ($results as $result) {
-		$officeSelect[] = '<option value="' . $result['id'] . '">' . $result['city'] . ', ' . $result['state'] . '</option>';
+	foreach($results as $result) {
+		$officeSelect[] = '<option value="'.$result['id'].'">'.$result['city'].', '.$result['state'].'</option>';
 	}
 	$officeSelect[] = '</select>';
 

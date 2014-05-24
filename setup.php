@@ -49,7 +49,7 @@
 
 	// Update the user's database entry with the new info
 	$db = new db_pdo();
-	$db->update(SQL_REPLACE_GENERIC, TABLE_USERS, $user_params);
+	$db->replace(TABLE_USERS, $user_params);
 
 	$_SESSION['sid'] = $sid;
 	$_SESSION['sid_expire'] = $sid_expire;
