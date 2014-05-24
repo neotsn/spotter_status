@@ -32,10 +32,12 @@
 	// Did the user want to follow and aren't already following?
 	$is_following = $relation_result->relationship->source->followed_by;
 	$can_dm = $relation_result->relationship->source->can_dm;
-	if($agree_to_follow == 'on' && !$is_following) {
-		// Create the follow
-		$friend_result = $connection->post('friendships/create', array('screen_name' => 'noaaalerts'));
-		$is_following = (strtolower($friend_result->screen_name) == 'noaaalerts') ? 1 : 0; // Test the result for db storage
+	if($agree_to_follow == 'on') {
+		// Create the follow on twitter's side
+		if(!$is_following) {
+			$friend_result = $connection->post('friendships/create', array('screen_name' => 'noaaalerts'));
+			$is_following = (strtolower($friend_result->screen_name) == 'noaaalerts') ? 1 : 0; // Test the result for db storage
+		}
 
 		// Update the follower status in the database
 		$update_pairs = array(USERS_IS_FOLLOWER => $is_following);

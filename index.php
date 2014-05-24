@@ -99,7 +99,6 @@
 			'TXT_MSGS'                    => $messages_html
 		);
 
-		// TODO Add Message Success feedback to template
 		// TODO Add if-else logic to template drawing
 
 		$template = new template('setup');
