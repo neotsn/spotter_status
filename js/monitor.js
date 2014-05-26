@@ -21,49 +21,13 @@ function monitor_offices_list() {
 
 function monitor_profile_links() {
 	$("#edit_offices").unbind().on('click', function () {
-
 		var user_id = $(this).attr('data-userid');
+		get_office_list(user_id);
+	});
 
-		$.ajax({
-			type: "GET",
-			url: "ajax_handler.php",
-			data: {
-				mode: "getOfficelist",
-				user_id: user_id
-			}
-		}).done(function (response) {
-			$("#offices_dialog").html(response).dialog({
-				height: window.innerHeight - 200,
-				width: window.innerWidth - 200,
-				modal: true,
-				buttons: {
-					"Save": function () {
-						var offices = [];
-						$('input[name^="offices\\["]').each(function () {
-							offices.push($(this).val());
-						});
-
-						$.ajax({
-							type: "POST",
-							url: "ajax_handler.php",
-							data: {
-								mode: "saveOfficelist",
-								offices: offices,
-								user_id: user_id
-							}
-						}).done(function () {
-							parent.location.reload();
-						});
-					},
-					Cancel: function () {
-						$(this).dialog("close");
-					}
-				},
-				close: function () {
-					$(this).html('').dialog('close');
-				}
-			});
-		});
+	$(".add_offices").unbind().on('click', function () {
+		var user_id = $(this).attr('data-userid');
+		get_office_list(user_id);
 	});
 
 	$("#disconnect_service").unbind().on('click', function () {
@@ -85,6 +49,46 @@ function monitor_profile_links() {
 					}).done(function () {
 						parent.location.reload();
 						$(this).dialog("close");
+					});
+				},
+				Cancel: function () {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});
+}
+
+function get_office_list(user_id) {
+	$.ajax({
+		type: "GET",
+		url: "ajax_handler.php",
+		data: {
+			mode: "getOfficelist",
+			user_id: user_id
+		}
+	}).done(function (response) {
+		$("#offices_dialog").html(response).dialog({
+			height: window.innerHeight - 200,
+			width: window.innerWidth - 200,
+			modal: true,
+			buttons: {
+				"Save": function () {
+					var offices = [];
+					$('input[name^="offices\\["]').each(function () {
+						offices.push($(this).val());
+					});
+
+					$.ajax({
+						type: "POST",
+						url: "ajax_handler.php",
+						data: {
+							mode: "saveOfficelist",
+							offices: offices,
+							user_id: user_id
+						}
+					}).done(function () {
+						parent.location.reload();
 					});
 				},
 				Cancel: function () {

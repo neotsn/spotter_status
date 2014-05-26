@@ -14,7 +14,6 @@
 		<tr>
 			<td class="profile_left">
 				<h2><img src="{IMG_USER_PROFILE}" class="profile_img align_left"/>@{TXT_USER_SCREEN_NAME}</h2>
-
 				<div class="profile_list_wrapper">
 					<h4>Connection Status</h4>
 					<ul class="profile_connections">
@@ -32,7 +31,6 @@
 				<div id="offices_dialog" style="display: none;"></div>
 			</td>
 			<td class="profile_mid">
-				{TXT_CONNECTION_MESSAGE}
 				<!-- IF {B_NO_RELATIONSHIP} -->
 				<h2>Follow @NOAAalerts on Twitter</h2>
 
@@ -42,11 +40,20 @@
 				<a href="ajax_handler.php?mode=followOnTwitter&user_id={TXT_USER_ID}" class="profile_follow_img"></a>
 				<!-- ENDIF -->
 				<h2>Latest Storm Spotter Forecasts</h2>
+				<!-- IF {B_HAS_FORECAST_CARDS} -->
 				{TXT_SPOTTER_FORECAST_CARDS}
+				<!-- ELSE -->
+				<p class="profile_instructions">The service has not scanned for new HWOs at your chosen locations. Scans
+					run every 15 minutes.</p>
+				<!-- ENDIF -->
 			</td>
 			<td class="profile_right">
 				<h2>Your Offices</h2>
+				<!-- IF {B_HAS_OFFICES} -->
 				{TXT_SUBSCRIBED_OFFICES}
+				<!-- ELSE -->
+				<span class="add_offices" data-userid="{TXT_USER_ID}">Add Offices</span>
+				<!-- ENDIF -->
 			</td>
 		</tr>
 		<tr>

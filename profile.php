@@ -27,32 +27,36 @@
 
 	// Make the Spotter Statement Cards
 	$forecast_cards_html = '';
-	foreach ($spotter_statements as $statement) {
-		$spotter_template = new template('forecast_card', false, false);
-		$spotter_template->set_template_vars(array(
-			'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
-			'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
-			'TXT_STATEMENT_STATE'     => $statement[OFFICES_STATE],
-			'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[STATEMENTS_LAST_OUTLOOK]),
-			'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
-		));
-		$forecast_cards_html .= $spotter_template->compile();
+	$b_has_forecast_cards = (!empty($spotter_statements)) ? 1 : 0;
+	if($b_has_forecast_cards) {
+		foreach($spotter_statements as $statement) {
+			$spotter_template = new template('forecast_card', false, false);
+			$spotter_template->set_template_vars(array(
+				'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
+				'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
+				'TXT_STATEMENT_STATE'     => $statement[OFFICES_STATE],
+				'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[STATEMENTS_LAST_OUTLOOK]),
+				'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
+			));
+			$forecast_cards_html .= $spotter_template->compile();
+		}
 	}
 
 	// Gather the Subscribed Offices
-	if (!empty($office_rows)) {
+	$b_has_offices = (!empty($office_rows)) ? 1 : 0;
+	if($b_has_offices) {
 
 		// Group them by state
 		$office_locations = array();
-		foreach ($office_rows as $office_row) {
+		foreach($office_rows as $office_row) {
 			$office_locations[$office_row[OFFICES_STATE]][$office_row[OFFICES_ID]] = $office_row[OFFICES_CITY];
 		}
 
 		$subscribed_offices_html = '';
-		foreach ($office_locations as $state => $city_data) {
+		foreach($office_locations as $state => $city_data) {
 
 			$cities_html = '';
-			foreach ($city_data as $office_id => $city) {
+			foreach($city_data as $office_id => $city) {
 				$city_template = new template('office_cities_profile', false, false);
 				$city_template->set_template_vars(array(
 					'TXT_OFFICE_ID'         => $office_id,
@@ -70,21 +74,17 @@
 			));
 			$subscribed_offices_html .= $state_template->compile();
 		}
-	} else {
-		$subscribed_offices_html = ''; // TODO Add Button for jquery modal
 	}
 
-	$connection_errors = array();
+	//	$connection_errors = array();
 	$dm_class = "profile_conn_ok";
 	$follow_class = "profile_conn_ok";
-	if (!$user->can_dm) {
-		$connection_errors[] = "We can't DM you!";
+	if(!$user->can_dm) {
 		$dm_class = "profile_conn_bad";
 	}
 
-	if (!$user->is_follower) {
-		if (!$user->can_dm) {
-			$connection_errors[] = "You need to follow @NOAAalerts to receive DMs.";
+	if(!$user->is_follower) {
+		if(!$user->can_dm) {
 			$follow_class = "profile_conn_bad";
 		} else {
 			$follow_class = "profile_conn_warn";
@@ -93,14 +93,14 @@
 
 	// Get the error-handling messages
 	$messages_html = '';
-	if (!empty($_SESSION['msg'])) {
-		foreach ($_SESSION['msg'] as $type => $msgs) {
+	if(!empty($_SESSION['msg'])) {
+		foreach($_SESSION['msg'] as $type => $msgs) {
 			$msg_template = new template('msg', false, false);
 
-			foreach ($msgs as $msg) {
+			foreach($msgs as $msg) {
 				$msg_template->set_template_vars(array(
 					'TXT_TYPE' => $type,
-					'TXT_MSG'  => ucwords($type) . ': ' . $msg
+					'TXT_MSG' => ucwords($type).': '.$msg
 				));
 				$messages_html .= $msg_template->compile();
 			}
@@ -115,11 +115,13 @@
 		'TXT_LOGOUT_USER'            => 'Logout',
 		'TXT_SPOTTER_FORECAST_CARDS' => $forecast_cards_html,
 		'TXT_SUBSCRIBED_OFFICES'     => $subscribed_offices_html,
-		'TXT_CONNECTION_MESSAGE'     => (!empty($connection_errors)) ? implode('<br />', $connection_errors) : '',
+		//		'TXT_CONNECTION_MESSAGE'     => (!empty($connection_errors)) ? implode("\n", $connection_errors) : '',
 		'TXT_RELATIONSHIP_STATUS'    => $follow_class,
 		'TXT_DM_STATUS'              => $dm_class,
 		'TXT_USER_ID'                => $user->id,
 		'TXT_MSGS'                   => $messages_html,
-		'B_NO_RELATIONSHIP'          => !$user->is_follower
+		'B_NO_RELATIONSHIP'    => !$user->is_follower,
+		'B_HAS_OFFICES'        => $b_has_offices,
+		'B_HAS_FORECAST_CARDS' => $b_has_forecast_cards
 	));
 	$template->display();

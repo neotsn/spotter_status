@@ -31,7 +31,7 @@
 			$db->query(SQL_SELECT_USER_BY_ID, array($userid));
 			$row = $db->get_next();
 
-			if (!empty($row)) {
+			if(!empty($row)) {
 				$this->id = $row[USERS_ID];
 				$this->screen_name = $row[USERS_SCREEN_NAME];
 				$this->oauth_token = $row[USERS_OAUTH_TOKEN];
@@ -49,7 +49,7 @@
 			$session_id = get_session('sid', null);
 			$is_valid = ($this->id && $this->sid_expire > 0 && $this->sid == $session_id) ? true : false;
 
-			if (!$is_valid) {
+			if(!$is_valid) {
 				header('Location: ./clearsessions.php');
 			}
 		}
@@ -68,8 +68,8 @@
 			$selected_office_rows = $db->query(SQL_SELECT_OFFICE_IDS_BY_USER_ID, array($this->id));
 
 			$selected = array();
-			if (!empty($selected_office_rows)) {
-				foreach ($selected_office_rows as $selected_office_row) {
+			if(!empty($selected_office_rows)) {
+				foreach($selected_office_rows as $selected_office_row) {
 					$selected[$selected_office_row['office_id']] = $selected_office_row['office_id'];
 				}
 			}

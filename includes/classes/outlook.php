@@ -27,15 +27,20 @@
 
 			$this->build_url($this->office_id);
 			$this->response = $this->get_url_reponse($this->url);
-			$this->hash = md5($this->response);
+			// Remove all trailing spaces (usually added in an update) and consolidate excess spaces
+			// Hash this modified result - a change in information or date will trigger an update
+			// A change in whitespace will not
+			$this->hash = md5(preg_replace('/\s+/ms', ' ', trim($this->response)));
 		}
 
 		public function process_outlooks() {
 			preg_match_all(REGEX_HWO_REPORT, $this->response, $data, PREG_PATTERN_ORDER);
 
 			foreach ($data[1] as $outlook) {
-				$flat_outlook = preg_replace('/\s+/', ' ', $outlook);
-				$thisOutlookHash = md5($outlook);
+				// Trim whitespaces and consolidate excess spaces for hash
+				$outlook = trim($outlook);
+				$flat_outlook = preg_replace('/\s+/ms', ' ', $outlook);
+				$thisOutlookHash = md5($flat_outlook); // Create a unique hash for each outlook found
 
 				$this->original_outlooks[$thisOutlookHash] = $outlook;
 				$this->outlooks[$thisOutlookHash] = $flat_outlook;
@@ -46,11 +51,10 @@
 		}
 
 		/**
-		 * @param db_pdo $db Database Object
-		 *
 		 * @return int
 		 */
-		public function does_report_hash_exist($db) {
+		public function does_report_hash_exist() {
+			global $db;
 			$result = $db->query(SQL_SELECT_OUTLOOK_BY_HASH, array($this->hash));
 			return count($result);
 		}
@@ -65,9 +69,10 @@
 		}
 
 		/**
-		 * @param db_pdo $db Database Object
+		 * @internal param \db_pdo $db Database Object
 		 */
-		public function save_outlooks($db) {
+		public function save_outlooks() {
+			global $db;
 			// Process the county list...
 			$params = array();
 			foreach ($this->counties as $county) {

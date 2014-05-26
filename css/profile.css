@@ -111,14 +111,15 @@
 	box-shadow: 0 3px 10px #666;
 	background-color: #fff;
 	border-spacing: 10px;
-	margin: 0 auto;
+	margin: 10px auto 5px;
 }
 
 .profile_left {
 	min-width: 200px;
-	padding: 10px;
+	padding: 10px 25px 10px 10px;
 	border-right: 1px solid #ccc;
 	vertical-align: top;
+	white-space: nowrap;
 }
 
 .profile_left h2 {
@@ -203,6 +204,17 @@ ul.profile_menu li a:hover {
 
 }
 
+.profile_conn_msg {
+	display: block;
+	margin: 3px;
+	padding: 5px 5px 5px 25px;
+	border-radius: 3px;
+	color: #333333;
+	border: 1px solid #aaaaaa;
+	background: #cccccc url('../images/red_dot.png') no-repeat left center;
+
+}
+
 .profile_right {
 	width: 25%;
 	padding: 10px;
@@ -260,7 +272,7 @@ a.profile_follow_img:hover {
 }
 
 .forecast_card h3 {
-	color: #666;
+	color: #888;
 	border-bottom: 1px solid #ccc;
 	margin: 1px 5px;
 }
@@ -285,19 +297,42 @@ a.profile_follow_img:hover {
 	padding: 10px;
 }
 
-.forecast_statement a {
-	font-size: 0.8em;
-	text-decoration: none;
-	color: #333;
+.forecast_source {
+	margin: 0 5px;
+	padding-top: 5px;
+	display: block;
+	font-size: 0.9em;
+	border-top: 1px solid #ddd;
+	text-align: right;
 }
 
-.forecast_statement a:hover {
+.forecast_source a {
+	font-size: 0.8em;
+	text-decoration: none;
+	color: #999;
+}
+
+.forecast_source a:hover {
 	text-decoration: underline;
 }
 
 /*
  * 	Subscribed Offices
  */
+.add_offices {
+	cursor: pointer;
+	display: inline-block;
+	border-radius: 15px;
+	line-height: 30px;
+	border: 1px solid #efefef;
+	padding: 0 10px;
+	margin: 2px auto;
+}
+
+.add_offices:hover {
+	border: 1px solid #ccc;
+	background-color: #efefef;
+}
 
 .nws_offices_wrapper_profile {
 	width: 90%;

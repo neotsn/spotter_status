@@ -17,13 +17,11 @@
 	define('PATH_ROOT', './');
 	require_once('config.php');
 
-	// TODO Add tweet from NOAAAlerts that it is checking for new reports on cron.
-
 	$session_id = get_session('sid', null);
 	$user_id = get_session('userid', null);
 	$msg = get_request('msg', null);
 
-	if ($user_id && $session_id) {
+	if($user_id && $session_id) {
 		$db = new db_pdo();
 		$user = new user($user_id);
 		$user->validate_user_session();

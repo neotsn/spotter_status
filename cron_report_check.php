@@ -31,8 +31,8 @@
 
 			$outlook = new outlook($office['office_id']);
 			$outlook->process_outlooks();
-			if(!$outlook->does_report_hash_exist($db)) {
-				$outlook->save_outlooks($db);
+			if(!$outlook->does_report_hash_exist()) {
+				$outlook->save_outlooks();
 
 				$users_ids_to_notify = $db->query(SQL_SELECT_USER_IDS_BY_OFFICE_ID, array($office['office_id']));
 				if(!empty($users_ids_to_notify)) {
