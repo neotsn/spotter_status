@@ -1,0 +1,362 @@
+/*
+ *	Header [Menu]
+ */
+
+#header {
+	display: block;
+	height: 50px;
+	background-color: #333;
+	width: 100%;
+	float: left;
+	padding-top: 12px;
+	position: fixed;
+	box-shadow: 0 3px 10px rgba(51, 51, 51, 0.5);
+}
+
+.header_headline {
+	display: block;
+	vertical-align: middle;
+	float: left;
+	margin-left: 15px;
+	font-size: 2em;
+	font-weight: bold;
+	color: #fff;
+}
+
+.header_profile {
+	display: block;
+	vertical-align: top;
+	float: right;
+	margin-right: 15px;
+	margin-top: 7px;
+}
+
+.header_profile_img {
+	width: 25px;
+	height: 25px;
+	border-radius: 13px;
+	border: 0;
+}
+
+.header_profile_name {
+	color: #fff;
+	font-weight: bold;
+	display: inline-block;
+	margin-left: 10px;
+	line-height: 25px;
+	vertical-align: middle;
+	text-align: left;
+	padding-right: 15px;
+	border-right: 1px solid #aaa;
+}
+
+.header_profile_logout {
+	color: #ccc;
+	display: inline-block;
+	margin-left: 15px;
+	margin-right: 15px;
+	text-align: left;
+	vertical-align: middle;
+	line-height: 25px;
+}
+
+.header_profile_logout a {
+	color: #ccc;
+	text-decoration: none;
+}
+
+.header_profile_logout a:hover {
+	text-decoration: underline;
+}
+
+/*
+ *	Header [Image]
+ */
+
+#header_image {
+	background-size: cover;
+	height: 300px;
+	width: 100%;
+	float: left;
+	background-clip: border-box;
+	background-origin: padding-box;
+	background: #222 url('../images/header_image.jpg') no-repeat bottom center;
+	text-align: center;
+	margin-top: 50px;
+}
+
+.header_border {
+	display: block;
+	width: 100%;
+	height: 15px;
+	margin-bottom: 20px;
+	background-color: #333;
+}
+
+/*
+ *	Profile Content
+ */
+
+#profile {
+	float: left;
+	width: 100%;
+	background-color: #fff;
+	min-height: 100%;
+	display: block;
+}
+
+.profile_wrapper {
+	width: 75%;
+	border-radius: 5px;
+	box-shadow: 0 3px 10px #666;
+	background-color: #fff;
+	border-spacing: 10px;
+	margin: 0 auto;
+}
+
+.profile_left {
+	min-width: 200px;
+	padding: 10px;
+	border-right: 1px solid #ccc;
+	vertical-align: top;
+}
+
+.profile_left h2 {
+	color: #666;
+	display: block;
+	vertical-align: middle;
+	line-height: 48px;
+}
+
+.profile_img {
+	/*width: 48px;*/
+	/*height: 48px;*/
+	margin-right: 10px;
+}
+
+.profile_list_wrapper h4, .profile_list_wrapper h4 {
+	margin-bottom: 10px;
+	color: #666;
+}
+
+ul.profile_connections {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	color: #333;
+}
+
+ul.profile_connections li {
+	line-height: 20px;
+	padding-left: 25px;
+	font-size: 0.9em;
+	margin-bottom: 5px;
+}
+
+ul.profile_connections li.profile_conn_ok {
+	background: url('../images/green_dot.png') no-repeat left center;
+}
+
+ul.profile_connections li.profile_conn_bad {
+	background: url('../images/red_dot.png') no-repeat left center;
+}
+
+ul.profile_connections li.profile_conn_warn {
+	background: url('../images/yellow_dot.png') no-repeat left center;
+}
+
+ul.profile_menu {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	color: #333;
+}
+
+ul.profile_menu li {
+	line-height: 20px;
+	padding-left: 25px;
+	font-size: 0.9em;
+	margin-bottom: 5px;
+}
+
+ul.profile_menu li a {
+	text-decoration: none;
+	color: #333;
+}
+
+ul.profile_menu li a:hover {
+	text-decoration: underline;
+}
+
+#edit_offices {
+	cursor: pointer;
+}
+
+#edit_offices:hover {
+	text-decoration: underline;
+}
+
+.profile_mid {
+	width: 75%;
+	padding: 10px;
+	vertical-align: top;
+
+}
+
+.profile_right {
+	width: 25%;
+	padding: 10px;
+	border-left: 1px solid #ccc;
+	vertical-align: top;
+	text-align: center;
+}
+
+.profile_footer {
+	border-top: 1px solid #ccc;
+	font-size: 0.7em;
+	padding: 10px;
+}
+
+.profile_footer_info {
+	float: right;
+	color: #aaa;
+}
+
+.profile_discrete {
+	color: darkred;
+	cursor: pointer;
+	float: left;
+}
+
+/*
+ * 	Follow On Twitter Section
+ */
+a.profile_follow_img {
+	display: block;
+	width: 310px;
+	height: 60px;
+	background: url('../images/follow_on_twitter.png') no-repeat center center;
+	margin: 0 auto;
+}
+
+a.profile_follow_img:hover {
+	display: block;
+	width: 310px;
+	height: 60px;
+	background: url('../images/follow_on_twitter_hover.png') no-repeat center center;
+	margin: 0 auto;
+}
+
+/*
+ *	Forecast Cards
+ */
+.forecast_card {
+	display: block;
+	padding: 5px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	box-shadow: 0 1px 2px #999;
+	margin-bottom: 10px;
+}
+
+.forecast_card h3 {
+	color: #666;
+	border-bottom: 1px solid #ccc;
+	margin: 1px 5px;
+}
+
+.forecast_timestamp {
+	color: #ccc;
+	float: right;
+	display: inline-block;
+	line-height: 1.5em;
+	font-size: 0.75em;
+	vertical-align: middle;
+	text-align: right;
+}
+
+.forecast_statement {
+	color: #333;
+	text-align: left;
+	vertical-align: top;
+	line-height: 1.5em;
+	font-size: 1em;
+	display: block;
+	padding: 10px;
+}
+
+.forecast_statement a {
+	font-size: 0.8em;
+	text-decoration: none;
+	color: #333;
+}
+
+.forecast_statement a:hover {
+	text-decoration: underline;
+}
+
+/*
+ * 	Subscribed Offices
+ */
+
+.nws_offices_wrapper_profile {
+	width: 90%;
+	margin: 10px auto;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 5px;
+	vertical-align: top;
+	display: block;
+}
+
+.nws_offices_wrapper_profile h3 {
+	color: #666;
+	border-bottom: 1px solid #ccc;
+	margin: 0 5px 10px;
+}
+
+.nws_office_city_profile {
+	display: inline-block;
+	border-radius: 15px;
+	line-height: 30px;
+	border: 1px solid #fff;
+	cursor: default;
+	padding: 0 10px;
+	margin: 2px auto;
+}
+
+.nws_office_city_profile:hover {
+	border: 1px solid #ccc;
+	background-color: #fff;
+}
+
+/*
+ *	Office List Modal
+ */
+h2.office_list {
+	display: block;
+	margin: 10px 15px;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+}
+
+.office_list_instructions {
+	text-align: center;
+}
+
+/*
+ *	Disconnect Modal
+ */
+
+#disconnect_dialog {
+	text-align: left;
+}
+
+.alert_icon {
+	width: 48px;
+	height: 48px;
+	float: left;
+	background: url('../images/alert_icon.png') no-repeat center center;
+	display: block;
+	margin-right: 10px;
+}

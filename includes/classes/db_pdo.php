@@ -15,23 +15,17 @@
 		public $db = null;
 		public $query = null;
 		public $results = array();
-		private $database = '';
 
 		/**
 		 * Construct method
-		 *
-		 * @param string|null $db_name Database Name override
 		 */
-		public function __construct($db_name = null) {
+		public function __construct() {
 
 			// Get the connection info from the .ini file
 			$conn_info = parse_ini_file("./connection_info.ini", true);
 
-			// Set the object's database property if overriden in construct
-			$this->database = (is_null($db_name)) ? $conn_info['db']['database'] : $db_name;
-
 			// Create the database connection with attributes
-			$this->db = new PDO('mysql:host='.$conn_info['db']['hostname'].';dbname='.$this->database.';charset=utf8', $conn_info['db']['username'], $conn_info['db']['password']);
+			$this->db = new PDO('mysql:host=' . $conn_info['db']['hostname'] . ';dbname=' . $conn_info['db']['database'] . ';charset=utf8', $conn_info['db']['username'], $conn_info['db']['password']);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		}
@@ -110,18 +104,18 @@
 			 * Execute in a loop, and commit the transaction.
 			 */
 			$u_value_str = $update_str = $criteria_str = array();
-			foreach($fv_pairs as $f => $v) {
-				$u_value_str[$f] = ':'.$f;
-				$update_str[$f] = $f.'=:'.$f;
+			foreach ($fv_pairs as $f => $v) {
+				$u_value_str[$f] = ':' . $f;
+				$update_str[$f] = $f . '=:' . $f;
 			}
 
 			$c_value_str = $criteria_str = array();
-			foreach($criteria_pairs as $criteria) {
+			foreach ($criteria_pairs as $criteria) {
 				$f = $criteria['field'];
 				$o = $criteria['op'];
 
-				$c_value_str[$f.'_c'] = ':'.$f.'_c';
-				$criteria_str[$f.'_c'] = $f.$o.':'.$f.'_c';
+				$c_value_str[$f . '_c'] = ':' . $f . '_c';
+				$criteria_str[$f . '_c'] = $f . $o . ':' . $f . '_c';
 			}
 
 			$results = false;
@@ -139,19 +133,19 @@
 				$this->query = $this->db->prepare($sql);
 
 				// loop through to bind the variable variable name for each field
-				foreach($u_value_str as $f => $v) {
+				foreach ($u_value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
-				foreach($c_value_str as $f => $v) {
+				foreach ($c_value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
 
 				// loop through to assign the variable variable's value
-				foreach($fv_pairs as $f => $v) {
+				foreach ($fv_pairs as $f => $v) {
 					$$f = $v; // set the variable variable
 				}
-				foreach($criteria_pairs as $criteria) {
-					$f = $criteria['field'].'_c';
+				foreach ($criteria_pairs as $criteria) {
+					$f = $criteria['field'] . '_c';
 					$$f = $criteria['value']; // set the variable variable
 				}
 				$this->query->execute(); // execute the replace query
@@ -160,7 +154,7 @@
 				$this->db->commit();
 				// return # rows affected
 				$results = $this->db->lastInsertId();
-			} catch(PDOException $e) {
+			} catch (PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
 			}
@@ -184,11 +178,11 @@
 			// Build the field assignment strings
 			$field_str = $value_str = array();
 			$criteria = array();
-			foreach($fv_pairs as $f => $v) {
+			foreach ($fv_pairs as $f => $v) {
 
-				$criteria[$f] = $f.'=:'.$f;
+				$criteria[$f] = $f . '=:' . $f;
 				$field_str[$f] = $f;
-				$value_str[$f] = ':'.$f;
+				$value_str[$f] = ':' . $f;
 			}
 
 			$results = false;
@@ -204,11 +198,11 @@
 				$this->query = $this->db->prepare($sql);
 
 				// loop through to bind the variable variable name for each field
-				foreach($value_str as $f => $v) {
+				foreach ($value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
 				// loop through to assign the variable variable's value, and execute
-				foreach($fv_pairs as $f => $v) {
+				foreach ($fv_pairs as $f => $v) {
 					$$f = $v; // set the variable variable
 				}
 				$this->query->execute(); // execute the replace query
@@ -217,7 +211,7 @@
 				$this->db->commit();
 				// return # rows affected
 				$results = true;
-			} catch(PDOException $e) {
+			} catch (PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
 			}
@@ -277,9 +271,9 @@
 		private function modify_single($sql, $table, $fv_pairs) {
 			// Build the field assignment strings
 			$field_str = $value_str = array();
-			foreach($fv_pairs as $f => $v) {
+			foreach ($fv_pairs as $f => $v) {
 				$field_str[$f] = $f;
-				$value_str[$f] = ':'.$f;
+				$value_str[$f] = ':' . $f;
 			}
 
 			$results = false;
@@ -296,11 +290,11 @@
 				$this->query = $this->db->prepare($sql);
 
 				// loop through to bind the variable variable name for each field
-				foreach($value_str as $f => $v) {
+				foreach ($value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
 				// loop through to assign the variable variable's value, and execute
-				foreach($fv_pairs as $f => $v) {
+				foreach ($fv_pairs as $f => $v) {
 					$$f = $v; // set the variable variable
 				}
 				$this->query->execute(); // execute the replace query
@@ -309,7 +303,7 @@
 				$this->db->commit();
 				// return # rows affected
 				$results = $this->db->lastInsertId($this->return_id_column($table));
-			} catch(PDOException $e) {
+			} catch (PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
 			}
@@ -320,10 +314,10 @@
 		private function modify_multiple($sql, $table, $fv_pairs_array) {
 			// Build the field assignment strings
 			$field_str = $value_str = array();
-			foreach($fv_pairs_array as $fv_pairs) {
-				foreach($fv_pairs as $f => $v) {
+			foreach ($fv_pairs_array as $fv_pairs) {
+				foreach ($fv_pairs as $f => $v) {
 					$field_str[$f] = $f;
-					$value_str[$f] = ':'.$f;
+					$value_str[$f] = ':' . $f;
 				}
 			}
 			$results = 0;
@@ -340,12 +334,12 @@
 				$this->query = $this->db->prepare($sql);
 
 				// loop through to bind the variable variable name for each field
-				foreach($value_str as $f => $v) {
+				foreach ($value_str as $f => $v) {
 					$this->query->bindParam($v, $$f); // Intentional variable variable
 				}
 				// loop through to assign the variable variable's value, and execute
-				foreach($fv_pairs_array as $fv_pairs) {
-					foreach($fv_pairs as $f => $v) {
+				foreach ($fv_pairs_array as $fv_pairs) {
+					foreach ($fv_pairs as $f => $v) {
 						$$f = $v; // set the variable variable
 					}
 					$this->query->execute(); // execute the replace query
@@ -353,7 +347,7 @@
 				}
 				// attempt to commit the transaction
 				$this->db->commit();
-			} catch(PDOException $e) {
+			} catch (PDOException $e) {
 				$this->db->rollBack();
 				echo $e->getMessage();
 			}
@@ -363,8 +357,8 @@
 
 		private function return_id_column($table) {
 			$name = '';
-			switch($table) {
-				case TABLE_REPORTS:
+			switch ($table) {
+				case TABLE_OUTLOOKS:
 					$name = 'id';
 					break;
 				case TABLE_USERS:

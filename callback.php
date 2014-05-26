@@ -40,12 +40,6 @@
 	/* If HTTP response is 200 continue otherwise send to connect page to retry */
 	if (200 == $connection->http_code) {
 		/* The user has been verified and the access tokens can be saved for future use */
-//		$db = new db_pdo();
-//		$fv_pairs = array(
-//			'oauth_token' => get_array_value($access_token, 'oauth_token'),
-//			'oauth_token_secret' => get_array_value($access_token, 'oauth_token_secret')
-//		);
-//		$db->update(SQL_REPLACE_GENERIC, TABLE_USERS, $fv_pairs);
 
 		$_SESSION['access_token'] = $access_token;
 		$_SESSION['status'] = 'verified';

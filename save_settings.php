@@ -32,7 +32,7 @@
 	// Did the user want to follow and aren't already following?
 	$is_following = $relation_result->relationship->source->followed_by;
 	$can_dm = $relation_result->relationship->source->can_dm;
-	if($agree_to_follow == 'on' && !$is_following) {
+	if ($agree_to_follow == 'on' && !$is_following) {
 		// Create the follow on twitter's side
 		$friend_result = $connection->post('friendships/create', array('screen_name' => 'noaaalerts'));
 		$is_following = (strtolower($friend_result->screen_name) == 'noaaalerts') ? 1 : 0; // Test the result for db storage
@@ -43,7 +43,7 @@
 			array('field' => 'id', 'op' => '=', 'value' => $user_id)
 		);
 		$db->update(TABLE_USERS, $update_pairs, $criteria_pairs);
-	} else if($agree_to_follow == 'off' && !$can_dm) {
+	} else if ($agree_to_follow == 'off' && !$can_dm) {
 		// They didn't want to follow, but we can't DM them, so error message
 		$_SESSION['msg']['error'][] = "@NOAAalerts is unable to DM your account. Please mark the \"Agree to Follow @NOAAalerts\" checkbox, or change your twitter Public DM settings.";
 	}
@@ -55,34 +55,34 @@
 
 	// Update Offices for the User in the database
 	$office_ids = array();
-	if(!empty($offices)) {
+	if (!empty($offices)) {
 		$params = array();
-		foreach($offices as $office) {
+		foreach ($offices as $office) {
 			$params[] = array(
-				'office_id' => $office,
-				'user_id'   => $user_id
+				USERS_OFFICES_OFFICE_ID => $office,
+				USERS_OFFICES_USER_ID   => $user_id
 			);
 
 			$office_ids[] = $office; // For the test DM later
 		}
 
 		// Clear old settings, and add new settings
-		$db->delete(TABLE_USERS_OFFICES, array('user_id' => $user_id));
+		$db->delete(TABLE_USERS_OFFICES, array(USERS_ID => $user_id));
 		$db->replace_multiple(TABLE_USERS_OFFICES, $params);
 	}
 
 	// Send a test "Welcome" DM with the offices the user is configured to get alerts for
 	$received_dm = false;
-	if($can_dm) {
+	if ($can_dm) {
 		// Change context to the twitter app id
 		$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $t->access_token, $t->access_token_secret);
 		// Attempt to DM the user with a status update
-		$dm_result = $connection->post('direct_messages/new', array('text' => 'You will now receive StormSpotter Activation forecasts from the NWS office'.(count($office_ids) > 1 ? 's' : '').' in: '.implode(', ', $office_ids), 'user_id' => $user_id));
+		$dm_result = $connection->post('direct_messages/new', array('text' => 'You will now receive Storm Spotter Activation forecasts from the NWS office' . (count($office_ids) > 1 ? 's' : '') . ' in: ' . implode(', ', $office_ids), 'user_id' => $user_id));
 
 		// Show message if failed to send DM
 		$received_dm = ($dm_result->id) ? true : false;
-		if(!$received_dm) {
-			$_SESSION['msg']['info'][] = "We were unable to send a \"Welcome\" test Direct Message at this time. Your information is stored, and you should still receive StormSpotter Activation forecasts.";
+		if (!$received_dm) {
+			$_SESSION['msg']['info'][] = "We were unable to send a \"Welcome\" test Direct Message at this time. Your information is stored, and you should still receive Storm Spotter Activation forecasts.";
 		} else {
 			$_SESSION['msg']['success'][] = "You should receive a Direct Message shortly confirming your settings. Thanks!";
 		}

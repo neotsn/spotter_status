@@ -1,0 +1,66 @@
+<header id="header">
+	<span class="header_headline">SKYWARN Storm Spotter Status</span>
+	<span class="header_profile">
+		<img src="{IMG_USER_PROFILE}" class="header_profile_img align_left"/>
+		<span class="header_profile_name">@{TXT_USER_SCREEN_NAME}</span>
+		<span class="header_profile_logout"><a href="clearsessions.php">{TXT_LOGOUT_USER}</a></span>
+	</span>
+</header>
+<section id="header_image"></section>
+<section id="profile">
+	<div class="header_border">&nbsp;</div>
+	{TXT_MSGS}
+	<table class="profile_wrapper">
+		<tr>
+			<td class="profile_left">
+				<h2><img src="{IMG_USER_PROFILE}" class="profile_img align_left"/>@{TXT_USER_SCREEN_NAME}</h2>
+
+				<div class="profile_list_wrapper">
+					<h4>Connection Status</h4>
+					<ul class="profile_connections">
+						<li class="{TXT_RELATIONSHIP_STATUS}">Following @NOAAalerts</li>
+						<li class="{TXT_DM_STATUS}">Reachable by DM</li>
+					</ul>
+				</div>
+				<div class="profile_list_wrapper">
+					<h4>Profile Menu</h4>
+					<ul class="profile_menu">
+						<li id="edit_offices" data-userid="{TXT_USER_ID}">Edit Offices</li>
+						<li><a href="clearsessions.php">Logout</a></li>
+					</ul>
+				</div>
+				<div id="offices_dialog" style="display: none;"></div>
+			</td>
+			<td class="profile_mid">
+				{TXT_CONNECTION_MESSAGE}
+				<!-- IF {B_NO_RELATIONSHIP} -->
+				<h2>Follow @NOAAalerts on Twitter</h2>
+
+				<p class="profile_instructions">For the service to send your Direct Messages, you'll need to follow
+					@NOAAalerts on twitter. Don't worry though, we'll take care of the follow for you if you click the
+					link below.</p>
+				<a href="ajax_handler.php?mode=followOnTwitter&user_id={TXT_USER_ID}" class="profile_follow_img"></a>
+				<!-- ENDIF -->
+				<h2>Latest Storm Spotter Forecasts</h2>
+				{TXT_SPOTTER_FORECAST_CARDS}
+			</td>
+			<td class="profile_right">
+				<h2>Your Offices</h2>
+				{TXT_SUBSCRIBED_OFFICES}
+			</td>
+		</tr>
+		<tr>
+			<td class="profile_footer" colspan="3">
+				<span id="disconnect_service" class="profile_discrete"
+					  data-userid="{TXT_USER_ID}">Disconnect Service</span>
+
+				<div id="disconnect_dialog" style="display: none;">
+					<span class="alert_icon"></span>
+					<span class="disconnect_confirmation">This will unfollow @NOAAalerts and delete your settings & credentials from the database. Are you sure?</span>
+				</div>
+				<span class="profile_footer_info">This service checks for new Hazardous Weather Outlook reports every 15 minutes.</span>
+			</td>
+		</tr>
+	</table>
+	<script>monitor_profile_links();</script>
+</section>

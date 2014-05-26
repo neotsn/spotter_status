@@ -6,6 +6,7 @@
 	 * Time: 6:29 PM
 	 */
 
+	session_start();
 	define('PATH_ROOT', './');
 	require_once('config.php');
 
@@ -13,91 +14,149 @@
 	$mode = get_request('mode', '');
 	$submode = get_request('submode', '');
 	$office = get_request('nws_office', '');
+	$user_id = get_request('user_id', '');
+	$offices = get_request('offices', array());
+
+	$db = new db_pdo();
 
 	// Toggle the mode
-	switch($mode) {
-		case 'getOutlook':
-			// Build the URL
-			$url = "http://forecast.weather.gov/product.php?site=NWS&issuedby=$office&product=HWO&format=txt&version=1&glossary=0";
-			// Grab the page
-			$web = new php_web();
-			$response = $web->get_url_reponse($url);
+	switch ($mode) {
+		case 'disconnectService':
+			$user = new user($user_id);
+			$user->validate_user_session();
 
-			// Strip out the contents inside the <pre> tags and get the $data
-			preg_match_all(REGEX_HWO_REPORT, $response, $data, PREG_PATTERN_ORDER);
+			// Destroy the friendship
+			$t = new twitter_connection_info();
 
-			// pull out the inner text, create the $outlook
-			$orig_outlook = $data[1][0];
+			// Connect from the user's perspective...
+			$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $user->oauth_token, $user->oauth_token_secret);
+			$connection->post('friendships/destroy', array('screen_name' => 'noaaalerts'));
 
-			// Hash it to see if it has changed
-			$hash = md5($orig_outlook);
+			// Delete the user
+			$db->delete(TABLE_USERS_OFFICES, array(USERS_OFFICES_USER_ID => $user->id)); // Cleanup Office Associations
+			$db->delete(TABLE_USERS, array(USERS_ID => $user->id));
 
-			// flatten it into a single line of text
-			$outlook = preg_replace('/\s+/', ' ', $orig_outlook);
+			unset($user);
+			header('Location: ./clearsessions.php');
+			break;
+		case 'followOnTwitter':
+			$user = new user($user_id);
+			$user->validate_user_session();
 
-			preg_match_all(REGEX_TIMESTAMP, $outlook, $ts, PREG_PATTERN_ORDER);
-			$hrmin = ((strlen($ts[1][0]) > 3) ? substr($ts[1][0], 0, 2) : substr($ts[1][0], 0, 1)).':'.substr($ts[1][0], -2);
-			$time = strtotime($hrmin.' '.$ts[2][0].' '.$ts[3][0].' '.$ts[5][0].' '.$ts[6][0].' '.$ts[7][0]);
+			// Destroy the friendship
+			$t = new twitter_connection_info();
 
-			// extract the county list for the outlook and spool into county array
-			preg_match_all(REGEX_COUNTY_LIST, $outlook, $county_data, PREG_PATTERN_ORDER);
-			$counties = array();
-			foreach($county_data[1] as $c_data) {
-				$counties = array_merge($counties, explode('-', $c_data));
+			// Connect from the user's perspective...
+			$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $user->oauth_token, $user->oauth_token_secret);
+
+			// Get the relationship status
+			$relation_result = $connection->get('friendships/show', array('source_id' => $t->app_twitter_id, 'target_id' => $user->id));
+
+			// Did the user want to follow and aren't already following?
+			$is_following = $relation_result->relationship->source->followed_by;
+			$can_dm = $relation_result->relationship->source->can_dm;
+			if (!$is_following) {
+				// Create the follow on twitter's side
+				$friend_result = $connection->post('friendships/create', array('screen_name' => 'noaaalerts'));
+				$is_following = (strtolower($friend_result->screen_name) == 'noaaalerts') ? 1 : 0; // Test the response
+
+				// Update the follower status in the database
+				$update_pairs = array(USERS_IS_FOLLOWER => 1);
+				$criteria_pairs = array(
+					array('field' => USERS_ID, 'op' => '=', 'value' => $user_id)
+				);
+				$db->update(TABLE_USERS, $update_pairs, $criteria_pairs);
 			}
-			sort(array_unique($counties)); // Sort and unique it
 
-			// extract the spotter information statement
-			preg_match_all(REGEX_SPOTTER_STATEMENT, $outlook, $spotter_statement, PREG_PATTERN_ORDER);
+			// Run the relationship check again to confirm
+			$relation_result = $connection->get('friendships/show', array('source_id' => $t->app_twitter_id, 'target_id' => $user->id));
+			$is_following = $relation_result->relationship->source->followed_by;
+			$can_dm = $relation_result->relationship->source->can_dm;
 
-			// pull out the inner text, create the statement
-			$statement = $spotter_statement[1][0];
+			if (!$is_following) {
+				$_SESSION['msg']['error'][] = "Attempted to follow @NOAAalerts, but failed. Please try again.";
+			} else {
+				$_SESSION['msg']['success'][] = "Success! You are now following @NOAAalerts on Twitter.";
+				if (!$can_dm) {
+					$_SESSION['msg']['info'][] = "Uh-oh! While you are a @NOAAalerts follower, we are unable to DM you. Are we blocked?";
+				}
+			}
 
-			// Prepare to write it all to the database
-			$db = new db_pdo();
-			$result = $db->query(SQL_SELECT_REPORT_BY_HASH, array($hash));
+			header("Location: ./profile.php");
+			break;
+		case 'saveOfficelist':
+			$users_offices_params = array();
+			$cron_check_params = array();
+			$office_ids = array();
 
-			if(!count($result)) {
-				// Update the county list
-				$params = array();
-				foreach($counties as $county) {
-					$params[] = array(
-						'office_id'   => $office,
-						'county_name' => trim($county)
+			// If offices were sent, spool them
+			if (!empty($offices)) {
+				foreach ($offices as $office) {
+					$users_offices_params[] = array(
+						USERS_OFFICES_OFFICE_ID => $office,
+						USERS_OFFICES_USER_ID   => $user_id
+					);
+
+					$cron_check_params[] = array(
+						CRON_OFFICES_ID => $office
 					);
 				}
-				$counties_updated = $db->replace_multiple(TABLE_COUNTIES, $params);
-
-				// Add this office to the list of reports to check for with CRON
-				$params = array(
-					'office_id' => $office
-				);
-				$db->replace(TABLE_CRON_OFFICE_CHECK, $params);
-
-				// Save the report
-				$params = array(
-					'office_id'        => $office,
-					'report_hash'      => $hash,
-					'report_text'      => $orig_outlook,
-					'report_timestamp' => $time
-				);
-				$outlook_id = $db->insert(TABLE_REPORTS, $params);
-
-				// Update the spotter status for this report - should never update
-				$params = array(
-					'office_id'       => $office,
-					'report_id'       => $outlook_id,
-					'spotter_message' => $statement
-				);
-				$db->replace(TABLE_SPOTTER_STATUS, $params);
 			}
 
-			// Get the Office City
-			$db->query(SQL_SELECT_ALL_FROM_OFFICE_BY_ID, array($office));
-			$office_row = $db->get_next();
+			// Clear old settings, and add new settings, if any
+			$db->delete(TABLE_USERS_OFFICES, array(USERS_OFFICES_USER_ID => $user_id));
+			if (!empty($users_offices_params)) {
+				$db->replace_multiple(TABLE_USERS_OFFICES, $users_offices_params);
+			}
 
-			ob_clean();
-			echo 'For the National Weather Service office serving the ', ucwords($office_row['city']), ', ', strtoupper($office_row['state']), ' area: <br />', ucwords($statement);
-			exit;
+			// Update CRON check
+			$db->replace_multiple(TABLE_CRON_OFFICE_CHECK, $cron_check_params);
+
+			break;
+		case 'getOfficelist':
+			$user = new user($user_id);
+			$user->validate_user_session();
+
+			$selected = $user->get_users_office_ids();
+
+			// Fetch all the offices
+			$office_rows = $db->query(SQL_SELECT_ALL_FROM_OFFICES);
+
+			// Group them by state
+			$offices_array = array();
+			foreach ($office_rows as $office_row) {
+				$offices_array[$office_row[OFFICES_STATE]][$office_row[OFFICES_ID]] = $office_row[OFFICES_CITY];
+			}
+
+			// Generate the templates for each state
+			$states_html = '';
+			foreach ($offices_array as $state => $city_data) {
+
+				$cities_html = '';
+				foreach ($city_data as $office_id => $city) {
+					$city_template = new template('office_cities', false, false);
+					$city_template->set_template_vars(array(
+						'TXT_OFFICE_ID'         => $office_id,
+						'TXT_OFFICE_CITY'       => $city,
+						'TXT_OFFICE_CITY_CLASS' => (isset($selected[$office_id])) ? 'nws_office_city_selected' : 'nws_office_city',
+						'I_OFFICE_PRESELECTED'  => (isset($selected[$office_id])) ? '<input type="hidden" value="' . $office_id . '" name="offices[' . $office_id . ']" />' : ''
+					));
+					$cities_html .= $city_template->compile();
+				}
+
+				$state_template = new template('office_states', false, false);
+				$state_template->set_template_vars(array(
+					'TXT_OFFICE_STATE'  => $state,
+					'TXT_OFFICE_CITIES' => $cities_html
+				));
+				$states_html .= $state_template->compile();
+			}
+
+			$template = new template('office_list', false, false);
+			$template->set_template_vars(array(
+				'TXT_STATE_OFFICE_LIST' => $states_html
+			));
+			$template->display();
+
 			break;
 	}

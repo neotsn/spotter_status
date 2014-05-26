@@ -15,7 +15,7 @@
 	require_once('config.php');
 
 	// If access tokens are not available redirect to connect page.
-	if(empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
+	if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
 		// Lost the access token in session somehow, destroy and start again
 		header('Location: ./clearsessions.php');
 	}
@@ -37,21 +37,23 @@
 
 	// Did the user want to follow and aren't already following?
 	$is_following = $relation_result->relationship->source->followed_by;
+	$can_dm = $relation_result->relationship->source->can_dm;
 
 	// Compile the user's data for database entry
-	$sid = sha1($access_token['oauth_token'].$access_token['oauth_token_secret'].time().$content->screen_name);
+	$sid = sha1($access_token['oauth_token'] . $access_token['oauth_token_secret'] . time() . $content->screen_name);
 	$sid_expire = time() + (86400 * 7); // 7 days from now
 
 	$user_params = array(
-		'id'                      => $content->id,
-		'screen_name'             => $content->screen_name,
-		'name'                    => $content->name,
-		'profile_image_url_https' => $content->profile_image_url_https,
-		'oauth_token'             => $access_token['oauth_token'],
-		'oauth_token_secret'      => $access_token['oauth_token_secret'],
-		'sid'                     => $sid,
-		'sid_expire'  => $sid_expire,
-		'is_follower' => ($is_following) ? 1 : 0
+		USERS_ID                      => $content->id,
+		USERS_SCREEN_NAME             => $content->screen_name,
+		USERS_NAME                    => $content->name,
+		USERS_PROFILE_IMAGE_URL_HTTPS => $content->profile_image_url_https,
+		USERS_OAUTH_TOKEN             => $access_token['oauth_token'],
+		USERS_OAUTH_TOKEN_SECRET      => $access_token['oauth_token_secret'],
+		USERS_SID                     => $sid,
+		USERS_SID_EXPIRE              => $sid_expire,
+		USERS_IS_FOLLOWER             => ($is_following) ? 1 : 0,
+		USERS_CAN_DM                  => ($can_dm) ? 1 : 0
 	);
 
 	// Update the user's database entry with the new info
@@ -63,11 +65,4 @@
 	$_SESSION['userid'] = $content->id;
 
 	// Send back to index for configuration options with session set
-	header('Location: ./index.php');
-
-	/* Some example calls */
-	//$connection->get('users/show', array('screen_name' => 'abraham'));
-	//$connection->post('statuses/update', array('status' => date(DATE_RFC822)));
-	//$connection->post('statuses/destroy', array('id' => 5437877770));
-	//$connection->post('friendships/create', array('id' => 9436992));
-	//$connection->post('friendships/destroy', array('id' => 9436992));
+	header('Location: ./profile.php');

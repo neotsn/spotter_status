@@ -24,7 +24,12 @@
 			$this->filename = $filename;
 
 			if ($addHeader) {
-				$this->htmlout .= file_get_contents(PATH_TEMPLATES . 'header.html');
+				// Special handling for per-page css
+				$header = new template('header', false, false);
+				$header->set_template_vars(array(
+					'CSS_SPECIFIC' => (file_exists(PATH_CSS . $filename . '.css')) ? '<link rel="stylesheet" type="text/css" href="' . PATH_CSS . $filename . '.css">' : ''
+				));
+				$this->htmlout .= $header->compile();
 			}
 			$this->htmlout .= file_get_contents(PATH_TEMPLATES . $this->filename . '.html');
 			if ($addFooter) {
@@ -74,18 +79,29 @@
 		}
 
 		private function parse_template($template_html) {
+
+			// Includes
 			preg_match_all(REGEX_TEMPLATE_INCLUDE, $template_html, $includes, PREG_PATTERN_ORDER);
 
 			if(!empty($includes[0])) {
-				$x = 0;
-				foreach($includes[1] as $template_filename) {
+				foreach ($includes[1] as $x => $template_filename) {
 					if(file_exists(PATH_TEMPLATES.$template_filename)) {
 						$template_data = file_get_contents(PATH_TEMPLATES.$template_filename);
 						$template_html = str_replace($includes[0][$x], $this->parse_template($template_data), $template_html);
 					}
-					$x++;
 				}
 			}
+
+			// IF statements
+			preg_match_all('/<!-- IF ([{\w}]+)? -->(.*)<!-- ENDIF -->/ms', $template_html, $ifs, PREG_PATTERN_ORDER);
+
+			if (!empty($ifs[0])) {
+				foreach ($ifs[1] as $x => $b_key) {
+					$replacement = (isset($this->template_vars[$b_key]) && ($this->template_vars[$b_key])) ? $ifs[2][$x] : '';
+					$template_html = preg_replace('/<!-- IF ' . $b_key . ' -->(.*)<!-- ENDIF -->/ms', $replacement, $template_html);
+				}
+			}
+
 			return $template_html;
 		}
 	}

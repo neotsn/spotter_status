@@ -33,7 +33,7 @@
 		public function process_outlooks() {
 			preg_match_all(REGEX_HWO_REPORT, $this->response, $data, PREG_PATTERN_ORDER);
 
-			foreach($data[1] as $outlook) {
+			foreach ($data[1] as $outlook) {
 				$flat_outlook = preg_replace('/\s+/', ' ', $outlook);
 				$thisOutlookHash = md5($outlook);
 
@@ -51,17 +51,17 @@
 		 * @return int
 		 */
 		public function does_report_hash_exist($db) {
-			$result = $db->query(SQL_SELECT_REPORT_BY_HASH, array($this->hash));
+			$result = $db->query(SQL_SELECT_OUTLOOK_BY_HASH, array($this->hash));
 			return count($result);
 		}
 
 		public function prepare_message($statement, $office_id) {
-			$statement = (strlen($statement > 114)) ? substr($statement, 0, 111).'...' : $statement;
+			$statement = (strlen($statement > 114)) ? substr($statement, 0, 111) . '...' : $statement;
 			$statement = ucfirst(strtolower($statement));
 
 			$this->build_url($office_id);
 
-			return $office_id.': '.$statement.' '.$this->url;
+			return $office_id . ': ' . $statement . ' ' . $this->url;
 		}
 
 		/**
@@ -70,53 +70,53 @@
 		public function save_outlooks($db) {
 			// Process the county list...
 			$params = array();
-			foreach($this->counties as $county) {
+			foreach ($this->counties as $county) {
 				$params[] = array(
-					'office_id'   => $this->office_id,
-					'county_name' => trim($county)
+					COUNTIES_OFFICE_ID => $this->office_id,
+					COUNTIES_NAME      => trim($county)
 				);
 			}
 			$db->replace_multiple(TABLE_COUNTIES, $params);
 
 			// Update the Offices list
 			$params = array(
-				'office_id'  => $this->office_id,
-				'last_check' => time()
+				CRON_OFFICES_ID         => $this->office_id,
+				CRON_OFFICES_LAST_CHECK => time()
 			);
 			$db->replace(TABLE_CRON_OFFICE_CHECK, $params);
 
 			// Save the outlooks
-			foreach($this->outlooks as $key => $outlook) {
+			foreach ($this->outlooks as $key => $outlook) {
 				$params = array(
-					'office_id'        => $this->office_id,
-					'report_hash'      => $this->hash,
-					'report_text'      => $this->original_outlooks[$key],
-					'report_timestamp' => $this->timestamps[$key]
+					OUTLOOKS_OFFICE_ID => $this->office_id,
+					OUTLOOKS_HASH      => $this->hash,
+					OUTLOOKS_TEXT      => $this->original_outlooks[$key],
+					OUTLOOKS_TIMESTAMP => $this->timestamps[$key]
 				);
-				$outlook_id = $db->insert(TABLE_REPORTS, $params);
+				$db->insert(TABLE_OUTLOOKS, $params);
 
 				// Update the spotter status for this report - should never update
 				$params = array(
-					'office_id'       => $this->office_id,
-					'report_id'       => $outlook_id,
-					'spotter_message' => $this->statements[$key]
+					STATEMENTS_OFFICE_ID    => $this->office_id,
+					STATEMENTS_MESSAGE      => implode(' | ', $this->statements[$key]),
+					STATEMENTS_LAST_OUTLOOK => $this->timestamps[$key]
 				);
-				$db->replace(TABLE_SPOTTER_STATUS, $params);
+				$db->replace(TABLE_STATEMENTS, $params);
 			}
 		}
 
 		private function extract_timestamp($outlook) {
 			preg_match_all(REGEX_TIMESTAMP, $outlook, $ts, PREG_PATTERN_ORDER);
 
-			$hrmin = ((strlen($ts[1][0]) > 3) ? substr($ts[1][0], 0, 2) : substr($ts[1][0], 0, 1)).':'.substr($ts[1][0], -2);
-			return strtotime($hrmin.' '.$ts[2][0].' '.$ts[3][0].' '.$ts[5][0].' '.$ts[6][0].' '.$ts[7][0]);
+			$hrmin = ((strlen($ts[1][0]) > 3) ? substr($ts[1][0], 0, 2) : substr($ts[1][0], 0, 1)) . ':' . substr($ts[1][0], -2);
+			return strtotime($hrmin . ' ' . $ts[2][0] . ' ' . $ts[3][0] . ' ' . $ts[5][0] . ' ' . $ts[6][0] . ' ' . $ts[7][0]);
 		}
 
 		private function extract_counties($outlook) {
 			preg_match_all(REGEX_COUNTY_LIST, $outlook, $county_data, PREG_PATTERN_ORDER);
 
 			$counties = array();
-			foreach($county_data[1] as $c_data) {
+			foreach ($county_data[1] as $c_data) {
 				$counties = array_merge($counties, explode('-', $c_data));
 			}
 			return sort(array_unique($counties)); // Sort and unique it
@@ -126,7 +126,7 @@
 			preg_match_all(REGEX_SPOTTER_STATEMENT, $outlook, $spotter_statement, PREG_PATTERN_ORDER);
 
 			$statements = array();
-			foreach($spotter_statement[1] as $statement) {
+			foreach ($spotter_statement[1] as $statement) {
 				$statements[] = $statement;
 			}
 			return $statements;

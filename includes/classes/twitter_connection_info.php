@@ -29,7 +29,7 @@
 		public function validate_consumer() {
 			$result = true;
 			if (!$this->consumer_key || !$this->consumer_secret) {
-				echo "Twitter API Key Validation Failed on StormSpotter Status End.";
+				echo "Twitter API Key Validation Failed on Storm Spotter Status End.";
 				exit;
 			}
 			return $result;
