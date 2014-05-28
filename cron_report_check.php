@@ -38,7 +38,7 @@
 					foreach($users_ids_to_notify as $user) {
 						foreach($outlook->statements as $statement) {
 							$dm_result = $connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
-							if(!empty($dm_result)) {
+							if(!empty($dm_result->errors)) {
 								$errors++;
 							}
 						}
