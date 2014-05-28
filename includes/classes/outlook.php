@@ -88,7 +88,7 @@
 		 * @return string Formatted text for Direct Message consumption
 		 */
 		public function prepare_message($statement, $office_id) {
-			$statement = (strlen($statement > 112)) ? substr($statement, 0, 109).'...' : $statement;
+			$statement = (strlen($statement) > 112) ? substr($statement, 0, 109).'...' : $statement;
 			$statement = ucfirst(strtolower($statement));
 
 			$this->build_url($office_id);
