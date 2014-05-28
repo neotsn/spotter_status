@@ -22,7 +22,7 @@
 		public function __construct() {
 
 			// Get the connection info from the .ini file
-			$conn_info = parse_ini_file("./connection_info.ini", true);
+			$conn_info = parse_ini_file("../../_private/connection_info.ini", true);
 
 			// Create the database connection with attributes
 			$this->db = new PDO('mysql:host=' . $conn_info['db']['hostname'] . ';dbname=' . $conn_info['db']['database'] . ';charset=utf8', $conn_info['db']['username'], $conn_info['db']['password']);
