@@ -21,11 +21,10 @@
 	$t = new twitter_connection_info();
 	// Set up a twitter connection for the app
 	$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $t->access_token, $t->access_token_secret);
-	//	$connection->post('statuses/update', array('status' => "@neotsn Checking for updated HWOs of selected NWS Offices #HWOCheck ".time())); // temporary cron check
 
 	$offices_to_check = $db->query(SQL_SELECT_ALL_FROM_OUTDATED_ACTIVE_CRON_OFFICES, array(time() - (60 * 30)));
 
-	$x = 0;
+	$errors = 0;
 	if(!empty($offices_to_check)) {
 		foreach($offices_to_check as $office) {
 
@@ -38,8 +37,10 @@
 				if(!empty($users_ids_to_notify)) {
 					foreach($users_ids_to_notify as $user) {
 						foreach($outlook->statements as $statement) {
-							$connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
-							$x++;
+							$dm_result = $connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
+							if(!empty($dm_result)) {
+								$errors++;
+							}
 						}
 					}
 				}
@@ -47,6 +48,7 @@
 		}
 	}
 
-	if($x) {
-		$connection->post('statuses/update', array('status' => "@neotsn Sent out $x notifications #HWOCheck ".time())); // temporary cron check
+	if($errors) {
+		$message = "There were errors posting direct messages.";
+		$connection->post('direct_messages/new', array('text' => $message, 'screen_name' => "neotsn"));
 	}
