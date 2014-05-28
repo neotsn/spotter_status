@@ -18,8 +18,8 @@ The process is simple:
 Once the user has authenticated and chosen their NWS Office locations, a CRON job runs every 15 minutes on the server (a constraint imposed by my webhost's TOS).
 
 Every 15 minutes, the CRON checks for NWS Office ids that were checked more than 30 minutes ago, and that are NWS Office ids currently assigned to a user.
-* New NWS Office locations will get a report generated within 15 minutes
-* Existing NWS Office locations will check for an update to their report within 30 minutes
+* New NWS Office locations will fetch the latest HWO within 15 minutes
+* Existing NWS Office locations will check for an update to their HWO within 30 minutes
 
 ###Outlook processing
 If new/updated HWOs are found:
@@ -29,7 +29,7 @@ If new/updated HWOs are found:
 3. A DB check is made for the hash and if none exists, the process continues
 4. The outlook is parsed for its printed timestamp, affected counties list, spotter activation statement
 5. All the pieces are then saved to the database.
-6. For every spotter activation statement, a Direct Message is issued to the users requesting reports for that NWS Office location
+6. For every spotter activation statement, a Direct Message is issued to the users requesting HWOs for that NWS Office location
 
 ##Contributing, Questions, Help
 This is my first publicly open-source project, and as such, I'm open to contributions. I am still fleshing out things like roadmap and all the various features of GitHub. If you have ideas, feature requests, or code enhancements, get in touch with me on twitter [@neotsn] [neotsn_twitter], or here, and we can discuss.
@@ -42,7 +42,7 @@ This SKYWARN Spotter Status service is copyright [thepizzy.net] [website].
 It is unaffiliated with the National Weather Service, National Oceanic and Atmospheric Administration, and SKYWARN.
 SKYWARN is a registered trademark of NOAA.
 
-The code offered in this repository is licensed under ["The MIT License"] [license];
+The code offered in this repository is licensed under ["The MIT License"] [license] ("the License");
 you may not use this software except in compliance with the License.
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
