@@ -8,10 +8,10 @@
 	 */
 	class template {
 
-		private $htmlout = '';
-
 		public $filename = '';
 		public $template_vars = array();
+
+		private $htmlout = '';
 
 		/**
 		 * Build the template for output
@@ -63,6 +63,11 @@
 			echo $this->htmlout;
 		}
 
+		/**
+		 * Prepares the html result, and returns (no echo)
+		 *
+		 * @return string HTML result
+		 */
 		public function compile() {
 			$this->build_template();
 			return $this->htmlout;
@@ -72,12 +77,18 @@
 		 * Replaces variables with html content and generates the html string
 		 */
 		private function build_template() {
-
 			$this->htmlout = $this->parse_template($this->htmlout);
-
 			$this->htmlout = strtr($this->htmlout, $this->template_vars);
 		}
 
+		/**
+		 * Recursive:
+		 * Handles INCLUDE and IF-ELSE statements inside template files
+		 *
+		 * @param string $template_html the template's HTML text to parse
+		 *
+		 * @return string Parsed HTML Result
+		 */
 		private function parse_template($template_html) {
 
 			// Includes
@@ -92,7 +103,7 @@
 				}
 			}
 
-			// IF statements
+			// IF-ELSE statements
 			preg_match_all(REGEX_TEMPLATE_CONDITIONS, $template_html, $ifs, PREG_PATTERN_ORDER);
 			if(!empty($ifs[0])) {
 				foreach($ifs[1] as $x => $b_key) {
@@ -100,13 +111,6 @@
 					$template_html = preg_replace('/<!-- IF '.$b_key.' -->(.+?)<!-- ENDIF -->/ms', $replacement, $template_html);
 				}
 			}
-
-			//			preg_match_all('/<!-- IF ([{\w}]+)? -->(.*)<!-- ENDIF -->/ms', $template_html, $ifs, PREG_PATTERN_ORDER);
-			//
-			//			if (!empty($ifs[0])) {
-			//				foreach ($ifs[1] as $x => $b_key) {
-			//					$replacement = (isset($this->template_vars[$b_key]) && ($this->template_vars[$b_key])) ? $ifs[2][$x] : '';
-			//					$template_html = preg_replace('/<!-- IF ' . $b_key . ' -->(.*)<!-- ENDIF -->/ms', $replacement, $template_html);
 
 			return $template_html;
 		}

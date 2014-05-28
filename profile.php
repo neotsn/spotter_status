@@ -100,7 +100,7 @@
 			foreach($msgs as $msg) {
 				$msg_template->set_template_vars(array(
 					'TXT_TYPE' => $type,
-					'TXT_MSG' => ucwords($type).': '.$msg
+					'TXT_MSG'  => ucwords($type).': '.$msg
 				));
 				$messages_html .= $msg_template->compile();
 			}
@@ -115,13 +115,12 @@
 		'TXT_LOGOUT_USER'            => 'Logout',
 		'TXT_SPOTTER_FORECAST_CARDS' => $forecast_cards_html,
 		'TXT_SUBSCRIBED_OFFICES'     => $subscribed_offices_html,
-		//		'TXT_CONNECTION_MESSAGE'     => (!empty($connection_errors)) ? implode("\n", $connection_errors) : '',
 		'TXT_RELATIONSHIP_STATUS'    => $follow_class,
 		'TXT_DM_STATUS'              => $dm_class,
 		'TXT_USER_ID'                => $user->id,
 		'TXT_MSGS'                   => $messages_html,
-		'B_NO_RELATIONSHIP'    => !$user->is_follower,
-		'B_HAS_OFFICES'        => $b_has_offices,
-		'B_HAS_FORECAST_CARDS' => $b_has_forecast_cards
+		'B_NO_RELATIONSHIP'          => !$user->is_follower,
+		'B_HAS_OFFICES'              => $b_has_offices,
+		'B_HAS_FORECAST_CARDS'       => $b_has_forecast_cards
 	));
 	$template->display();

@@ -30,18 +30,16 @@
 		foreach($offices_to_check as $office) {
 
 			$outlook = new outlook($office['office_id']);
-			$outlook->process_outlooks();
+			$outlook->process_outlook();
 			if(!$outlook->does_report_hash_exist()) {
-				$outlook->save_outlooks();
+				$outlook->save_outlook();
 
 				$users_ids_to_notify = $db->query(SQL_SELECT_USER_IDS_BY_OFFICE_ID, array($office['office_id']));
 				if(!empty($users_ids_to_notify)) {
 					foreach($users_ids_to_notify as $user) {
-						foreach($outlook->statements as $key => $statements) {
-							foreach($statements as $statement) {
-								$connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
-								$x++;
-							}
+						foreach($outlook->statements as $statement) {
+							$connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
+							$x++;
 						}
 					}
 				}
