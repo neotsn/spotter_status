@@ -1,5 +1,5 @@
 #SKYWARN Storm Spotter Status
-==============
+
 <img src="http://i1.wp.com/thepizzy.net/blog/wp-content/uploads/2014/05/skywarn_650.png?resize=300%2C300" alt="SKYWARN Logo by thepizzy.net" title="SKYWARN" align="right" />
  
 SKYWARN Storm Spotter Status provides updates with the latest "Spotter Activation Statement" from the National Weather Service's (NWS) Hazardous Weather Outlook (HWO) bulletins.
