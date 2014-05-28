@@ -5,6 +5,7 @@
 SKYWARN Storm Spotter Status provides updates with the latest "Spotter Activation Statement" from the National Weather Service's (NWS) Hazardous Weather Outlook (HWO) bulletins.
 
 The process is simple:
+
 1. Authenticate with your Twitter Account
 2. Follow @NOAAalerts on Twitter (user clicks button to act)
 3. Select NWS Office Locations to monitor for new HWOs
@@ -22,6 +23,7 @@ Every 15 minutes, the CRON checks for NWS Office ids that were checked more than
 
 ###Outlook processing
 If new/updated HWOs are found:
+
 1. They are first processed to remove excess whitespace triggering false updates
 2. A MD5 hash is generated from the cleansed outlook body text
 3. A DB check is made for the hash and if none exists, the process continues
