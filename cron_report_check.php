@@ -8,7 +8,8 @@
 
 	/**
 	 * @file
-	 * Checks for new HWO reports every
+	 * Checks for new HWO reports on scheduled basis;
+	 * Adds new reports when found, updates existing reports if older than 30 minutes
 	 * For twitter connection:
 	 *        Check if consumer token is set and if so send user to get a request token.
 	 */
