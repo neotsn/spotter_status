@@ -11,6 +11,7 @@
 	define('PATH_TEMPLATES', PATH_ROOT.'templates/');
 	define('PATH_CSS', PATH_ROOT.'css/');
 	define('PATH_CLASSES', PATH_ROOT.'includes/classes/');
+	define('PATH_CONNECTION_INFO', '../../_private/connection_info.ini');
 
 	// Tables
 	define('TABLE_COUNTIES', 'counties');

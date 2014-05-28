@@ -16,7 +16,7 @@
 		public $app_twitter_id = '';
 
 		public function __construct() {
-			$conn_info = parse_ini_file("./connection_info.ini", true);
+			$conn_info = parse_ini_file(PATH_CONNECTION_INFO, true);
 
 			$this->consumer_key = $conn_info['twitter']['CONSUMER_KEY'];
 			$this->consumer_secret = $conn_info['twitter']['CONSUMER_SECRET'];
