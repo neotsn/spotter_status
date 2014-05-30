@@ -59,6 +59,14 @@ img.skywarn_logo {
 	margin: 5px 10px 5px 5px;
 }
 
+.intro_content h3 {
+	color: #333;
+}
+
+a.splash_link {
+	color: #333;
+}
+
 /*
  *	Offices List
  */
@@ -165,4 +173,3 @@ span.overall_footer_msg {
 span.overall_footer_msg a {
 	color: #666;
 }
-
