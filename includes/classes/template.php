@@ -33,7 +33,12 @@
 			}
 			$this->htmlout .= file_get_contents(PATH_TEMPLATES.$this->filename.'.html');
 			if($addFooter) {
-				$this->htmlout .= file_get_contents(PATH_TEMPLATES.'footer.html');
+				$footer = new template('footer', false, false);
+				$footer->set_template_vars(array(
+					'VERSION_NUMBER' => VERSION,
+					'YEAR'           => date('Y')
+				));
+				$this->htmlout .= $footer->compile();
 			}
 		}
 

@@ -21,6 +21,7 @@
 		private $response = '';
 		private $timestamp = '';
 		private $url = '';
+		private $statement_hash = '';
 
 		/**
 		 * Fetches the outlook for the office_id provided
@@ -66,6 +67,9 @@
 
 			// Statements
 			$this->statements = $this->extract_spotter_statements($this->flat_outlook);
+
+			// Statement Hash
+			$this->statement_hash = md5(trim(preg_replace('/\s+/ms', ' ', implode('|', $this->statements))));
 		}
 
 		/**
@@ -73,9 +77,15 @@
 		 *
 		 * @return int Number of rows with hash in db
 		 */
-		public function does_report_hash_exist() {
+		public function does_outlook_hash_exist() {
 			global $db;
 			$result = $db->query(SQL_SELECT_OUTLOOK_BY_HASH, array($this->hash));
+			return count($result);
+		}
+
+		public function does_statement_hash_exist() {
+			global $db;
+			$result = $db->query(SQL_SELECT_STATEMENT_BY_HASH, array($this->statement_hash));
 			return count($result);
 		}
 
@@ -127,12 +137,17 @@
 				OUTLOOKS_TIMESTAMP => $this->timestamp
 			);
 			$db->insert(TABLE_OUTLOOKS, $params);
+		}
+
+		public function save_statements() {
+			global $db;
 
 			// Update the spotter status for this report - should never update
 			$params = array(
 				STATEMENTS_OFFICE_ID    => $this->office_id,
 				STATEMENTS_MESSAGE      => implode(' | ', $this->statements),
-				STATEMENTS_LAST_OUTLOOK => $this->timestamp
+				STATEMENTS_LAST_OUTLOOK => $this->timestamp,
+				STATEMENTS_HASH         => $this->statement_hash
 			);
 			$db->replace(TABLE_STATEMENTS, $params);
 		}
