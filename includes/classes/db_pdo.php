@@ -38,10 +38,22 @@
 		 *
 		 * @return array Array of 0 or More results
 		 */
-		public function query($statement, $params = array()) {
-			$this->query = $this->db->prepare($statement);
-			$this->query->execute($params);
-			$this->results = $this->query->fetchAll(PDO::FETCH_ASSOC);
+		public function query($statement, $params = array(), $iterations=0) {
+			global $db;
+			try {
+				$this->query = $this->db->prepare($statement);
+				$this->query->execute($params);
+				$this->results = $this->query->fetchAll(PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+				if(!$iterations) {
+					$iterations++;
+					$this->__construct();
+					$this->results = $this->query($statement, $params, $iterations);
+
+				}
+			}
+			
 			return $this->results;
 		}
 
