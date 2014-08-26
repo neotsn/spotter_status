@@ -1,11 +1,10 @@
 <?php
 	/**
-	 * Created by PhpStorm.
-	 * User: Chris
+	 * Created by thepizzy.net
+	 * User: @neotsn
 	 * Date: 5/24/14
 	 * Time: 11:59 AM
 	 */
-
 	/**
 	 * @file
 	 * Checks for new HWO reports on scheduled basis;
@@ -13,10 +12,9 @@
 	 * For twitter connection:
 	 *        Check if consumer token is set and if so send user to get a request token.
 	 */
-
-	session_start();
+//	session_start();
 	define('PATH_ROOT', './');
-	require_once('config.php');
+	include_once('config.php');
 
 	$db = new db_pdo();
 	$t = new twitter_connection_info();
@@ -26,24 +24,23 @@
 	$offices_to_check = $db->query(SQL_SELECT_ALL_FROM_OUTDATED_ACTIVE_CRON_OFFICES, array(time() - (60 * 30)));
 
 	$errors = 0;
-	if(!empty($offices_to_check)) {
-		foreach($offices_to_check as $office) {
-
+	if (!empty($offices_to_check)) {
+		foreach ($offices_to_check as $office) {
 			$outlook = new outlook($office['office_id']);
 			$outlook->process_outlook();
-			if(!$outlook->does_outlook_hash_exist()) {
+			if (!$outlook->does_outlook_hash_exist()) {
 				$outlook->save_outlook();
-
-				if(!$outlook->does_statement_hash_exist()) {
+				if (!$outlook->does_statement_hash_exist()) {
 					$outlook->save_statements();
-					foreach($outlook->statements as $statement) {
-						$users_ids_to_notify = $db->query(SQL_SELECT_USER_IDS_BY_OFFICE_ID, array($office['office_id']));
-						if(!empty($users_ids_to_notify)) {
-							foreach($users_ids_to_notify as $user) {
-
-								$dm_result = $connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
-								if(!empty($dm_result->errors)) {
-									$errors++;
+					foreach ($outlook->statements as $statement) {
+						if (!empty($office['office_id'])) {
+							$users_ids_to_notify = $db->query(SQL_SELECT_USER_IDS_BY_OFFICE_ID, array($office['office_id']));
+							if (!empty($users_ids_to_notify)) {
+								foreach ($users_ids_to_notify as $user) {
+									$dm_result = $connection->post('direct_messages/new', array('text' => $outlook->prepare_message($statement, $office['office_id']), 'user_id' => $user['user_id']));
+									if (!empty($dm_result->errors)) {
+										$errors++;
+									}
 								}
 							}
 						}
@@ -53,7 +50,8 @@
 		}
 	}
 
-	if($errors) {
-		$message = "There were errors posting direct messages.";
+	if ($errors) {
+		$message = "There were $errors errors posting direct messages.";
 		$connection->post('direct_messages/new', array('text' => $message, 'screen_name' => "neotsn"));
 	}
+	//	session_write_close();

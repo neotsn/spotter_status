@@ -1,7 +1,7 @@
 <?php
 	/**
-	 * Created by PhpStorm.
-	 * User: Chris
+	 * Created by thepizzy.net.
+	 * User: @neotsn
 	 * Date: 5/24/14
 	 * Time: 12:55 PM
 	 */
@@ -79,13 +79,13 @@
 		 */
 		public function does_outlook_hash_exist() {
 			global $db;
-			$result = $db->query(SQL_SELECT_OUTLOOK_BY_HASH, array($this->hash));
+			$result = (!empty($this->hash)) ? $db->query(SQL_SELECT_OUTLOOK_BY_HASH, array($this->hash)) : array();
 			return count($result);
 		}
 
 		public function does_statement_hash_exist() {
 			global $db;
-			$result = $db->query(SQL_SELECT_STATEMENT_BY_HASH, array($this->statement_hash));
+			$result = (!empty($this->statement_hash)) ? $db->query(SQL_SELECT_STATEMENT_BY_HASH, array($this->statement_hash)) : array();
 			return count($result);
 		}
 
@@ -98,12 +98,12 @@
 		 * @return string Formatted text for Direct Message consumption
 		 */
 		public function prepare_message($statement, $office_id) {
-			$statement = (strlen($statement) > 112) ? substr($statement, 0, 109).'...' : $statement;
+			$statement = (strlen($statement) > 112) ? substr($statement, 0, 109) . '...' : $statement;
 			$statement = ucfirst(strtolower($statement));
 
 			$this->build_url($office_id);
 
-			return $office_id.': '.$statement.' '.$this->url;
+			return $office_id . ': ' . $statement . ' ' . $this->url;
 		}
 
 		/**
@@ -114,7 +114,7 @@
 			global $db;
 			// Process the county list...
 			$params = array();
-			foreach($this->counties as $county) {
+			foreach ($this->counties as $county) {
 				$params[] = array(
 					COUNTIES_OFFICE_ID => $this->office_id,
 					COUNTIES_NAME      => trim($county)
@@ -162,8 +162,8 @@
 		private function extract_timestamp($outlook) {
 			preg_match_all(REGEX_TIMESTAMP, $outlook, $ts, PREG_PATTERN_ORDER);
 
-			$hrmin = ((strlen($ts[1][0]) > 3) ? substr($ts[1][0], 0, 2) : substr($ts[1][0], 0, 1)).':'.substr($ts[1][0], -2);
-			return strtotime($hrmin.' '.$ts[2][0].' '.$ts[3][0].' '.$ts[5][0].' '.$ts[6][0].' '.$ts[7][0]);
+			$hrmin = ((strlen($ts[1][0]) > 3) ? substr($ts[1][0], 0, 2) : substr($ts[1][0], 0, 1)) . ':' . substr($ts[1][0], -2);
+			return strtotime($hrmin . ' ' . $ts[2][0] . ' ' . $ts[3][0] . ' ' . $ts[5][0] . ' ' . $ts[6][0] . ' ' . $ts[7][0]);
 		}
 
 		/**
@@ -178,7 +178,7 @@
 			preg_match_all(REGEX_COUNTY_LIST, $outlook, $county_data, PREG_PATTERN_ORDER);
 
 			$counties = array();
-			foreach($county_data[1] as $c_data) {
+			foreach ($county_data[1] as $c_data) {
 				$counties = array_merge($counties, explode('-', $c_data));
 			}
 			sort(array_unique($counties));
@@ -196,7 +196,7 @@
 			preg_match_all(REGEX_SPOTTER_STATEMENT, $outlook, $spotter_statement, PREG_PATTERN_ORDER);
 
 			$statements = array();
-			foreach($spotter_statement[1] as $statement) {
+			foreach ($spotter_statement[1] as $statement) {
 				$statements[] = $statement;
 			}
 			return $statements;
