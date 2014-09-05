@@ -20,7 +20,6 @@
 		 * Construct method
 		 */
 		public function __construct() {
-
 			// Get the connection info from the .ini file
 			$conn_info = parse_ini_file(PATH_CONNECTION_INFO, true);
 
@@ -33,27 +32,27 @@
 		/**
 		 * Performs the Query statement, substituting ? for values in $params
 		 *
-		 * @param string $statement SQL DEFINE statement
-		 * @param array  $params    Array of values to translate into the string
+		 * @param string $statement  SQL DEFINE statement
+		 * @param array  $params     Array of values to translate into the string
+		 * @param int    $iterations Keep track of reinstantiation attempts, max 1 recursion
 		 *
 		 * @return array Array of 0 or More results
 		 */
-		public function query($statement, $params = array(), $iterations=0) {
-			global $db;
+		public function query($statement, $params = array(), $iterations = 0) {
 			try {
 				$this->query = $this->db->prepare($statement);
 				$this->query->execute($params);
 				$this->results = $this->query->fetchAll(PDO::FETCH_ASSOC);
 			} catch (PDOException $e) {
 				echo $e->getMessage();
-				if(!$iterations) {
+				echo "\n" . $statement;
+				if (!$iterations) {
 					$iterations++;
 					$this->__construct();
 					$this->results = $this->query($statement, $params, $iterations);
-
 				}
 			}
-			
+
 			return $this->results;
 		}
 

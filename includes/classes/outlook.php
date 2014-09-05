@@ -73,20 +73,25 @@
 		}
 
 		/**
-		 * Checks to see if the current outlook's hash exists in the database
+		 * Checks to see if the current outlook's hash has changed from what's in the database
 		 *
-		 * @return int Number of rows with hash in db
+		 * @param string $last_outlook_hash The last outlook hash for the office
+		 *
+		 * @return bool
 		 */
-		public function does_outlook_hash_exist() {
-			global $db;
-			$result = (!empty($this->hash)) ? $db->query(SQL_SELECT_OUTLOOK_BY_HASH, array($this->hash)) : array();
-			return count($result);
+		public function does_outlook_hash_match($last_outlook_hash) {
+			return ($last_outlook_hash == $this->hash);
 		}
 
-		public function does_statement_hash_exist() {
-			global $db;
-			$result = (!empty($this->statement_hash)) ? $db->query(SQL_SELECT_STATEMENT_BY_HASH, array($this->statement_hash)) : array();
-			return count($result);
+		/**
+		 * Checks to see if the current statement hash has changed from what's in the database
+		 *
+		 * @param string $last_statement_hash The last statement hash for the office
+		 *
+		 * @return bool
+		 */
+		public function does_statement_hash_match($last_statement_hash) {
+			return ($last_statement_hash == $this->statement_hash);
 		}
 
 		/**
@@ -124,8 +129,8 @@
 
 			// Update the Offices list
 			$params = array(
-				CRON_OFFICES_ID         => $this->office_id,
-				CRON_OFFICES_LAST_CHECK => time()
+				CRON_OFFICE_ID         => $this->office_id,
+				CRON_OFFICE_LAST_CHECK => time()
 			);
 			$db->replace(TABLE_CRON_OFFICE_CHECK, $params);
 

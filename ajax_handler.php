@@ -97,7 +97,7 @@
 					);
 
 					$cron_check_params[] = array(
-						CRON_OFFICES_ID => $office
+						CRON_OFFICE_ID => $office
 					);
 				}
 			}

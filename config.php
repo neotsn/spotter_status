@@ -6,6 +6,6 @@
 	 * Time: 9:27 PM
 	 */
 
-	require_once './includes/defines.php';
-	require_once(PATH_INCLUDES . 'common.inc.php');
-	require_once(PATH_INCLUDES . 'twitteroauth/twitteroauth.php');
+	require_once 'includes/defines.php';
+	include_once(PATH_INCLUDES . 'common.inc.php');
+	include_once(PATH_INCLUDES . 'twitteroauth/twitteroauth.php');
