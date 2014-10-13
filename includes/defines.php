@@ -7,7 +7,7 @@
 	 */
 
 	// System
-	define('VERSION', '1.3');
+define('VERSION', '1.3.1');
 
 	// PATHS
 	define('PATH_INCLUDES', PATH_ROOT . 'includes/');
