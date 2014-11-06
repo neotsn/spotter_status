@@ -7,17 +7,17 @@ SKYWARN Storm Spotter Status provides updates with the latest "Spotter Activatio
 The process is simple:
 
 1. Authenticate with your Twitter Account
-2. Follow @NOAAalerts on Twitter (user clicks button to act)
+2. Follow @NOAAalerts on Twitter (User clicks button to act)
 3. Select NWS Office Locations to monitor for new HWOs
 4. Receive Spotter Activation Statements as Direct Messages on Twitter
 
-**Full documentation and a user guide is provided on at [thepizzy.net] [user_doco]**
+**Full documentation and a User guide is provided on at [thepizzy.net] [user_doco]**
 
 ##System Workflow
 ###Scheduled Outlook updates
-Once the user has authenticated and chosen their NWS Office locations, a CRON job runs every 15 minutes on the server (a constraint imposed by my webhost's TOS).
+Once the User has authenticated and chosen their NWS Office locations, a CRON job runs every 15 minutes on the server (a constraint imposed by my webhost's TOS).
 
-Every 15 minutes, the CRON checks for NWS Office ids that were checked more than 30 minutes ago, and that are NWS Office ids currently assigned to a user.
+Every 15 minutes, the CRON checks for NWS Office ids that were checked more than 30 minutes ago, and that are NWS Office ids currently assigned to a User.
 * New NWS Office locations will fetch the latest HWO within 15 minutes
 * Existing NWS Office locations will check for an update to their HWO within 30 minutes
 
@@ -25,9 +25,9 @@ Every 15 minutes, the CRON checks for NWS Office ids that were checked more than
 If new/updated HWOs are found:
 
 1. They are first processed to remove excess whitespace triggering false updates
-2. A MD5 hash is generated from the cleansed outlook body text
+2. A MD5 hash is generated from the cleansed Outlook body text
 3. A DB check is made for the hash and if none exists, the process continues
-4. The outlook is parsed for its printed timestamp, affected counties list, spotter activation statement
+4. The Outlook is parsed for its printed timestamp, affected counties list, spotter activation statement
 5. All the pieces are then saved to the database.
 6. For every spotter activation statement, a Direct Message is issued to the users requesting HWOs for that NWS Office location
 
@@ -49,6 +49,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 See the License for the specific language governing permissions and limitations under the License.
 
 [website]: http://thepizzy.net/blog
-[user_doco]: http://thepizzy.net/blog/labs/skywarn-storm-spotter-user-guide/
+[user_doco]: http://thepizzy.net/blog/labs/skywarn-storm-spotter-User-guide/
 [neotsn_twitter]: https://twitter.com/neotsn
 [license]: https://github.com/neotsn/spotter_status/blob/master/LICENSE
