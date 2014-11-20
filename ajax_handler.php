@@ -133,11 +133,12 @@ switch ($mode) {
 
         // Generate the templates for each state
         $states_html = '';
+        $state_template = new Template('office_states', false, false);
         foreach ($offices_array as $state => $city_data) {
 
             $cities_html = '';
+            $city_template = new Template('office_cities', false, false);
             foreach ($city_data as $office_id => $city) {
-                $city_template = new Template('office_cities', false, false);
                 $city_template->setTemplateVars(array(
                     'TXT_OFFICE_ID'         => $office_id,
                     'TXT_OFFICE_CITY'       => $city,
@@ -145,14 +146,15 @@ switch ($mode) {
                     'I_OFFICE_PRESELECTED'  => (isset($selected[$office_id])) ? '<input type="hidden" value="' . $office_id . '" name="offices[' . $office_id . ']" />' : ''
                 ));
                 $cities_html .= $city_template->compile();
+                $city_template->reset_template();
             }
 
-            $state_template = new Template('office_states', false, false);
             $state_template->setTemplateVars(array(
                 'TXT_OFFICE_STATE'  => $state,
                 'TXT_OFFICE_CITIES' => $cities_html
             ));
             $states_html .= $state_template->compile();
+            $state_template->reset_template();
         }
 
         $template = new Template('office_list', false, false);

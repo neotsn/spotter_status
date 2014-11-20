@@ -13,6 +13,9 @@ class Template
     public $template_vars = array();
 
     private $htmlout = '';
+    private $original_file = '';
+    private $header = '';
+    private $footer = '';
 
     /**
      * Build the Template for output
@@ -26,22 +29,16 @@ class Template
         $this->filename = $filename;
 
         if ($addHeader) {
-            // Special handling for per-page css
-            $header = new Template('header', false, false);
-            $header->setTemplateVars(array(
-                'CSS_SPECIFIC' => (file_exists(PATH_CSS . $filename . '.css')) ? '<link rel="stylesheet" type="text/css" href="' . PATH_CSS . $filename . '.css">' : ''
-            ));
-            $this->htmlout .= $header->compile();
+            $this->build_header();
         }
-        $this->htmlout .= file_get_contents(PATH_TEMPLATES . $this->filename . '.html');
+        if (!$this->original_file) {
+            $this->original_file = file_get_contents(PATH_TEMPLATES . $this->filename . '.html');
+        }
+
         if ($addFooter) {
-            $footer = new Template('footer', false, false);
-            $footer->setTemplateVars(array(
-                'VERSION_NUMBER' => VERSION,
-                'YEAR'           => date('Y')
-            ));
-            $this->htmlout .= $footer->compile();
+            $this->build_footer();
         }
+        $this->reset_template();
     }
 
     /**
@@ -81,6 +78,14 @@ class Template
     {
         $this->buildTemplate();
         return $this->htmlout;
+    }
+
+    /**
+     * Restores the original template with header/footer information for reuse in loop
+     */
+    public function reset_template()
+    {
+        $this->htmlout = $this->header . $this->original_file . $this->footer;
     }
 
     /**
@@ -127,5 +132,27 @@ class Template
         }
 
         return $template_html;
+    }
+
+    private function build_header()
+    {
+        // Special handling for per-page css
+        $header = new Template('header', false, false);
+        $header->setTemplateVars(array(
+            'PATH_CSS'     => PATH_CSS,
+            'PATH_JS'      => PATH_JS,
+            'CSS_SPECIFIC' => (file_exists(PATH_CSS . $this->filename . '.css')) ? '<link rel="stylesheet" type="text/css" href="' . PATH_CSS . $this->filename . '.css">' : ''
+        ));
+        $this->header .= $header->compile();
+    }
+
+    private function build_footer()
+    {
+        $footer = new Template('footer', false, false);
+        $footer->setTemplateVars(array(
+            'VERSION_NUMBER' => VERSION,
+            'YEAR'           => date('Y')
+        ));
+        $this->footer .= $footer->compile();
     }
 }

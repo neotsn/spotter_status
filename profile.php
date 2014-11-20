@@ -29,8 +29,8 @@ $spotter_statements = $user->getStatements();
 $forecast_cards_html = '';
 $b_has_forecast_cards = (!empty($spotter_statements)) ? 1 : 0;
 if ($b_has_forecast_cards) {
+    $spotter_template = new Template('forecast_card', false, false);
     foreach ($spotter_statements as $statement) {
-        $spotter_template = new Template('forecast_card', false, false);
         $spotter_template->setTemplateVars(array(
             'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
             'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
@@ -39,6 +39,7 @@ if ($b_has_forecast_cards) {
             'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
         ));
         $forecast_cards_html .= $spotter_template->compile();
+        $spotter_template->reset_template();
     }
 }
 
@@ -53,11 +54,12 @@ if ($b_has_offices) {
     }
 
     $subscribed_offices_html = '';
+    $state_template = new Template('office_states_profile', false, false);
     foreach ($office_locations as $state => $city_data) {
 
         $cities_html = '';
+        $city_template = new Template('office_cities_profile', false, false);
         foreach ($city_data as $office_id => $city) {
-            $city_template = new Template('office_cities_profile', false, false);
             $city_template->setTemplateVars(array(
                 'TXT_OFFICE_ID'         => $office_id,
                 'TXT_OFFICE_CITY'       => $city,
@@ -65,14 +67,15 @@ if ($b_has_offices) {
                 'I_OFFICE_PRESELECTED'  => ''
             ));
             $cities_html .= $city_template->compile();
+            $city_template->reset_template();
         }
 
-        $state_template = new Template('office_states_profile', false, false);
         $state_template->setTemplateVars(array(
             'TXT_OFFICE_STATE'  => $state,
             'TXT_OFFICE_CITIES' => $cities_html
         ));
         $subscribed_offices_html .= $state_template->compile();
+        $state_template->reset_template();
     }
 }
 
@@ -103,6 +106,7 @@ if (!empty($_SESSION['msg'])) {
                 'TXT_MSG'  => ucwords($type) . ': ' . $msg
             ));
             $messages_html .= $msg_template->compile();
+            $msg_template->reset_template();
         }
     }
     unset($_SESSION['msg']);
