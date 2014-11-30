@@ -96,6 +96,6 @@ define('SQL_DROP_TABLE_GENERIC', "DROP TABLE IF EXISTS %tn ");
 define('REGEX_HWO_REPORT', '/<pre.+?>(.*)<\/pre>/ms');
 define('REGEX_TIMESTAMP', '/([\d]{3,4}) (AM|PM) ([\w]{3}) ([\w]{3}) ([\w]{3}) ([\d]{1,2}) ([\d]{4})/ms');
 define('REGEX_COUNTY_LIST', '/(?:[0-9]{6}\- )(.+?)(?:\- [0-9]{3,4} (AM|PM))/ms');
-define('REGEX_SPOTTER_STATEMENT', '/(?:\.SPOTTER INFORMATION STATEMENT\.\.\. )(.+?)\$\$/');
+define('REGEX_SPOTTER_STATEMENT', '/(?:\.SPOTTER INFORMATION STATEMENT\.\.\.)\s+?(.+?)\s+?\$\$/');
 define('REGEX_TEMPLATE_INCLUDE', '/<!-- INCLUDE (.+?) -->/ms');
 define('REGEX_TEMPLATE_CONDITIONS', '/<!-- IF ([{\w}]+)? -->(.+?)(?:<!-- ELSE -->(.+?))?<!-- ENDIF -->/ms');
