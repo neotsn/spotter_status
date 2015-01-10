@@ -99,7 +99,9 @@ if (!empty($offices_to_check)) {
                                 }
                                 $err_msg = array(
                                     'userid'   => $user,
-                                    'messages' => $msgs
+                                    'messages'  => $msgs,
+                                    'statement' => $statement,
+                                    'office'    => $office_id
                                 );
                                 error_log('Twitter DM Error (' . time() . ') : ' . json_encode($err_msg));
                             }
