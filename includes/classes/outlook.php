@@ -197,7 +197,8 @@ class Outlook extends WebRequests
         foreach ($county_data[1] as $c_data) {
             $counties = array_merge($counties, explode('-', $c_data));
         }
-        sort(array_unique($counties));
+        $counties = array_unique($counties);
+        sort($counties);
         return $counties; // Sort and unique it
     }
 
