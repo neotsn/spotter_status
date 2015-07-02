@@ -25,17 +25,17 @@ class DbPdo
     public function __construct($db_type = null)
     {
         // Get the connection info from the .ini file
-        $conn_info = parse_ini_file(PATH_CONNECTION_INFO, true);
+        global $connection_info;
 
         // Create the database connection with attributes
         switch ($db_type) {
             case 'sqlite':
-                $this->db = new PDO('sqlite:' . $conn_info['db']['database'] . '.sqlite3');
+                $this->db = new PDO('sqlite:' . $connection_info['db']['database'] . '.sqlite3');
                 break;
             case 'mysql':
             default:
-                $this->db = new PDO('mysql:host=' . $conn_info['db']['hostname'] . ';dbname=' . $conn_info['db']['database'] . ';charset=utf8',
-                    $conn_info['db']['username'], $conn_info['db']['password']);
+            $this->db = new PDO('mysql:host=' . $connection_info['db']['hostname'] . ';dbname=' . $connection_info['db']['database'] . ';charset=utf8',
+                $connection_info['db']['username'], $connection_info['db']['password']);
                 break;
         }
 
@@ -487,9 +487,6 @@ class DbPdo
     {
         $name = '';
         switch ($table) {
-            case TABLE_OUTLOOKS:
-                $name = OUTLOOKS_ID;
-                break;
             case TABLE_USERS:
                 $name = USERS_ID;
                 break;

@@ -18,39 +18,48 @@ define('PATH_CLASSES', PATH_ROOT . 'includes/classes/');
 define('PATH_CONNECTION_INFO', '../../_private/connection_info.ini');
 
 // Tables
-define('TABLE_COUNTIES', 'counties');
+define('TABLE_ADVISORIES', 'advisories');
+define('TABLE_API_CALLS', 'api_calls');
 define('TABLE_CRON_OFFICE_CHECK', 'cron_office_check');
+define('TABLE_LOCATIONS', 'locations');
 define('TABLE_OFFICES', 'offices');
-define('TABLE_OUTLOOKS', 'outlooks');
 define('TABLE_STATEMENTS', 'statements');
 define('TABLE_USERS', 'users');
 define('TABLE_USERS_OFFICES', 'users_offices');
+define('TABLE_USERS_LOCATIONS', 'users_locations');
 
-// Counties Table
-define('COUNTIES_OFFICE_ID', 'office_id');
-define('COUNTIES_NAME', 'county_name');
+// Advisories Table
+define('ADVISORIES_STATE_ZONE', 'state_zone');
+define('ADVISORIES_ISSUED_TIME', 'issued_time');
+define('ADVISORIES_STATEMENT', 'statement');
+define('ADVISORIES_ADVISORY', 'advisory');
 
 // Cron_Offices Table
 define('CRON_OFFICE_ID', 'office_id');
-define('CRON_OFFICE_LAST_CHECK', 'last_check');
+
+// Locations Table
+define('LOCATIONS_ID', 'name');
+define('LOCATIONS_STATE', 'state');
+define('LOCATIONS_ZONE', 'zone');
+define('LOCATIONS_CWA', 'cwa');
+define('LOCATIONS_NAME', 'name');
+define('LOCATIONS_STATE_ZONE', 'state_zone');
+define('LOCATIONS_COUNTY', 'county');
+define('LOCATIONS_FIPS', 'fips');
+define('LOCATIONS_TIMEZONE', 'timezone');
+define('LOCATIONS_FE_AREA', 'fe_area');
+define('LOCATIONS_LAT', 'lat');
+define('LOCATIONS_LON', 'lon');
 
 // Offices Table
 define('OFFICES_ID', 'id');
 define('OFFICES_CITY', 'city');
 define('OFFICES_STATE', 'state');
 
-// Outlooks Table
-define('OUTLOOKS_ID', 'id');
-define('OUTLOOKS_OFFICE_ID', 'office_id');
-define('OUTLOOKS_HASH', 'hash');
-define('OUTLOOKS_TIMESTAMP', 'timestamp');
-define('OUTLOOKS_TEXT', 'text');
-
 // Statements Table
 define('STATEMENTS_OFFICE_ID', 'office_id');
 define('STATEMENTS_MESSAGE', 'spotter_message');
 define('STATEMENTS_LAST_OUTLOOK', 'last_outlook');
-define('STATEMENTS_HASH', 'statement_hash');
 
 // Users Table
 define('USERS_ID', 'id');
@@ -68,21 +77,22 @@ define('USERS_CAN_DM', 'can_dm');
 define('USERS_OFFICES_USER_ID', 'user_id');
 define('USERS_OFFICES_OFFICE_ID', 'office_id');
 
+// Users_Locations Table
+define('USERS_LOCATIONS_USER_ID', 'user_id');
+define('USERS_LOCATIONS_LOCATION', 'location');
+define('USERS_LOCATIONS_LAST_CHECKED', 'last_checked');
+define('USERS_LOCATIONS_LAST_ALERT_TIME', 'last_alert_time');
+
+// New Queries
+define('SQL_SELECT_ALL_OUTDATED_USERS_LOCATIONS', "SELECT * FROM " . TABLE_USERS_LOCATIONS . " WHERE " . USERS_LOCATIONS_LAST_CHECKED . "<=?");
+define('SQL_SELECT_LOCATION_BY_FIPS_STATE_ZONE', "SELECT * FROM " . TABLE_LOCATIONS . " WHERE " . LOCATIONS_FIPS . "=? AND " . LOCATIONS_STATE . "=? AND " . LOCATIONS_ZONE . "=?");
+
 // Queries
-define('SQL_SELECT_ALL_FROM_OUTDATED_ACTIVE_CRON_OFFICES', "SELECT DISTINCT c." . CRON_OFFICE_ID . " FROM " . TABLE_CRON_OFFICE_CHECK . " c, " . TABLE_USERS_OFFICES . " uo WHERE " . CRON_OFFICE_LAST_CHECK . "<=? AND c." . CRON_OFFICE_ID . "=uo." . USERS_OFFICES_OFFICE_ID);
-define('SQL_SELECT_EXISTING_ACTIVE_CRON_OFFICE_DATA', "SELECT o." . OUTLOOKS_OFFICE_ID . ", o." . OUTLOOKS_HASH . ", s." . STATEMENTS_HASH . " FROM ( SELECT o." . OUTLOOKS_ID . " FROM " . TABLE_OUTLOOKS . " o ORDER BY o." . OUTLOOKS_ID . " DESC ) i LEFT JOIN " . TABLE_OUTLOOKS . " o ON o." . OUTLOOKS_ID . " = i." . OUTLOOKS_ID . " LEFT JOIN " . TABLE_STATEMENTS . " s ON o." . OUTLOOKS_OFFICE_ID . " = s." . STATEMENTS_OFFICE_ID . " LEFT JOIN " . TABLE_USERS_OFFICES . " uo ON uo." . USERS_OFFICES_OFFICE_ID . " = o." . OUTLOOKS_OFFICE_ID . " LEFT JOIN " . TABLE_CRON_OFFICE_CHECK . " c ON c." . CRON_OFFICE_ID . " = o." . OUTLOOKS_OFFICE_ID . " WHERE c." . CRON_OFFICE_LAST_CHECK . " <=? GROUP BY s." . STATEMENTS_HASH);
 define('SQL_SELECT_ALL_FROM_OFFICES', "SELECT * FROM " . TABLE_OFFICES . " ORDER BY " . OFFICES_STATE . " ASC, " . OFFICES_CITY . " ASC");
 define('SQL_SELECT_ALL_FROM_OFFICES_BY_USER_ID', "SELECT * FROM " . TABLE_OFFICES . " o, " . TABLE_USERS_OFFICES . " uo WHERE o." . OFFICES_ID . "=uo." . USERS_OFFICES_OFFICE_ID . " AND uo." . USERS_OFFICES_USER_ID . "= ?");
 define('SQL_SELECT_ALL_STATEMENTS_FOR_USER_ID', "SELECT s.*, o.* FROM " . TABLE_STATEMENTS . " s, " . TABLE_USERS_OFFICES . " uo, " . TABLE_OFFICES . " o WHERE s." . STATEMENTS_OFFICE_ID . "=uo." . USERS_OFFICES_OFFICE_ID . " AND uo." . USERS_OFFICES_OFFICE_ID . "=o." . OFFICES_ID . " AND uo." . USERS_OFFICES_USER_ID . "= ?");
 define('SQL_SELECT_USER_BY_ID', "SELECT * FROM " . TABLE_USERS . " WHERE " . USERS_ID . "=?");
 define('SQL_SELECT_OFFICE_IDS_BY_USER_ID', "SELECT * FROM " . TABLE_USERS_OFFICES . " WHERE " . USERS_OFFICES_USER_ID . "= ?");
-define('SQL_SELECT_USER_IDS_BY_OFFICE_IDS', "SELECT DISTINCT " . USERS_OFFICES_OFFICE_ID . ", " . USERS_OFFICES_USER_ID . " FROM " . TABLE_USERS_OFFICES . " WHERE " . USERS_OFFICES_OFFICE_ID . " IN ( ? )");
-//	define('SQL_SELECT_ALL_FROM_OFFICES_BY_ID', "SELECT * FROM " . TABLE_OFFICES . " WHERE " . OFFICES_ID . "= ?");
-//	define('SQL_SELECT_OUTLOOK_BY_HASH', "SELECT * FROM " . TABLE_OUTLOOKS . " WHERE " . OUTLOOKS_HASH . "= ?");
-//	define('SQL_SELECT_STATEMENT_BY_HASH', "SELECT * FROM " . TABLE_STATEMENTS . " WHERE " . STATEMENTS_HASH . "= ?");
-//	define('SQL_SELECT_USER_BY_OAUTH_TOKEN', "SELECT * FROM " . TABLE_USERS . " WHERE " . USERS_OAUTH_TOKEN . "= ?");
-//	define('SQL_SELECT_USER_ROWS_BY_OFFICE_ID', "SELECT DISTINCT *.u FROM " . TABLE_USERS_OFFICES . " uo, " . TABLE_USERS . " u WHERE uo." . USERS_OFFICES_OFFICE_ID . "= ? AND u." . USERS_ID . "=uo." . USERS_OFFICES_USER_ID);
-//	define('SQL_SELECT_USER_IDS_BY_OFFICE_ID', "SELECT DISTINCT " . USERS_OFFICES_USER_ID . " FROM " . TABLE_USERS_OFFICES . " WHERE " . USERS_OFFICES_OFFICE_ID . "= ?");
 
 // Modify
 define('SQL_CREATE_TABLE_GENERIC', "CREATE TABLE IF NOT EXISTS %tn (%ct)");
@@ -93,9 +103,22 @@ define('SQL_UPDATE_GENERIC', "UPDATE %t SET %ufv WHERE %cfv");
 define('SQL_DROP_TABLE_GENERIC', "DROP TABLE IF EXISTS %tn ");
 
 // REGEX
-define('REGEX_HWO_REPORT', '/<pre.+?>(.*)<\/pre>/ms');
-define('REGEX_TIMESTAMP', '/([\d]{3,4}) (AM|PM) ([\w]{3}) ([\w]{3}) ([\w]{3}) ([\d]{1,2}) ([\d]{4})/ms');
-define('REGEX_COUNTY_LIST', '/(?:[0-9]{6}\- )(.+?)(?:\- [0-9]{3,4} (AM|PM))/ms');
-define('REGEX_SPOTTER_STATEMENT', '/(?:\.SPOTTER INFORMATION STATEMENT\.\.\.)\s+?(.+?)\s+?\$\$/');
 define('REGEX_TEMPLATE_INCLUDE', '/<!-- INCLUDE (.+?) -->/ms');
 define('REGEX_TEMPLATE_CONDITIONS', '/<!-- IF ([{\w}]+)? -->(.+?)(?:<!-- ELSE -->(.+?))?<!-- ENDIF -->/ms');
+define('REGEX_SPOTTER_STATEMENT', '/\.SPOTTER INFORMATION STATEMENT\.\.\.[\s]+?([\S\s]*)$/');
+
+// URLs
+define('URL_AERIS_DOMAIN', 'https://api.aerisapi.com%e');
+define('URL_PIZZY_ADVISORY_BODY', 'https://thepizzy.net/labs/spotter/showAdvisory.php?zone=%z');
+define('URL_NWS_ADVISORY', 'http://forecast.weather.gov/product.php?site=%o&issuedby=%o&product=HWO&version=1&glossary=0');
+
+// API End Points
+define('API_BATCH_REQUEST', '/batch?requests=%l');
+define('API_GET_OUTLOOK_BY_FIPS', '/advisories/closest?filter=outlook&p=fips:%p');
+define('API_GET_OUTLOOK_BY_ZONE', '/advisories/closest?filter=outlook&p=%p&limit=1');
+define('API_AUTH_STRING', '&client_id=%i&client_secret=%s');
+
+// API Types
+define('API_TYPE_NONE', 0);
+define('API_TYPE_AERIS', 1);
+//define('API_TYPE_WUNDERGROUND', 2);

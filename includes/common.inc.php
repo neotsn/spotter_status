@@ -6,6 +6,11 @@
  * Time: 3:37 PM
  */
 
+/*
+ * Set up the connection info for global use
+ */
+$connection_info = parse_ini_file(PATH_CONNECTION_INFO, true);
+
 /**
  * Class autoloader
  *

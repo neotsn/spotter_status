@@ -25,6 +25,7 @@ class User
     public $can_dm = 0;
 
     private $offices = array();
+    private $locations = array();
 
     public function __construct($userid)
     {
@@ -57,11 +58,25 @@ class User
         }
     }
 
-    public function getUsersOfficeRows()
+    public function getUsersLocations()
     {
         global $db;
 
+        $this->locations = $db->query(SQL_SELECT_ALL_USERS_LOCATIONS_BY_USER_ID, array($this->id));
+
+        return $this->locations;
+    }
+
+    /**
+     * @depreciated 2.0
+     * @return array
+     */
+    public function getUsersOfficeRows()
+    {
+//        return $this->getUsersLocations();
+        global $db;
         $this->offices = $db->query(SQL_SELECT_ALL_FROM_OFFICES_BY_USER_ID, array($this->id));
+
         return $this->offices;
     }
 
@@ -78,6 +93,7 @@ class User
                 $selected[$selected_office_row['office_id']] = $selected_office_row['office_id'];
             }
         }
+
         return $selected;
     }
 
