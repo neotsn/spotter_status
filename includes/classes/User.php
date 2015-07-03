@@ -103,4 +103,11 @@ class User
 
         return $db->query(SQL_SELECT_ALL_STATEMENTS_FOR_USER_ID, array($this->id));
     }
+
+    public function getSpotterStatements()
+    {
+        global $db;
+
+        return $db->query(SQL_SELECT_STATEMENTS_BY_USER_ID, array($this->id));
+    }
 }

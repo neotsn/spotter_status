@@ -23,30 +23,31 @@ $user->validateUserSession();
 
 // Get the User's subscribed offices
 $location_rows = $user->getUsersLocations();
+$spotter_statements = $user->getSpotterStatements($location_rows);
 
 //$office_rows = $user->getUsersOfficeRows();
 //$spotter_statements = $user->getStatements();
 
 // Make the Spotter Statement Cards
 $forecast_cards_html = '';
-//$b_has_forecast_cards = (!empty($spotter_statements)) ? 1 : 0;
-//if ($b_has_forecast_cards) {
-//    $spotter_template = new Template('forecast_card', false, false);
-//    foreach ($spotter_statements as $statement) {
-//        $spotter_template->setTemplateVars(array(
-//            'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
-//            'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
-//            'TXT_STATEMENT_STATE'     => $statement[OFFICES_STATE],
-//            'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[STATEMENTS_LAST_OUTLOOK]),
-//            'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
-//        ));
-//        $forecast_cards_html .= $spotter_template->compile();
-//        $spotter_template->reset_template();
-//    }
-//}
+$b_has_forecast_cards = !empty($spotter_statements) ? true : false;
+if ($b_has_forecast_cards) {
+    $spotter_template = new Template('forecast_card', false, false);
+    foreach ($spotter_statements as $statement) {
+        $spotter_template->setTemplateVars(array(
+            'TXT_STATEMENT_OFFICE'    => strtoupper($statement[LOCATIONS_CWA]) . ':' . $statement[LOCATIONS_FIPS],
+            'TXT_STATEMENT_CITY'      => $statement[LOCATIONS_NAME],
+            'TXT_STATEMENT_STATE'     => $statement[LOCATIONS_STATE],
+            'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[ADVISORIES_ISSUED_TIME]),
+            'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[ADVISORIES_STATEMENT])))
+        ));
+        $forecast_cards_html .= $spotter_template->compile();
+        $spotter_template->reset_template();
+    }
+}
 
 // Gather the Subscribed Offices
-$b_has_locations = (!empty($location_rows) ? true : false);
+$b_has_locations = !empty($location_rows) ? true : false;
 if ($b_has_locations) {
 
     // Group them by state
@@ -126,7 +127,8 @@ $template->setTemplateVars(array(
     'TXT_USER_ID'                => $user->id,
     'TXT_MSGS'                   => $messages_html,
     'B_NO_RELATIONSHIP'          => !$user->is_follower,
+    'B_HAS_RELATIONSHIP'   => $user->is_follower,
     'B_HAS_OFFICES'        => $b_has_locations,
-    'B_HAS_FORECAST_CARDS' => false
+    'B_HAS_FORECAST_CARDS' => $b_has_forecast_cards
 ));
 $template->display();

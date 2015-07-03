@@ -2,26 +2,17 @@
  *	Header [Menu]
  */
 
-#header {
-	display: block;
-	height: 50px;
-	background-color: #333;
-	width: 100%;
-	float: left;
-	padding-top: 12px;
-	position: fixed;
-	box-shadow: 0 3px 10px rgba(51, 51, 51, 0.5);
-}
+/*#header {*/
+/*display: block;*/
+/*height: 50px;*/
+/*background-color: #333;*/
+/*width: 100%;*/
+/*float: left;*/
+/*padding-top: 12px;*/
+/*position: fixed;*/
+/*box-shadow: 0 3px 10px rgba(51, 51, 51, 0.5);*/
+/*}*/
 
-.header_headline {
-	display: block;
-	vertical-align: middle;
-	float: left;
-	margin-left: 15px;
-	font-size: 2em;
-	font-weight: bold;
-	color: #fff;
-}
 
 .header_profile {
 	display: block;
@@ -97,13 +88,13 @@
  *	Profile Content
  */
 
-#profile {
-	float: left;
-	width: 100%;
-	background-color: #fff;
-	min-height: 100%;
-	display: block;
-}
+/*#profile {*/
+/*float: left;*/
+/*width: 100%;*/
+/*background-color: #fff;*/
+/*min-height: 100%;*/
+/*display: block;*/
+/*}*/
 
 .profile_wrapper {
 	width: 75%;
@@ -144,7 +135,7 @@ ul.profile_connections {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	color: #333;
+	/*color: #333;*/
 }
 
 ul.profile_connections li {
@@ -170,7 +161,7 @@ ul.profile_menu {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	color: #333;
+	/*color: #333;*/
 }
 
 ul.profile_menu li {
@@ -182,7 +173,7 @@ ul.profile_menu li {
 
 ul.profile_menu li a {
 	text-decoration: none;
-	color: #333;
+	/*color: #333;*/
 }
 
 ul.profile_menu li a:hover {
@@ -235,9 +226,9 @@ ul.profile_menu li a:hover {
 }
 
 .profile_discrete {
-	color: darkred;
+	/*color: darkred;*/
 	cursor: pointer;
-	float: left;
+	/*float: left;*/
 }
 
 /*

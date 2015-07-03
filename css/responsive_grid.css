@@ -1,3 +1,10 @@
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 /* Inputs */
 input, textarea {
 	width: 100%;
@@ -248,8 +255,12 @@ legend.input-label {
 		width: 33.333333333333336%
 	}
 
+	.gm-two-thirds {
+		width: 66.666666666666666%
+	}
+
 	.gm-hide {
-		display: none;
+		display: none !important;
 	}
 
 	.gmh-50px {
@@ -414,7 +425,7 @@ legend.input-label {
 	}
 
 	.gt-hide {
-		display: none;
+		display: none !important;
 	}
 
 	.gth-85px {
@@ -600,7 +611,7 @@ legend.input-label {
 	}
 
 	.gd-hide {
-		display: none;
+		display: none !important;
 	}
 
 	.gdh-125px {
@@ -617,199 +628,239 @@ legend.input-label {
 }
 
 /* Border */
+.button--small,
 .brs, .bhs, .bas {
 	border-right: 1px solid;
 }
 
+.button--small,
 .bls, .bhs, .bas {
 	border-left: 1px solid;
 }
 
+.button--small,
 .bts, .bvs, .bas {
 	border-top: 1px solid;
 }
 
+.button--small,
 .bbs, .bvs, .bas {
 	border-bottom: 1px solid;
 }
 
+.button,
 .brm, .bhm, .bam {
 	border-right: 2px solid;
 }
 
+.button,
 .blm, .bhm, .bam {
 	border-left: 2px solid;
 }
 
+.button,
 .btm, .bvm, .bam {
 	border-top: 2px solid;
 }
 
+.button,
 .bbm, .bvm, .bam {
 	border-bottom: 2px solid;
 }
 
+.button--large,
 .brl, .bhl, .bal {
 	border-right: 3px solid;
 }
 
+.button--large,
 .bll, .bhl, .bal {
 	border-left: 3px solid;
 }
 
+.button--large,
 .btl, .bvl, .bal {
 	border-top: 3px solid;
 }
 
+.button--large,
 .bbl, .bvl, .bal {
 	border-bottom: 3px solid;
 }
 
 /* Padding */
+.button--small,
 .prs, .phs, .pas {
 	padding-right: 0.25em;
 }
 
+.button--small,
 .pls, .phs, .pas {
 	padding-left: 0.25em;
 }
 
+.button--small,
 .pts, .pvs, .pas {
 	padding-top: 0.25em;
 }
 
+.button--small,
 .pbs, .pvs, .pas {
 	padding-bottom: 0.25em;
 }
 
+.button,
 .prm, .phm, .pam {
 	padding-right: 0.5em;
 }
 
+.button,
 .plm, .phm, .pam {
 	padding-left: 0.5em;
 }
 
+.button,
 .ptm, .pvm, .pam {
 	padding-top: 0.5em;
 }
 
+.button,
 .pbm, .pvm, .pam {
 	padding-bottom: 0.5em;
 }
 
+.button--large,
 .prl, .phl, .pal {
 	padding-right: 0.75em;
 }
 
+.button--large,
 .pll, .phl, .pal {
 	padding-left: 0.75em;
 }
 
+.button--large,
 .ptl, .pvl, .pal {
 	padding-top: 0.75em;
 }
 
+.button--large,
 .pbl, .pvl, .pal {
 	padding-bottom: 0.75em;
 }
 
 /* Margins */
+.button--small,
 .mrs, .mhs, .mas {
 	margin-right: 0.25em;
 }
 
+.button--small,
 .mls, .mhs, .mas {
 	margin-left: 0.25em;
 }
 
+.button--small,
 .mts, .mvs, .mas {
 	margin-top: 0.25em;
 }
 
+.button--small,
 .mbs, .mvs, .mas {
 	margin-bottom: 0.25em;
 }
 
+.button,
 .mrm, .mhm, .mam {
 	margin-right: 0.75em;
 }
 
+.button,
 .mlm, .mhm, .mam {
 	margin-left: 0.75em;
 }
 
+.button,
 .mtm, .mvm, .mam {
 	margin-top: 0.75em;
 }
 
+.button,
 .mbm, .mvm, .mam {
 	margin-bottom: 0.75em;
 }
 
+.button--large,
 .mrl, .mhl, .mal {
 	margin-right: 1.25em;
 }
 
+.button--large,
 .mll, .mhl, .mal {
 	margin-left: 1.25em;
 }
 
+.button--large,
 .mtl, .mvl, .mal {
 	margin-top: 1.25em;
 }
 
+.button--large,
 .mbl, .mvl, .mal {
 	margin-bottom: 1.25em;
 }
 
 /* Border Rounding */
-.rounded-nws, .rounded-ws, .rounded-ts, .rounded-as {
+.rounded-nws, .rounded-ls, .rounded-ts, .rounded-as {
 	border-top-left-radius: 0.25em;
 }
 
-.rounded-sws, .rounded-ws, .rounded-bs, .rounded-as {
+.rounded-sws, .rounded-ls, .rounded-bs, .rounded-as {
 	border-bottom-left-radius: 0.25em;
 }
 
-.rounded-nes, .rounded-es, .rounded-ts, .rounded-as {
+.rounded-nes, .rounded-rs, .rounded-ts, .rounded-as {
 	border-top-right-radius: 0.25em;
 }
 
-.rounded-nws, .rounded-ws, .rounded-bs, .rounded-as {
+.rounded-ses, .rounded-rs, .rounded-bs, .rounded-as {
 	border-bottom-right-radius: 0.25em;
 }
 
-.rounded-nwm, .rounded-wm, .rounded-tm, .rounded-am {
+.rounded-nwm, .rounded-lm, .rounded-tm, .rounded-am {
 	border-top-left-radius: 0.5em;
 }
 
-.rounded-swm, .rounded-wm, .rounded-bm, .rounded-am {
+.rounded-swm, .rounded-lm, .rounded-bm, .rounded-am {
 	border-bottom-left-radius: 0.5em;
 }
 
-.rounded-nem, .rounded-em, .rounded-tm, .rounded-am {
+.rounded-nem, .rounded-rm, .rounded-tm, .rounded-am {
 	border-top-right-radius: 0.5em;
 }
 
-.rounded-nwm, .rounded-wm, .rounded-bm, .rounded-am {
+.rounded-sem, .rounded-rm, .rounded-bm, .rounded-am {
 	border-bottom-right-radius: 0.5em;
 }
 
-.rounded-nwl, .rounded-wl, .rounded-tl, .rounded-al {
+.rounded-nwl, .rounded-ll, .rounded-tl, .rounded-al {
 	border-top-left-radius: 1em;
 }
 
-.rounded-swl, .rounded-wl, .rounded-bl, .rounded-al {
+.rounded-swl, .rounded-ll, .rounded-bl, .rounded-al {
 	border-bottom-left-radius: 1em;
 }
 
-.rounded-nel, .rounded-el, .rounded-tl, .rounded-al {
+.rounded-nel, .rounded-rl, .rounded-tl, .rounded-al {
 	border-top-right-radius: 1em;
 }
 
-.rounded-nwl, .rounded-wl, .rounded-bl, .rounded-al {
+.rounded-sel, .rounded-rl, .rounded-bl, .rounded-al {
 	border-bottom-right-radius: 1em;
+}
+
+.circle {
+	border-radius: 50%;
 }
 
 .valign--top {
@@ -834,4 +885,34 @@ legend.input-label {
 
 .align--right {
 	text-align: right;
+}
+
+.float--left {
+	float: left;
+}
+
+.float--right {
+	float: right;
+}
+
+.float--center {
+	margin-left: auto !important;
+	margin-right: auto !important;
+	clear: both;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
+.new-line {
+	display: block;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.nowrap {
+	white-space: nowrap;
 }

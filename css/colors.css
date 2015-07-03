@@ -6,11 +6,11 @@
 
 /* As hex codes */
 
+/* Main Primary color */
 .color-primary-0 {
 	color: #B15200
 }
 
-/* Main Primary color */
 .color-primary-1 {
 	color: #EF7813
 }
@@ -27,11 +27,11 @@
 	color: #000000
 }
 
+/* Main Complement color */
 .color-complement-0 {
 	color: #053874
 }
 
-/* Main Complement color */
 .color-complement-1 {
 	color: #18549C
 }
@@ -48,11 +48,11 @@
 	color: #000000
 }
 
+/* Main Secondary color (1) */
 .color-secondary-1-0 {
 	color: #B10000
 }
 
-/* Main Secondary color (1) */
 .color-secondary-1-1 {
 	color: #EF1313
 }
@@ -69,11 +69,11 @@
 	color: #000000
 }
 
+/* Main Secondary color (2) */
 .color-secondary-2-0 {
 	color: #008911
 }
 
-/* Main Secondary color (2) */
 .color-secondary-2-1 {
 	color: #0FB924
 }
@@ -91,11 +91,11 @@
 }
 
 /* Background colors */
+/* Main Primary color */
 .bg-color-primary-0 {
 	background-color: #B15200
 }
 
-/* Main Primary color */
 .bg-color-primary-1 {
 	background-color: #EF7813
 }
@@ -112,11 +112,11 @@
 	background-color: #000000
 }
 
+/* Main Complement color */
 .bg-color-complement-0 {
 	background-color: #053874
 }
 
-/* Main Complement color */
 .bg-color-complement-1 {
 	background-color: #18549C
 }
@@ -133,11 +133,11 @@
 	background-color: #000000
 }
 
+/* Main Secondary color (1) */
 .bg-color-secondary-1-0 {
 	background-color: #B10000
 }
 
-/* Main Secondary color (1) */
 .bg-color-secondary-1-1 {
 	background-color: #EF1313
 }
@@ -154,11 +154,11 @@
 	background-color: #000000
 }
 
+/* Main Secondary color (2) */
 .bg-color-secondary-2-0 {
 	background-color: #008911
 }
 
-/* Main Secondary color (2) */
 .bg-color-secondary-2-1 {
 	background-color: #0FB924
 }
@@ -176,11 +176,11 @@
 }
 
 /* Border colors */
+/* Main Primary color */
 .border-color-primary-0 {
 	border-color: #B15200
 }
 
-/* Main Primary color */
 .border-color-primary-1 {
 	border-color: #EF7813
 }
@@ -197,11 +197,11 @@
 	border-color: #000000
 }
 
+/* Main Complement color */
 .border-color-complement-0 {
 	border-color: #053874
 }
 
-/* Main Complement color */
 .border-color-complement-1 {
 	border-color: #18549C
 }
@@ -218,11 +218,11 @@
 	border-color: #000000
 }
 
+/* Main Secondary color (1) */
 .border-color-secondary-1-0 {
 	border-color: #B10000
 }
 
-/* Main Secondary color (1) */
 .border-color-secondary-1-1 {
 	border-color: #EF1313
 }
@@ -239,11 +239,11 @@
 	border-color: #000000
 }
 
+/* Main Secondary color (2) */
 .border-color-secondary-2-0 {
 	border-color: #008911
 }
 
-/* Main Secondary color (2) */
 .border-color-secondary-2-1 {
 	border-color: #0FB924
 }
@@ -262,11 +262,11 @@
 
 /* As RGBa codes */
 
+/* Main Primary color */
 .rgba-primary-0 {
 	color: rgba(177, 82, 0, 1)
 }
 
-/* Main Primary color */
 .rgba-primary-1 {
 	color: rgba(239, 120, 19, 1)
 }
@@ -283,11 +283,11 @@
 	color: rgba(0, 0, 0, 1)
 }
 
+/* Main Complement color */
 .rgba-complement-0 {
 	color: rgba(5, 56, 116, 1)
 }
 
-/* Main Complement color */
 .rgba-complement-1 {
 	color: rgba(24, 84, 156, 1)
 }
@@ -304,11 +304,11 @@
 	color: rgba(0, 0, 0, 1)
 }
 
+/* Main Secondary color (1) */
 .rgba-secondary-1-0 {
 	color: rgba(177, 0, 0, 1)
 }
 
-/* Main Secondary color (1) */
 .rgba-secondary-1-1 {
 	color: rgba(239, 19, 19, 1)
 }
@@ -325,11 +325,11 @@
 	color: rgba(0, 0, 0, 1)
 }
 
+/* Main Secondary color (2) */
 .rgba-secondary-2-0 {
 	color: rgba(0, 137, 17, 1)
 }
 
-/* Main Secondary color (2) */
 .rgba-secondary-2-1 {
 	color: rgba(15, 185, 36, 1)
 }
@@ -355,4 +355,53 @@
 
 .box-shadow {
 	box-shadow: 0 0.125em 0.25em #000;
+}
+
+/* Buttons */
+.btn--primary {
+	background-color: #000;
+	border-color: #B15200;
+	color: #B15200;
+}
+
+.btn--primary:hover {
+	background-color: #B15200;
+	border-color: #EF7813;
+	color: #000;
+}
+
+.btn--complement {
+	background-color: #000;
+	border-color: #053874;
+	color: #053874;
+}
+
+.btn--complement:hover {
+	background-color: #053874;
+	border-color: #18549C;
+	color: #000;
+}
+
+.btn--secondary-1 {
+	background-color: #000;
+	border-color: #B10000;
+	color: #B10000;
+}
+
+.btn--secondary-1:hover {
+	background-color: #B10000;
+	border-color: #EF1313;
+	color: #000;
+}
+
+.btn--secondary-2 {
+	background-color: #000;
+	border-color: #008911;
+	color: #008911;
+}
+
+.btn--secondary-2:hover {
+	background-color: #008911;
+	border-color: #0FB924;
+	color: #000;
 }

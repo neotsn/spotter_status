@@ -1,11 +1,7 @@
 @import url('responsive_grid.css');
 @import url('colors.css');
 
-* {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	box-sizing: border-box;
+*, header, section, footer {
 	font-family: "Droid Sans", sans-serif;
 	font-size: 100%;
 	padding: 0;
@@ -17,10 +13,15 @@ body {
 	padding: 0;
 	background: url("../images/storm-wallpaper.jpg") no-repeat top center;
 	background-size: cover;
+	overflow-x: hidden;
 }
 
 a {
+	text-decoration: none;
+}
 
+a:hover {
+	text-decoration: underline;
 }
 
 p {
@@ -39,8 +40,48 @@ h3 {
 	font-size: 32px;
 }
 
+h4 {
+	font-size: 24px;
+}
+
+h5 {
+	font-size: 16px;
+}
+
 /* Image Styles */
 .splash_logo {
 	max-width: 250px;
 	width: 100%;
+}
+
+/* Global Navigation */
+#header {
+	position: fixed;
+	height: 64px;
+	top: 0;
+}
+
+#header .header_logo {
+	max-width: 150px;
+}
+
+#header .header_logo img {
+	width: 100%;
+}
+
+#header .header_avatar {
+	width: 25px;
+}
+
+/* Profile Page */
+#profile {
+	margin-top: 175px;
+}
+
+.button--small,
+.button,
+.button--large {
+	cursor: pointer;
+	text-align: center;
+	display: block;
 }
