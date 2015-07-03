@@ -29,7 +29,7 @@ class Location extends WebRequests
 
     public function addUserLocationToAlert($user, array $location_data)
     {
-        $this->users_locations_to_alert[$user][$location_data['key']] = $location_data;
+        $this->users_locations_to_alert[$user][$location_data['id']] = $location_data;
     }
 
     public function emptyUsersLocationsToAlert()
@@ -42,33 +42,12 @@ class Location extends WebRequests
         return $user . '_' . $location;
     }
 
-    /**
-     * @param $fips
-     * @param $state
-     * @param $zone
-     *
-     * @return array
-     */
-    public function getLocationByFipsStateZone($fips, $state, $zone)
-    {
-        global $db;
-
-        $params = array($fips, $state, $zone);
-        $results = $db->query(SQL_SELECT_LOCATION_BY_FIPS_STATE_ZONE, $params);
-
-        if (!empty($results[0])) {
-            return $results[0];
-        } else {
-            return array();
-        }
-    }
-
     public function getLocationById($location_id)
     {
         global $db;
 
         $params = array($location_id);
-        $results = $db->query(SQL_SELECT_LOCATION_BY_FIPS_STATE_ZONE, $params);
+        $results = $db->query(SQL_SELECT_LOCATION_BY_ID, $params);
 
         if (!empty($results[0])) {
             return $results[0];
