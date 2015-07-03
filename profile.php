@@ -30,6 +30,9 @@ $spotter_statements = $user->getSpotterStatements($location_rows);
 
 // Make the Spotter Statement Cards
 $forecast_cards_html = '';
+$subscribed_offices_html = '';
+$messages_html = '';
+
 $b_has_forecast_cards = !empty($spotter_statements) ? true : false;
 if ($b_has_forecast_cards) {
     $spotter_template = new Template('forecast_card', false, false);
@@ -56,7 +59,6 @@ if ($b_has_locations) {
         $user_locations[$location_row[LOCATIONS_STATE]][$location_row[LOCATIONS_ID]] = $location_row[LOCATIONS_NAME];
     }
 
-    $subscribed_offices_html = '';
     $state_template = new Template('office_states_profile', false, false);
     foreach ($user_locations as $state => $city_data) {
 
@@ -98,7 +100,6 @@ if (!$user->is_follower) {
 }
 
 // Get the error-handling messages
-$messages_html = '';
 if (!empty($_SESSION['msg'])) {
     foreach ($_SESSION['msg'] as $type => $msgs) {
         $msg_template = new Template('msg', false, false);

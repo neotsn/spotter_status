@@ -1,7 +1,3 @@
-img.align_left {
-	float: left;
-}
-
 /*
  *	Offices List
  */
@@ -94,7 +90,7 @@ span.success_msg {
 /*
  *	Footer
  */
-span.overall_footer_msg {
+.overall_footer_msg {
 	float: left;
 	display: block;
 	width: 100%;
@@ -103,8 +99,4 @@ span.overall_footer_msg {
 	line-height: 1.2em;
 	color: #aaa;
 	margin-top: 10px;
-}
-
-span.overall_footer_msg a {
-	color: #666;
 }

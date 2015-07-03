@@ -11,11 +11,15 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: url("../images/storm-wallpaper.jpg") no-repeat top center;
+	background: url("../images/storm-wallpaper.jpg") no-repeat fixed top center;
 	background-size: cover;
 	overflow-x: hidden;
 }
 
+img {
+	width: auto;
+	max-width: 100%;
+}
 a {
 	text-decoration: none;
 }
