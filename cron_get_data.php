@@ -111,7 +111,7 @@ do {
                             if ($last_alert_time != $response_data->timestamps->issued) {
 
                                 // Pull their location data to pass in for use later
-                                $user_location_data = $l->users_locations_rows[$user_row_key][USERS_LOCATIONS_LOCATION];
+                                $user_location_data = $l->users_locations_rows[$user_row_key][USERS_LOCATIONS_LOCATION_ID];
 
                                 // Add to the queue
                                 $l->addUserLocationToAlert($user_id, $user_location_data);
@@ -139,26 +139,23 @@ do {
                             // - zone => for specificity in key and used in api request
 
                             // Grab the location row from the db if we don't have it cached...
-                            if (!isset($locationCache[$user_location_data['key']])) {
-                                $temp = explode('|', $user_location_data['key']);
-
+                            if (!isset($locationCache[$user_location_data['id']])) {
                                 // Assignment as bool
-                                if ($location_results = $l->getLocationByFipsStateZone($temp[0], $temp[1], $temp[2])) {
-                                    $locationCache[$user_location_data['key']] = $location_results;
+                                if ($location_results = $l->getLocationById($user_location_data['id'])) {
+                                    $locationCache[$user_location_data['id']] = $location_results;
                                 }
-                                unset($temp);
                             }
 
                             // If we know about this location, we can alert about it...
-                            if (!empty($locationCache[$user_location_data['key']])) {
+                            if (!empty($locationCache[$user_location_data['id']])) {
 
                                 // Update the users_locations row for this user-location
-                                $l->updateUserLocationRow($user_id, $user_location_data['key'], time(), $response_data->timestamps->issued);
+                                $l->updateUserLocationRow($user_id, $user_location_data['id'], time(), $response_data->timestamps->issued);
 
                                 // Helper variables for code neatness
-                                $area = $locationCache[$user_location_data['key']][LOCATIONS_NAME];
-                                $state = $locationCache[$user_location_data['key']][LOCATIONS_STATE];
-                                $cwa = $locationCache[$user_location_data['key']][LOCATIONS_CWA];
+                                $area = $locationCache[$user_location_data['id']][LOCATIONS_NAME];
+                                $state = $locationCache[$user_location_data['id']][LOCATIONS_STATE];
+                                $cwa = $locationCache[$user_location_data['id']][LOCATIONS_CWA];
 
                                 // Compose the twitter Direct Message content, with url
                                 $twitter_message = $a->prepareTwitterMessage($statement, $area, $state, $cwa);
@@ -187,7 +184,7 @@ do {
                                         'userid'    => $user_id,
                                         'messages'  => $msgs,
                                         'statement' => $statement,
-                                        'location'  => $user_location_data['key']
+                                        'location' => $user_location_data['id']
                                     );
 
                                     error_log('Twitter DM Error (' . time() . ') : ' . json_encode($err_msg));

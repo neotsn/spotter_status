@@ -13,7 +13,7 @@
 
 session_start();
 define('PATH_ROOT', './');
-require_once('config.php');
+require_once(PATH_ROOT . 'config.php');
 
 $user_id = get_session('userid', null);
 
@@ -22,46 +22,48 @@ $user = new User($user_id);
 $user->validateUserSession();
 
 // Get the User's subscribed offices
-$office_rows = $user->getUsersOfficeRows();
-$spotter_statements = $user->getStatements();
+$location_rows = $user->getUsersLocations();
+
+//$office_rows = $user->getUsersOfficeRows();
+//$spotter_statements = $user->getStatements();
 
 // Make the Spotter Statement Cards
 $forecast_cards_html = '';
-$b_has_forecast_cards = (!empty($spotter_statements)) ? 1 : 0;
-if ($b_has_forecast_cards) {
-    $spotter_template = new Template('forecast_card', false, false);
-    foreach ($spotter_statements as $statement) {
-        $spotter_template->setTemplateVars(array(
-            'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
-            'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
-            'TXT_STATEMENT_STATE'     => $statement[OFFICES_STATE],
-            'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[STATEMENTS_LAST_OUTLOOK]),
-            'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
-        ));
-        $forecast_cards_html .= $spotter_template->compile();
-        $spotter_template->reset_template();
-    }
-}
+//$b_has_forecast_cards = (!empty($spotter_statements)) ? 1 : 0;
+//if ($b_has_forecast_cards) {
+//    $spotter_template = new Template('forecast_card', false, false);
+//    foreach ($spotter_statements as $statement) {
+//        $spotter_template->setTemplateVars(array(
+//            'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
+//            'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
+//            'TXT_STATEMENT_STATE'     => $statement[OFFICES_STATE],
+//            'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[STATEMENTS_LAST_OUTLOOK]),
+//            'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
+//        ));
+//        $forecast_cards_html .= $spotter_template->compile();
+//        $spotter_template->reset_template();
+//    }
+//}
 
 // Gather the Subscribed Offices
-$b_has_offices = (!empty($office_rows)) ? 1 : 0;
-if ($b_has_offices) {
+$b_has_locations = (!empty($location_rows) ? true : false);
+if ($b_has_locations) {
 
     // Group them by state
-    $office_locations = array();
-    foreach ($office_rows as $office_row) {
-        $office_locations[$office_row[OFFICES_STATE]][$office_row[OFFICES_ID]] = $office_row[OFFICES_CITY];
+    $user_locations = array();
+    foreach ($location_rows as $location_row) {
+        $user_locations[$location_row[LOCATIONS_STATE]][$location_row[LOCATIONS_ID]] = $location_row[LOCATIONS_NAME];
     }
 
     $subscribed_offices_html = '';
     $state_template = new Template('office_states_profile', false, false);
-    foreach ($office_locations as $state => $city_data) {
+    foreach ($user_locations as $state => $city_data) {
 
         $cities_html = '';
         $city_template = new Template('office_cities_profile', false, false);
-        foreach ($city_data as $office_id => $city) {
+        foreach ($city_data as $location_id => $city) {
             $city_template->setTemplateVars(array(
-                'TXT_OFFICE_ID'         => $office_id,
+                'TXT_OFFICE_ID' => $location_id,
                 'TXT_OFFICE_CITY'       => $city,
                 'TXT_OFFICE_CITY_CLASS' => 'nws_office_city',
                 'I_OFFICE_PRESELECTED'  => ''
@@ -124,7 +126,7 @@ $template->setTemplateVars(array(
     'TXT_USER_ID'                => $user->id,
     'TXT_MSGS'                   => $messages_html,
     'B_NO_RELATIONSHIP'          => !$user->is_follower,
-    'B_HAS_OFFICES'              => $b_has_offices,
-    'B_HAS_FORECAST_CARDS'       => $b_has_forecast_cards
+    'B_HAS_OFFICES'        => $b_has_locations,
+    'B_HAS_FORECAST_CARDS' => false
 ));
 $template->display();

@@ -1,0 +1,358 @@
+/* CSS - Cascading Style Sheet */
+/* Palette color codes */
+/* Palette URL: http://paletton.com/#uid=c0v003C2R0kJ9mctttW00Fcg86nnC00 */
+
+/* Feel free to copy&paste color codes to your application */
+
+/* As hex codes */
+
+.color-primary-0 {
+	color: #B15200
+}
+
+/* Main Primary color */
+.color-primary-1 {
+	color: #EF7813
+}
+
+.color-primary-2 {
+	color: #FFFFFF
+}
+
+.color-primary-3 {
+	color: #332519
+}
+
+.color-primary-4 {
+	color: #000000
+}
+
+.color-complement-0 {
+	color: #053874
+}
+
+/* Main Complement color */
+.color-complement-1 {
+	color: #18549C
+}
+
+.color-complement-2 {
+	color: #C3C3C3
+}
+
+.color-complement-3 {
+	color: #121921
+}
+
+.color-complement-4 {
+	color: #000000
+}
+
+.color-secondary-1-0 {
+	color: #B10000
+}
+
+/* Main Secondary color (1) */
+.color-secondary-1-1 {
+	color: #EF1313
+}
+
+.color-secondary-1-2 {
+	color: #FFFFFF
+}
+
+.color-secondary-1-3 {
+	color: #331919
+}
+
+.color-secondary-1-4 {
+	color: #000000
+}
+
+.color-secondary-2-0 {
+	color: #008911
+}
+
+/* Main Secondary color (2) */
+.color-secondary-2-1 {
+	color: #0FB924
+}
+
+.color-secondary-2-2 {
+	color: #D8D8D8
+}
+
+.color-secondary-2-3 {
+	color: #132716
+}
+
+.color-secondary-2-4 {
+	color: #000000
+}
+
+/* Background colors */
+.bg-color-primary-0 {
+	background-color: #B15200
+}
+
+/* Main Primary color */
+.bg-color-primary-1 {
+	background-color: #EF7813
+}
+
+.bg-color-primary-2 {
+	background-color: #FFFFFF
+}
+
+.bg-color-primary-3 {
+	background-color: #332519
+}
+
+.bg-color-primary-4 {
+	background-color: #000000
+}
+
+.bg-color-complement-0 {
+	background-color: #053874
+}
+
+/* Main Complement color */
+.bg-color-complement-1 {
+	background-color: #18549C
+}
+
+.bg-color-complement-2 {
+	background-color: #C3C3C3
+}
+
+.bg-color-complement-3 {
+	background-color: #121921
+}
+
+.bg-color-complement-4 {
+	background-color: #000000
+}
+
+.bg-color-secondary-1-0 {
+	background-color: #B10000
+}
+
+/* Main Secondary color (1) */
+.bg-color-secondary-1-1 {
+	background-color: #EF1313
+}
+
+.bg-color-secondary-1-2 {
+	background-color: #FFFFFF
+}
+
+.bg-color-secondary-1-3 {
+	background-color: #331919
+}
+
+.bg-color-secondary-1-4 {
+	background-color: #000000
+}
+
+.bg-color-secondary-2-0 {
+	background-color: #008911
+}
+
+/* Main Secondary color (2) */
+.bg-color-secondary-2-1 {
+	background-color: #0FB924
+}
+
+.bg-color-secondary-2-2 {
+	background-color: #D8D8D8
+}
+
+.bg-color-secondary-2-3 {
+	background-color: #132716
+}
+
+.bg-color-secondary-2-4 {
+	background-color: #000000
+}
+
+/* Border colors */
+.border-color-primary-0 {
+	border-color: #B15200
+}
+
+/* Main Primary color */
+.border-color-primary-1 {
+	border-color: #EF7813
+}
+
+.border-color-primary-2 {
+	border-color: #FFFFFF
+}
+
+.border-color-primary-3 {
+	border-color: #332519
+}
+
+.border-color-primary-4 {
+	border-color: #000000
+}
+
+.border-color-complement-0 {
+	border-color: #053874
+}
+
+/* Main Complement color */
+.border-color-complement-1 {
+	border-color: #18549C
+}
+
+.border-color-complement-2 {
+	border-color: #C3C3C3
+}
+
+.border-color-complement-3 {
+	border-color: #121921
+}
+
+.border-color-complement-4 {
+	border-color: #000000
+}
+
+.border-color-secondary-1-0 {
+	border-color: #B10000
+}
+
+/* Main Secondary color (1) */
+.border-color-secondary-1-1 {
+	border-color: #EF1313
+}
+
+.border-color-secondary-1-2 {
+	border-color: #FFFFFF
+}
+
+.border-color-secondary-1-3 {
+	border-color: #331919
+}
+
+.border-color-secondary-1-4 {
+	border-color: #000000
+}
+
+.border-color-secondary-2-0 {
+	border-color: #008911
+}
+
+/* Main Secondary color (2) */
+.border-color-secondary-2-1 {
+	border-color: #0FB924
+}
+
+.border-color-secondary-2-2 {
+	border-color: #D8D8D8
+}
+
+.border-color-secondary-2-3 {
+	border-color: #132716
+}
+
+.border-color-secondary-2-4 {
+	border-color: #000000
+}
+
+/* As RGBa codes */
+
+.rgba-primary-0 {
+	color: rgba(177, 82, 0, 1)
+}
+
+/* Main Primary color */
+.rgba-primary-1 {
+	color: rgba(239, 120, 19, 1)
+}
+
+.rgba-primary-2 {
+	color: rgba(255, 255, 255, 1)
+}
+
+.rgba-primary-3 {
+	color: rgba(51, 37, 25, 1)
+}
+
+.rgba-primary-4 {
+	color: rgba(0, 0, 0, 1)
+}
+
+.rgba-complement-0 {
+	color: rgba(5, 56, 116, 1)
+}
+
+/* Main Complement color */
+.rgba-complement-1 {
+	color: rgba(24, 84, 156, 1)
+}
+
+.rgba-complement-2 {
+	color: rgba(195, 195, 195, 1)
+}
+
+.rgba-complement-3 {
+	color: rgba(18, 25, 33, 1)
+}
+
+.rgba-complement-4 {
+	color: rgba(0, 0, 0, 1)
+}
+
+.rgba-secondary-1-0 {
+	color: rgba(177, 0, 0, 1)
+}
+
+/* Main Secondary color (1) */
+.rgba-secondary-1-1 {
+	color: rgba(239, 19, 19, 1)
+}
+
+.rgba-secondary-1-2 {
+	color: rgba(255, 255, 255, 1)
+}
+
+.rgba-secondary-1-3 {
+	color: rgba(51, 25, 25, 1)
+}
+
+.rgba-secondary-1-4 {
+	color: rgba(0, 0, 0, 1)
+}
+
+.rgba-secondary-2-0 {
+	color: rgba(0, 137, 17, 1)
+}
+
+/* Main Secondary color (2) */
+.rgba-secondary-2-1 {
+	color: rgba(15, 185, 36, 1)
+}
+
+.rgba-secondary-2-2 {
+	color: rgba(216, 216, 216, 1)
+}
+
+.rgba-secondary-2-3 {
+	color: rgba(19, 39, 22, 1)
+}
+
+.rgba-secondary-2-4 {
+	color: rgba(0, 0, 0, 1)
+}
+
+/* Generated by Paletton.com Â© 2002-2014 */
+/* http://paletton.com */
+
+.text-shadow {
+	text-shadow: 0.0625em 0.0625em 0.125em #000;
+}
+
+.box-shadow {
+	box-shadow: 0 0.125em 0.25em #000;
+}

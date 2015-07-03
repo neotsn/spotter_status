@@ -63,6 +63,20 @@ class Location extends WebRequests
         }
     }
 
+    public function getLocationById($location_id)
+    {
+        global $db;
+
+        $params = array($location_id);
+        $results = $db->query(SQL_SELECT_LOCATION_BY_FIPS_STATE_ZONE, $params);
+
+        if (!empty($results[0])) {
+            return $results[0];
+        } else {
+            return array();
+        }
+    }
+
     public function updateUserLocationRow($user_id, $user_location, $last_checked, $last_alert_time)
     {
 
@@ -70,7 +84,7 @@ class Location extends WebRequests
 
         $params = array(
             USERS_LOCATIONS_USER_ID         => $user_id,
-            USERS_LOCATIONS_LOCATION        => $user_location,
+            USERS_LOCATIONS_LOCATION_ID => $user_location,
             USERS_LOCATIONS_LAST_CHECKED    => $last_checked,
             USERS_LOCATIONS_LAST_ALERT_TIME => $last_alert_time
         );
@@ -86,7 +100,7 @@ class Location extends WebRequests
             $this->users[$result[USERS_LOCATIONS_USER_ID]] = $result[USERS_LOCATIONS_USER_ID];
 
             // Add the location id to the Location list
-            $location_data = $this->_buildLocationData($result[USERS_LOCATIONS_LOCATION]);
+            $location_data = $this->_buildLocationData($result);
 //            $this->locations[$location_data['zone']] = $location_data['zone'];
             $this->locations[$location_data['zone']] = $location_data;
 
@@ -97,20 +111,16 @@ class Location extends WebRequests
             $this->locations_users[$location_data['zone']][$result[USERS_LOCATIONS_USER_ID]] = $result[USERS_LOCATIONS_USER_ID];
 
             // Create a unique key for the user-location row and store the full row
-            $result[USERS_LOCATIONS_LOCATION] = $location_data;
+            $result[USERS_LOCATIONS_LOCATION_ID] = $location_data;
             $this->users_locations_rows[$this->getUserLocationRowKey($result[USERS_LOCATIONS_USER_ID], $location_data['zone'])] = $result;
         }
     }
 
-    private function _buildLocationData($data)
+    private function _buildLocationData($row)
     {
-        $key = $data;
-        $data = explode('|', $data);
-
         return array(
-            'key'  => $key,
-            'fips' => $data[0],
-            'zone' => $data[1] . 'Z' . $data[2]
+            'id'   => $row[LOCATIONS_ID],
+            'zone' => $row[LOCATIONS_STATE] . 'Z' . $row[LOCATIONS_ZONE],
         );
     }
 }
