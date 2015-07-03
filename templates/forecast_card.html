@@ -1,10 +1,22 @@
-<div class="forecast_card">
-	<h3>{TXT_STATEMENT_CITY}, {TXT_STATEMENT_STATE} ({TXT_STATEMENT_OFFICE})<span class="forecast_timestamp">{TXT_STATEMENT_TIMESTAMP}</span>
-	</h3>
-	<span class="forecast_statement">{TXT_STATEMENT_MESSAGE}</span>
-	<span class="forecast_source">
-		<a target="_blank"
-		   href="http://forecast.weather.gov/product.php?site=NWS&issuedby={TXT_STATEMENT_OFFICE}&product=HWO&format=txt&version=1&glossary=0">View
-			Source</a>
-	</span>
+<div class="group forecase_card rounded-as border-color-complement-0 bas box-shadow phl mvm">
+	<div class="gd-row gt-row gm-row border-color-complement-1 bbs">
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-full">
+			<h5 class="color-complement-1 mvm">{TXT_STATEMENT_CITY}, {TXT_STATEMENT_STATE} ({TXT_STATEMENT_OFFICE}:{TXT_STATEMENT_FIPS})</h5>
+		</div>
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-full">
+			<h5 class="color-complement-2 mvm align--right">{TXT_STATEMENT_TIMESTAMP}</h5>
+		</div>
+	</div>
+	<div class="gd-row gt-row gm-row">
+		<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
+			<p class="phm ptl">{TXT_STATEMENT_MESSAGE}</p>
+		</div>
+	</div>
+	<div class="gd-row gt-row gm-row">
+		<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
+			<p class="text--small align--right pvl phs">
+				<a class="color-primary-1" target="_blank" href="http://forecast.weather.gov/product.php?site=NWS&issuedby={TXT_STATEMENT_OFFICE}&product=HWO&format=txt&version=1&glossary=0">View Source</a>
+			</p>
+		</div>
+	</div>
 </div>

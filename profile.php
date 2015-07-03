@@ -38,7 +38,8 @@ if ($b_has_forecast_cards) {
     $spotter_template = new Template('forecast_card', false, false);
     foreach ($spotter_statements as $statement) {
         $spotter_template->setTemplateVars(array(
-            'TXT_STATEMENT_OFFICE'    => strtoupper($statement[LOCATIONS_CWA]) . ':' . $statement[LOCATIONS_FIPS],
+            'TXT_STATEMENT_OFFICE' => strtoupper($statement[LOCATIONS_CWA]),
+            'TXT_STATEMENT_FIPS'   => $statement[LOCATIONS_FIPS],
             'TXT_STATEMENT_CITY'      => $statement[LOCATIONS_NAME],
             'TXT_STATEMENT_STATE'     => $statement[LOCATIONS_STATE],
             'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[ADVISORIES_ISSUED_TIME]),

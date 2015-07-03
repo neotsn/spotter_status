@@ -916,3 +916,7 @@ legend.input-label {
 .nowrap {
 	white-space: nowrap;
 }
+
+.text--small {
+	font-size: 0.75em;
+}
