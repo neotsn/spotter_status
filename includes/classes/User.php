@@ -24,7 +24,7 @@ class User
     public $is_follower = 0;
     public $can_dm = 0;
 
-    private $locations = array();
+    private $location = array();
 
     public function __construct($userid)
     {
@@ -57,18 +57,14 @@ class User
         }
     }
 
-    public function getUsersLocations()
+    public function getUserLocation()
     {
         global $db;
 
-        $results = $db->query(SQL_SELECT_ALL_USERS_LOCATIONS_BY_USER_ID, array($this->id));
+        $db->query(SQL_SELECT_ALL_USERS_LOCATIONS_BY_USER_ID, array($this->id));
+        $this->location = $db->getNext();
 
-        $this->locations = array();
-        foreach ($results as $result) {
-            $this->locations[$result[LOCATIONS_ID]] = $result;
-        }
-
-        return $this->locations;
+        return $this->location;
     }
 
     public function getSpotterStatements()

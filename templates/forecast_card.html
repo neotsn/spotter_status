@@ -13,10 +13,20 @@
 		</div>
 	</div>
 	<div class="gd-row gt-row gm-row">
-		<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
-			<p class="text--small align--right pvl phs">
-				<a class="color-primary-1" target="_blank" href="http://forecast.weather.gov/product.php?site=NWS&issuedby={TXT_STATEMENT_OFFICE}&product=HWO&format=txt&version=1&glossary=0">View Source</a>
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-half">
+			<p class="text--small align--left pvl phs color-primary-4 new-line">
+				<span class="clickable button--small btn--primary--clear rounded-as profile_show_full_statement">Show Cached Advisory</span>
 			</p>
+		</div>
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-half">
+			<p class="text--small align--right pvl phs new-line">
+				<a class="clickable button--small btn--complement--clear rounded-as" target="_blank" href="http://forecast.weather.gov/product.php?site=NWS&issuedby={TXT_STATEMENT_OFFICE}&product=HWO&format=txt&version=1&glossary=0">View NWS Source</a>
+			</p>
+		</div>
+	</div>
+	<div class="gd-row gt-row gm-row profile_full_statement" style="display:none;">
+		<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
+			<pre class="phm ptl mhs mvm border-color-complement-2 bas rounded-am codeify">{TXT_STATEMENT_ADVISORY}</pre>
 		</div>
 	</div>
 </div>

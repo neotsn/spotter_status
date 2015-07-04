@@ -119,8 +119,7 @@ switch ($mode) {
         $location_id = '';
         $selected_location_rows = array();
         // Try for the user's selected data first...
-        if ($selected_location_rows = $user->getUsersLocations()) {
-            $selected_location_row = array_shift($selected_location_rows);
+        if ($selected_location_row = $user->getUserLocation()) {
             $state = $selected_location_row[LOCATIONS_STATE];
             $location_id = $selected_location_row[LOCATIONS_ID];
         } else if ($db->query(SQL_SELECT_FIRST_LOCATION_ROW)) {

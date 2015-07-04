@@ -379,7 +379,7 @@
 [class*="btn--complement"]:hover {
 	background-color: #053874;
 	border-color: #18549C;
-	color: #000;
+	color: #C3C3C3;
 }
 
 [class*="btn--secondary-1"] {

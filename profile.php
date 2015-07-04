@@ -22,25 +22,26 @@ $user = new User($user_id);
 $user->validateUserSession();
 
 // Get the User's subscribed offices
-$location_rows = $user->getUsersLocations();
+$location_row = $user->getUserLocation();
 $spotter_statements = $user->getSpotterStatements();
 
 // Make the Spotter Statement Cards
 $forecast_cards_html = '';
-$subscribed_offices_html = '';
 $messages_html = '';
+$profile_location_html = '';
 
 $b_has_forecast_cards = !empty($spotter_statements) ? true : false;
 if ($b_has_forecast_cards) {
     $spotter_template = new Template('forecast_card', false, false);
     foreach ($spotter_statements as $statement) {
         $spotter_template->setTemplateVars(array(
-            'TXT_STATEMENT_OFFICE' => strtoupper($statement[LOCATIONS_CWA]),
-            'TXT_STATEMENT_FIPS'   => $statement[LOCATIONS_FIPS],
+            'TXT_STATEMENT_OFFICE'   => strtoupper($statement[LOCATIONS_CWA]),
+            'TXT_STATEMENT_FIPS'     => $statement[LOCATIONS_FIPS],
             'TXT_STATEMENT_CITY'      => $statement[LOCATIONS_NAME],
             'TXT_STATEMENT_STATE'     => $statement[LOCATIONS_STATE],
             'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[ADVISORIES_ISSUED_TIME]),
-            'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[ADVISORIES_STATEMENT])))
+            'TXT_STATEMENT_MESSAGE'  => ucfirst(strtolower(str_replace('|', "<br />", $statement[ADVISORIES_STATEMENT]))),
+            'TXT_STATEMENT_ADVISORY' => $statement[ADVISORIES_ADVISORY]
         ));
         $forecast_cards_html .= $spotter_template->compile();
         $spotter_template->reset_template();
@@ -48,41 +49,16 @@ if ($b_has_forecast_cards) {
 }
 
 // Gather the Subscribed Offices
-$b_has_locations = !empty($location_rows) ? true : false;
+$b_has_locations = !empty($location_row) ? true : false;
 if ($b_has_locations) {
 
-    // Group them by state
-    $user_locations = array();
-    foreach ($location_rows as $location_row) {
-        $user_locations[$location_row[LOCATIONS_STATE]][$location_row[LOCATIONS_ID]] = array(
-            'name'   => $location_row[LOCATIONS_NAME],
-            'county' => $location_row[LOCATIONS_COUNTY]
-        );
-    }
-
-    $state_template = new Template('office_states_profile', false, false);
-    foreach ($user_locations as $state => $location_data) {
-
-        $cities_html = '';
-        $city_template = new Template('office_cities_profile', false, false);
-        foreach ($location_data as $location_id => $name_data) {
-            $city_template->setTemplateVars(array(
-                'TXT_LOCATION_ID'      => $location_id,
-                'TXT_LOCATION_NAME'    => ($name_data['name'] != $name_data['county'] && $name_data['name']) ? $name_data['name'] . ' - ' : '',
-                'TXT_LOCATION_COUNTY'  => $name_data['county'],
-                'I_OFFICE_PRESELECTED' => '',
-            ));
-            $cities_html .= $city_template->compile();
-            $city_template->reset_template();
-        }
-
-        $state_template->setTemplateVars(array(
-            'TXT_OFFICE_STATE'  => $state,
-            'TXT_OFFICE_CITIES' => $cities_html,
-        ));
-        $subscribed_offices_html .= $state_template->compile();
-        $state_template->reset_template();
-    }
+    $profile_location_template = new Template('profile_location', false, false);
+    $profile_location_template->setTemplateVars(array(
+        'TXT_USER_ID'         => $user_id,
+        'TXT_LOCATION_COUNTY' => $location_row[LOCATIONS_COUNTY],
+        'TXT_LOCATION_STATE'  => $location_row[LOCATIONS_STATE]
+    ));
+    $profile_location_html = $profile_location_template->compile();
 }
 
 //	$connection_errors = array();
@@ -123,7 +99,7 @@ $template->setTemplateVars(array(
     'TXT_USER_SCREEN_NAME'       => $user->screen_name,
     'TXT_LOGOUT_USER'            => 'Logout',
     'TXT_SPOTTER_FORECAST_CARDS' => $forecast_cards_html,
-    'TXT_SUBSCRIBED_OFFICES'     => $subscribed_offices_html,
+    'TXT_PROFILE_LOCATION' => $profile_location_html,
     'TXT_RELATIONSHIP_STATUS'    => $follow_class,
     'TXT_DM_STATUS'              => $dm_class,
     'TXT_USER_ID'                => $user->id,

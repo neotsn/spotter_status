@@ -921,3 +921,11 @@ legend.input-label {
 .text--small {
 	font-size: 0.75em;
 }
+
+.is-hidden {
+	display: none;
+}
+
+.is-visible {
+	display: inherit;
+}

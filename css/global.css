@@ -20,6 +20,7 @@ img {
 	width: auto;
 	max-width: 100%;
 }
+
 a {
 	text-decoration: none;
 }
@@ -92,4 +93,9 @@ h5 {
 	cursor: pointer;
 	text-align: center;
 	display: inline-block;
+}
+
+.codify {
+	font-size: 90%;
+	font-family: "Droid Sans Mono", monospace;
 }

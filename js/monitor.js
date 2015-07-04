@@ -1,23 +1,6 @@
 /**
- * Created by Chris on 5/18/2014.
+ * Created by @neotsn on 5/18/2014.
  */
-
-function monitor_offices_list() {
-	$('span[class^="nws_office_city"]').unbind().on('click', function () {
-		var thisClass = $(this).attr('class');
-		var officeId = $(this).attr('data-id');
-
-		if (thisClass == "nws_office_city_selected") {
-			// Currently selected, remove selection and remove input element for it
-			$('input[name="offices\\[' + officeId + '\\]"]').remove();
-			$(this).addClass('nws_office_city').removeClass('nws_office_city_selected');
-		} else {
-			var hiddenOfficeIdField = $('<input type="hidden" />').val(officeId).attr('name', 'offices[' + officeId + ']');
-			$("#offices_input_container").append(hiddenOfficeIdField);
-			$(this).removeClass('nws_office_city').addClass('nws_office_city_selected');
-		}
-	});
-}
 
 function monitor_profile_links() {
 	$(".btn_show_location_selector").unbind().on('click', function () {
@@ -51,6 +34,20 @@ function monitor_profile_links() {
 				}
 			}
 		});
+	});
+
+	$('.profile_show_full_statement').unbind().on('click', function () {
+		var button_text,
+			advisory_container = $('.profile_full_statement'),
+			button = $(this);
+
+		advisory_container.slideToggle({
+			done: function () {
+				button_text = ($(this).is(':visible') ? 'Hide ' : 'Show ') + 'Cached Advisory';
+				button.text(button_text);
+			}
+		});
+
 	});
 }
 
