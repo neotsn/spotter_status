@@ -75,7 +75,7 @@ do {
         // If we did cache it, then we've already alerted the user as well
         if (!isset($zoneCache[$location_zone_to_request])) {
             // Production API calls
-            $a->addRequest(API_GET_OUTLOOK_BY_ZONE, $location_zone_to_request);
+            $a->addRequest(API_AERIS_GET_OUTLOOK_BY_ZONE, $location_zone_to_request);
             $a->prepareSingleUrl();
             $a->executeRequest();
 
@@ -130,6 +130,8 @@ do {
                     // Iterate over the each user in the queue...pull their User id
                     foreach ($l->users_locations_to_alert as $user_id => $user_data) {
 
+                        $user = new User($user_id);
+
                         // Iterate over each user's locations to alert for...
                         foreach ($user_data as $user_location_data) {
 
@@ -147,7 +149,7 @@ do {
                             }
 
                             // If we know about this location, we can alert about it...
-                            if (!empty($locationCache[$user_location_data['id']])) {
+                            if (!empty($locationCache[$user_location_data['id']]) && $user->can_dm) {
 
                                 // Update the users_locations row for this user-location
                                 $l->updateUserLocationRow($user_id, $user_location_data['id'], time(), $response_data->timestamps->issued);
@@ -244,7 +246,7 @@ if ($errors) {
     if (!empty($cleanup_user_ids)) {
         foreach ($cleanup_user_ids as $remove_user_id) {
             $db->delete(TABLE_USERS, array(USERS_ID => $remove_user_id));
-            $db->delete(TABLE_USERS_OFFICES, array(USERS_OFFICES_USER_ID => $remove_user_id));
+            $db->delete(TABLE_USERS_LOCATIONS, array(USERS_LOCATIONS_USER_ID => $remove_user_id));
         }
 
         $message = "Removed " . count($cleanup_user_ids) . " users who unfollowed.";

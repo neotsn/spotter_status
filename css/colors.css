@@ -358,50 +358,66 @@
 }
 
 /* Buttons */
-.btn--primary {
+[class*="btn--primary"] {
 	background-color: #000;
 	border-color: #B15200;
 	color: #B15200;
 }
 
-.btn--primary:hover {
+[class*="btn--primary"]:hover {
 	background-color: #B15200;
 	border-color: #EF7813;
 	color: #000;
 }
 
-.btn--complement {
+[class*="btn--complement"] {
 	background-color: #000;
 	border-color: #053874;
 	color: #053874;
 }
 
-.btn--complement:hover {
+[class*="btn--complement"]:hover {
 	background-color: #053874;
 	border-color: #18549C;
 	color: #000;
 }
 
-.btn--secondary-1 {
+[class*="btn--secondary-1"] {
 	background-color: #000;
 	border-color: #B10000;
 	color: #B10000;
 }
 
-.btn--secondary-1:hover {
+[class*="btn--secondary-1"]:hover {
 	background-color: #B10000;
 	border-color: #EF1313;
 	color: #000;
 }
 
-.btn--secondary-2 {
+[class*="btn--secondary-2"] {
 	background-color: #000;
 	border-color: #008911;
 	color: #008911;
 }
 
-.btn--secondary-2:hover {
+[class*="btn--secondary-2"]:hover {
 	background-color: #008911;
 	border-color: #0FB924;
 	color: #000;
+}
+
+[class*="btn--white"] {
+	background-color: transparent;
+	border-color: #ccc;
+	color: #ccc;
+}
+
+[class*="btn--white"]:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+	border-color: #fff;
+	color: #fff;
+}
+
+[class*="--clear"] {
+	background-color: transparent;
 }

@@ -82,10 +82,14 @@ h5 {
 	margin-top: 175px;
 }
 
+.btn_profile_location {
+	width: auto;
+}
+
 .button--small,
 .button,
 .button--large {
 	cursor: pointer;
 	text-align: center;
-	display: block;
+	display: inline-block;
 }

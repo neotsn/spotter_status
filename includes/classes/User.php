@@ -24,7 +24,6 @@ class User
     public $is_follower = 0;
     public $can_dm = 0;
 
-    private $offices = array();
     private $locations = array();
 
     public function __construct($userid)
@@ -62,46 +61,14 @@ class User
     {
         global $db;
 
-        $this->locations = $db->query(SQL_SELECT_ALL_USERS_LOCATIONS_BY_USER_ID, array($this->id));
+        $results = $db->query(SQL_SELECT_ALL_USERS_LOCATIONS_BY_USER_ID, array($this->id));
 
-        return $this->locations;
-    }
-
-    /**
-     * @depreciated 2.0
-     * @return array
-     */
-    public function getUsersOfficeRows()
-    {
-//        return $this->getUsersLocations();
-        global $db;
-        $this->offices = $db->query(SQL_SELECT_ALL_FROM_OFFICES_BY_USER_ID, array($this->id));
-
-        return $this->offices;
-    }
-
-    public function getUsersOfficeIds()
-    {
-        global $db;
-
-        // Get the offices already selected by the User
-        $selected_office_rows = $db->query(SQL_SELECT_OFFICE_IDS_BY_USER_ID, array($this->id));
-
-        $selected = array();
-        if (!empty($selected_office_rows)) {
-            foreach ($selected_office_rows as $selected_office_row) {
-                $selected[$selected_office_row['office_id']] = $selected_office_row['office_id'];
-            }
+        $this->locations = array();
+        foreach ($results as $result) {
+            $this->locations[$result[LOCATIONS_ID]] = $result;
         }
 
-        return $selected;
-    }
-
-    public function getStatements()
-    {
-        global $db;
-
-        return $db->query(SQL_SELECT_ALL_STATEMENTS_FOR_USER_ID, array($this->id));
+        return $this->locations;
     }
 
     public function getSpotterStatements()

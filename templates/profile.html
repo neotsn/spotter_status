@@ -55,7 +55,7 @@
 						<div class="gd-row gt-row gm-row">
 							<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full color-complement-2 pal">
 								<ul class="profile_menu">
-									<li id="edit_offices" data-userid="{TXT_USER_ID}" class="color-primary-1">Edit Offices</li>
+									<li data-userid="{TXT_USER_ID}" class="clickable color-primary-1 btn_show_location_selector">Change Location</li>
 									<li><a href="http://thepizzy.net/blog/labs/skywarn-storm-spotter-user-guide/" class="color-primary-1" target="_blank">User
 										Guide</a></li>
 									<li><a class="color-primary-1" href="clearsessions.php">Logout</a></li>
@@ -64,7 +64,7 @@
 						</div>
 						<!-- IF {B_HAS_RELATIONSHIP} -->
 						<div class="gd-row gt-row gm-hide">
-							<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full color-complement-2 pbs">
+							<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full color-complement-2 align--center pbs">
 								<span id="disconnect_service" class="button--small btn--secondary-1" data-userid="{TXT_USER_ID}">Disconnect Service</span>
 							</div>
 						</div>
@@ -79,28 +79,34 @@
 
 							<p class="pas mbm"><a href="ajax_handler.php?mode=followOnTwitter&user_id={TXT_USER_ID}" class="profile_follow_img"></a></p>
 							<!-- ENDIF -->
-							<h4 class="pas mbs">Latest Spotter Information Statements</h4>
+							<h4 class="pas mbs">Latest Spotter Information Statement</h4>
 							<!-- IF {B_HAS_FORECAST_CARDS} -->
 							{TXT_SPOTTER_FORECAST_CARDS}
 							<!-- ELSE -->
-							<p class="pas">The service has not scanned any Hazardous Weather Outlooks at your chosen locations recently. Scans run at the top of every hour.</p>
+							<p class="pas">The service has not scanned any Hazardous Weather Outlook at your chosen location recently. Scans run at the top of every hour.</p>
 							<!-- ENDIF -->
 							<p class="color-complement-2 text--small align--right">This service checks for new Hazardous Weather Outlook reports at the top of every hour.</p>
 						</div>
 					</div>
 				</div>
 				<div class="gd-row gt-row gm-row mtl">
-					<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full group bg-color-complement-3 rounded-am box-shadow group pas">
+					<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full group bg-color-primary-3 rounded-am box-shadow group pas">
 						<div class="gd-row gt-row gm-row">
 							<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full align--center mbs mtm">
-								<h3 class="valign--middle pvs color-primary-2">Your Locations</h3>
+								<h3 class="valign--middle pvs color-primary-2">Your Location</h3>
+
+								<p class="text--small color-primary-2 new-line align--center">Limit 1 location at this time.</p>
 							</div>
-							<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full align--center mbs mtm">
-								<!-- IF {B_HAS_OFFICES} -->
-								{TXT_SUBSCRIBED_OFFICES}
-								<!-- ELSE -->
-								<span class="button btn--primary" data-userid="{TXT_USER_ID}">Add Offices</span>
-								<!-- ENDIF -->
+							<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full align--center mbs mtm group">
+								<div class="gd-row gt-row gm-row pam">
+									<!-- IF {B_HAS_OFFICES} -->
+									{TXT_SUBSCRIBED_OFFICES}
+									<!-- ELSE -->
+									<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
+										<span class="button btn--primary btn_show_location_selector" data-userid="{TXT_USER_ID}">Add Location</span>
+									</div>
+									<!-- ENDIF -->
+								</div>
 							</div>
 						</div>
 					</div>
@@ -113,5 +119,6 @@
 		<span class="alert_icon"></span>
 		<span class="disconnect_confirmation">This will unfollow @NOAAalerts and delete your settings & credentials from the database. Are you sure?</span>
 	</div>
+	<div id="locations_dialog" style="display:none;"></div>
 	<script>monitor_profile_links();</script>
 </section>

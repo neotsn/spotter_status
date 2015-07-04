@@ -23,10 +23,7 @@ $user->validateUserSession();
 
 // Get the User's subscribed offices
 $location_rows = $user->getUsersLocations();
-$spotter_statements = $user->getSpotterStatements($location_rows);
-
-//$office_rows = $user->getUsersOfficeRows();
-//$spotter_statements = $user->getStatements();
+$spotter_statements = $user->getSpotterStatements();
 
 // Make the Spotter Statement Cards
 $forecast_cards_html = '';
@@ -57,20 +54,23 @@ if ($b_has_locations) {
     // Group them by state
     $user_locations = array();
     foreach ($location_rows as $location_row) {
-        $user_locations[$location_row[LOCATIONS_STATE]][$location_row[LOCATIONS_ID]] = $location_row[LOCATIONS_NAME];
+        $user_locations[$location_row[LOCATIONS_STATE]][$location_row[LOCATIONS_ID]] = array(
+            'name'   => $location_row[LOCATIONS_NAME],
+            'county' => $location_row[LOCATIONS_COUNTY]
+        );
     }
 
     $state_template = new Template('office_states_profile', false, false);
-    foreach ($user_locations as $state => $city_data) {
+    foreach ($user_locations as $state => $location_data) {
 
         $cities_html = '';
         $city_template = new Template('office_cities_profile', false, false);
-        foreach ($city_data as $location_id => $city) {
+        foreach ($location_data as $location_id => $name_data) {
             $city_template->setTemplateVars(array(
-                'TXT_OFFICE_ID' => $location_id,
-                'TXT_OFFICE_CITY'       => $city,
-                'TXT_OFFICE_CITY_CLASS' => 'nws_office_city',
-                'I_OFFICE_PRESELECTED'  => ''
+                'TXT_LOCATION_ID'      => $location_id,
+                'TXT_LOCATION_NAME'    => ($name_data['name'] != $name_data['county'] && $name_data['name']) ? $name_data['name'] . ' - ' : '',
+                'TXT_LOCATION_COUNTY'  => $name_data['county'],
+                'I_OFFICE_PRESELECTED' => '',
             ));
             $cities_html .= $city_template->compile();
             $city_template->reset_template();
@@ -78,7 +78,7 @@ if ($b_has_locations) {
 
         $state_template->setTemplateVars(array(
             'TXT_OFFICE_STATE'  => $state,
-            'TXT_OFFICE_CITIES' => $cities_html
+            'TXT_OFFICE_CITIES' => $cities_html,
         ));
         $subscribed_offices_html .= $state_template->compile();
         $state_template->reset_template();

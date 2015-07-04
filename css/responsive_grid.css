@@ -896,6 +896,7 @@ legend.input-label {
 }
 
 .float--center {
+	float: none !important;
 	margin-left: auto !important;
 	margin-right: auto !important;
 	clear: both;

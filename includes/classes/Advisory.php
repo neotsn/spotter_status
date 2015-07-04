@@ -33,8 +33,8 @@ class Advisory extends \WebRequests
         if (!empty($value)) {
 
             switch ($string) {
-                case API_GET_OUTLOOK_BY_FIPS:
-                case API_GET_OUTLOOK_BY_ZONE:
+                case API_AERIS_GET_OUTLOOK_BY_FIPS:
+                case API_AERIS_GET_OUTLOOK_BY_ZONE:
                     $value = array('%p' => $value);
                     break;
             }
@@ -45,7 +45,7 @@ class Advisory extends \WebRequests
             '%s' => $connection_info['aeris']['CLIENT_SECRET']
         );
 
-        $string = strtr($string, $value) . strtr(API_AUTH_STRING, $auth);
+        $string = strtr($string, $value) . strtr(API_AERIS_AUTH_STRING, $auth);
 
         $this->queryStrings[] = $string;
     }
@@ -88,9 +88,10 @@ class Advisory extends \WebRequests
     {
         global $db;
 
-        $result = $db->query('SELECT call_response FROM ' . TABLE_API_CALLS . ' ORDER BY call_time DESC LIMIT 0, 1');
+        $db->query(SQL_SELECT_LAST_CACHED_RESPONSE);
+        $result = $db->getNext();
 
-        $this->responses[] = $result[0]['call_response'];
+        $this->responses[] = $result['call_response'];
 
         $this->handleResponses();
     }
@@ -188,7 +189,7 @@ class Advisory extends \WebRequests
         );
 
         $params = array(
-            '%e' => strtr(API_BATCH_REQUEST, $batch_params)
+            '%e' => strtr(API_AERIS_BATCH_REQUEST, $batch_params)
         );
 
         $this->urls[] = strtr(URL_AERIS_DOMAIN, $params);

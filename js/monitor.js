@@ -20,14 +20,9 @@ function monitor_offices_list() {
 }
 
 function monitor_profile_links() {
-	$("#edit_offices").unbind().on('click', function () {
+	$(".btn_show_location_selector").unbind().on('click', function () {
 		var user_id = $(this).attr('data-userid');
-		get_office_list(user_id);
-	});
-
-	$(".add_offices").unbind().on('click', function () {
-		var user_id = $(this).attr('data-userid');
-		get_office_list(user_id);
+		get_location_selector(user_id);
 	});
 
 	$("#disconnect_service").unbind().on('click', function () {
@@ -51,7 +46,7 @@ function monitor_profile_links() {
 						$(this).dialog("close");
 					});
 				},
-				Cancel: function () {
+				"Cancel": function () {
 					$(this).dialog("close");
 				}
 			}
@@ -59,39 +54,51 @@ function monitor_profile_links() {
 	});
 }
 
-function get_office_list(user_id) {
+function monitor_location_selector_dialog() {
+	// Listen for state-menu changes on the container
+	$('#locations_dialog').on('change', '#state_selector', function () {
+		$.ajax({
+			type: "GET",
+			url: "ajax_handler.php",
+			data: {
+				mode: "getLocationOptionsForState",
+				state: $(this).val()
+			}
+		}).done(function (response) {
+			$('#location_selector_container').html(response);
+		});
+	})
+}
+
+function get_location_selector(user_id) {
 	$.ajax({
 		type: "GET",
 		url: "ajax_handler.php",
 		data: {
-			mode: "getOfficelist",
+			mode: "getLocationSelector",
 			user_id: user_id
 		}
 	}).done(function (response) {
-		$("#offices_dialog").html(response).dialog({
-			height: window.innerHeight - 200,
-			width: window.innerWidth - 200,
+		$("#locations_dialog").html(response).dialog({
+			//height: 300,
+			width: 600,
+			title: "Change Your Location",
 			modal: true,
 			buttons: {
 				"Save": function () {
-					var offices = [];
-					$('input[name^="offices\\["]').each(function () {
-						offices.push($(this).val());
-					});
-
 					$.ajax({
 						type: "POST",
 						url: "ajax_handler.php",
 						data: {
-							mode: "saveOfficelist",
-							offices: offices,
+							mode: "saveLocation",
+							location_id: $('select[name="location_id"]').val(),
 							user_id: user_id
 						}
 					}).done(function () {
 						parent.location.reload();
 					});
 				},
-				Cancel: function () {
+				"Cancel": function () {
 					$(this).dialog("close");
 				}
 			}

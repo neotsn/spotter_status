@@ -46,29 +46,39 @@ class Location extends WebRequests
     {
         global $db;
 
-        $params = array($location_id);
-        $results = $db->query(SQL_SELECT_LOCATION_BY_ID, $params);
+        $db->query(SQL_SELECT_LOCATION_BY_ID, array($location_id));
 
-        if (!empty($results[0])) {
-            return $results[0];
-        } else {
-            return array();
-        }
+        return $db->getNext();
     }
 
     public function updateUserLocationRow($user_id, $user_location, $last_checked, $last_alert_time)
     {
-
         global $db;
 
+        /** When we allow for multiple locations per user, we can do uncomment... */
+//        $params = array(
+//            USERS_LOCATIONS_USER_ID         => $user_id,
+//            USERS_LOCATIONS_LOCATION_ID     => $user_location,
+//            USERS_LOCATIONS_LAST_CHECKED    => $last_checked,
+//            USERS_LOCATIONS_LAST_ALERT_TIME => $last_alert_time
+//        );
+//        $db->replace(TABLE_USERS_LOCATIONS, $params);
+
+        /** Right now we can only allow one location per user */
         $params = array(
-            USERS_LOCATIONS_USER_ID         => $user_id,
             USERS_LOCATIONS_LOCATION_ID => $user_location,
             USERS_LOCATIONS_LAST_CHECKED    => $last_checked,
             USERS_LOCATIONS_LAST_ALERT_TIME => $last_alert_time
         );
 
-        $db->replace(TABLE_USERS_LOCATIONS, $params);
+        $criteria = array(
+            array(
+                'field' => USERS_LOCATIONS_USER_ID,
+                'op'    => '=',
+                'value' => $user_id
+            )
+        );
+        $db->update(TABLE_USERS_LOCATIONS, $params, $criteria);
     }
 
     private function _prepareUsersLocations($results)
