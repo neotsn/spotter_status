@@ -23,6 +23,7 @@ class User
     public $sid_expire = 0;
     public $is_follower = 0;
     public $can_dm = 0;
+    public $ok_to_alert = false;
 
     private $location = array();
 
@@ -72,5 +73,42 @@ class User
         global $db;
 
         return $db->query(SQL_SELECT_STATEMENTS_BY_USER_ID, array($this->id));
+    }
+
+    public function updateUserLocationRow($user_location, $last_checked, $last_alert_time, $last_statement_hash)
+    {
+        global $db;
+
+        // Get the previous cache for this user's row
+        $db->query(SQL_SELECT_PREVIOUS_STATEMENT_HASH_FOR_USER_ID, array($this->id));
+        $results = $db->getNext();
+
+        $this->ok_to_alert = ($results[USERS_LOCATIONS_LAST_STATEMENT_HASH] != $last_statement_hash);
+
+        /** When we allow for multiple locations per user, we can do uncomment... */
+//        $params = array(
+//            USERS_LOCATIONS_USER_ID         => $user_id,
+//            USERS_LOCATIONS_LOCATION_ID     => $user_location,
+//            USERS_LOCATIONS_LAST_CHECKED    => $last_checked,
+//            USERS_LOCATIONS_LAST_ALERT_TIME => $last_alert_time
+//        );
+//        $db->replace(TABLE_USERS_LOCATIONS, $params);
+
+        /** Right now we can only allow one location per user */
+        $params = array(
+            USERS_LOCATIONS_LOCATION_ID         => $user_location,
+            USERS_LOCATIONS_LAST_CHECKED        => $last_checked,
+            USERS_LOCATIONS_LAST_ALERT_TIME     => $last_alert_time,
+            USERS_LOCATIONS_LAST_STATEMENT_HASH => $last_statement_hash
+        );
+
+        $criteria = array(
+            array(
+                'field' => USERS_LOCATIONS_USER_ID,
+                'op'    => '=',
+                'value' => $this->id
+            )
+        );
+        $db->update(TABLE_USERS_LOCATIONS, $params, $criteria);
     }
 }

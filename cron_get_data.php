@@ -151,9 +151,6 @@ do {
                             // If we know about this location, we can alert about it...
                             if (!empty($locationCache[$user_location_data['id']]) && $user->can_dm) {
 
-                                // Update the users_locations row for this user-location
-                                $l->updateUserLocationRow($user_id, $user_location_data['id'], time(), $response_data->timestamps->issued);
-
                                 // Helper variables for code neatness
                                 $area = $locationCache[$user_location_data['id']][LOCATIONS_NAME];
                                 $state = $locationCache[$user_location_data['id']][LOCATIONS_STATE];
@@ -162,9 +159,14 @@ do {
                                 // Compose the twitter Direct Message content, with url
                                 $twitter_message = $a->prepareTwitterMessage($statement, $area, $state, $cwa);
 
+                                // Update the users_locations row for this user-location
+                                $user->updateUserLocationRow($user_location_data['id'], time(), $response_data->timestamps->issued, $a->statement_hash);
+
 //                                /*
                                 // Send the DM
-                                $dm_result = $connection->post('direct_messages/new', array('text' => $twitter_message, 'user_id' => $user_id));
+                                if ($user->ok_to_alert) {
+                                    $dm_result = $connection->post('direct_messages/new', array('text' => $twitter_message, 'user_id' => $user_id));
+                                }
 
                                 // Error handling...
                                 if (!empty($dm_result->errors)) {

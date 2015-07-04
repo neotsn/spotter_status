@@ -20,6 +20,7 @@ class Advisory extends \WebRequests
     private $responses = array();
 
     public $data = array();
+    public $statement_hash = '';
 
     /**
      * @param       $string
@@ -164,6 +165,8 @@ class Advisory extends \WebRequests
         $shortMessage = trim($shortMessage); // trim it up
         $shortMessage .= ($currentLength < $messageLength) ? '...' : ''; // add the dots if needed
         $shortMessage .= ' ' . strtr(URL_NWS_ADVISORY, array('%o' => $cwa)); // add the URL
+
+        $this->statement_hash = md5($shortMessage);
 
         return $shortMessage;
     }

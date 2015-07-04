@@ -51,46 +51,17 @@ class Location extends WebRequests
         return $db->getNext();
     }
 
-    public function updateUserLocationRow($user_id, $user_location, $last_checked, $last_alert_time)
-    {
-        global $db;
-
-        /** When we allow for multiple locations per user, we can do uncomment... */
-//        $params = array(
-//            USERS_LOCATIONS_USER_ID         => $user_id,
-//            USERS_LOCATIONS_LOCATION_ID     => $user_location,
-//            USERS_LOCATIONS_LAST_CHECKED    => $last_checked,
-//            USERS_LOCATIONS_LAST_ALERT_TIME => $last_alert_time
-//        );
-//        $db->replace(TABLE_USERS_LOCATIONS, $params);
-
-        /** Right now we can only allow one location per user */
-        $params = array(
-            USERS_LOCATIONS_LOCATION_ID => $user_location,
-            USERS_LOCATIONS_LAST_CHECKED    => $last_checked,
-            USERS_LOCATIONS_LAST_ALERT_TIME => $last_alert_time
-        );
-
-        $criteria = array(
-            array(
-                'field' => USERS_LOCATIONS_USER_ID,
-                'op'    => '=',
-                'value' => $user_id
-            )
-        );
-        $db->update(TABLE_USERS_LOCATIONS, $params, $criteria);
-    }
-
     private function _prepareUsersLocations($results)
     {
         foreach ($results as $result) {
+
+            // Format the location data we need
+            $location_data = $this->_buildLocationData($result);
 
             // Add the user's id to the User list
             $this->users[$result[USERS_LOCATIONS_USER_ID]] = $result[USERS_LOCATIONS_USER_ID];
 
             // Add the location id to the Location list
-            $location_data = $this->_buildLocationData($result);
-//            $this->locations[$location_data['zone']] = $location_data['zone'];
             $this->locations[$location_data['zone']] = $location_data;
 
             // Associate the user with the locations
