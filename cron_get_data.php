@@ -162,38 +162,36 @@ do {
                                 // Update the users_locations row for this user-location
                                 $user->updateUserLocationRow($user_location_data['id'], time(), $response_data->timestamps->issued, $a->statement_hash);
 
-//                                /*
                                 // Send the DM
                                 if ($user->ok_to_alert) {
                                     $dm_result = $connection->post('direct_messages/new', array('text' => $twitter_message, 'user_id' => $user_id));
-                                }
 
-                                // Error handling...
-                                if (!empty($dm_result->errors)) {
-                                    // Sometimes the message is the same, so Twitter won't allow dupes to be sent
-                                    // Sometimes it's a permissions thing that changed, or bad id info.
-                                    // Gather the error codes and messages and associate to userid; drop that into error_log
-                                    // Then send dev a message with error count notification.
-                                    $errors++;
+                                    // Error handling...
+                                    if (!empty($dm_result->errors)) {
+                                        // Sometimes the message is the same, so Twitter won't allow dupes to be sent
+                                        // Sometimes it's a permissions thing that changed, or bad id info.
+                                        // Gather the error codes and messages and associate to userid; drop that into error_log
+                                        // Then send dev a message with error count notification.
+                                        $errors++;
 
-                                    $msgs = array();
-                                    foreach ($dm_result->errors as $err) {
-                                        $msgs[] = $err->code . ': ' . $err->message;
+                                        $msgs = array();
+                                        foreach ($dm_result->errors as $err) {
+                                            $msgs[] = $err->code . ': ' . $err->message;
 
-                                        if (in_array($err->code, array(150))) {
-                                            $cleanup_user_ids[$user_id] = $user_id;
+                                            if (in_array($err->code, array(150))) {
+                                                $cleanup_user_ids[$user_id] = $user_id;
+                                            }
                                         }
-                                    }
-                                    $err_msg = array(
-                                        'userid'    => $user_id,
-                                        'messages'  => $msgs,
-                                        'statement' => $statement,
-                                        'location' => $user_location_data['id']
-                                    );
+                                        $err_msg = array(
+                                            'userid'    => $user_id,
+                                            'messages'  => $msgs,
+                                            'statement' => $statement,
+                                            'location'  => $user_location_data['id']
+                                        );
 
-                                    error_log('Twitter DM Error (' . time() . ') : ' . json_encode($err_msg));
+                                        error_log('Twitter DM Error (' . time() . ') : ' . json_encode($err_msg));
+                                    }
                                 }
-//                                */
                             }
                         }
                     }
