@@ -78,24 +78,23 @@ h5 {
 	width: 25px;
 }
 
-/* Profile Page */
-#profile {
-	margin-top: 175px;
-}
 
-.btn_profile_location {
-	width: auto;
-}
-
-.button--small,
-.button,
-.button--large {
-	cursor: pointer;
-	text-align: center;
-	display: inline-block;
-}
 
 .codify {
-	font-size: 90%;
+	font-size: 0.8em;
 	font-family: "Droid Sans Mono", monospace;
+}
+
+/*
+ *	Footer
+ */
+.overall_footer_msg {
+	float: left;
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 0.7em;
+	line-height: 1.2em;
+	color: #aaa;
+	margin-top: 10px;
 }
