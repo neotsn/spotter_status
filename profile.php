@@ -13,7 +13,7 @@
 
 session_start();
 define('PATH_ROOT', './');
-require_once('config.php');
+require_once(PATH_ROOT . 'config.php');
 
 $user_id = get_session('userid', null);
 
@@ -22,21 +22,26 @@ $user = new User($user_id);
 $user->validateUserSession();
 
 // Get the User's subscribed offices
-$office_rows = $user->getUsersOfficeRows();
-$spotter_statements = $user->getStatements();
+$location_row = $user->getUserLocation();
+$spotter_statements = $user->getSpotterStatements();
 
 // Make the Spotter Statement Cards
 $forecast_cards_html = '';
-$b_has_forecast_cards = (!empty($spotter_statements)) ? 1 : 0;
+$messages_html = '';
+$profile_location_html = '';
+
+$b_has_forecast_cards = !empty($spotter_statements) ? true : false;
 if ($b_has_forecast_cards) {
     $spotter_template = new Template('forecast_card', false, false);
     foreach ($spotter_statements as $statement) {
         $spotter_template->setTemplateVars(array(
-            'TXT_STATEMENT_OFFICE'    => strtoupper($statement[STATEMENTS_OFFICE_ID]),
-            'TXT_STATEMENT_CITY'      => $statement[OFFICES_CITY],
-            'TXT_STATEMENT_STATE'     => $statement[OFFICES_STATE],
-            'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[STATEMENTS_LAST_OUTLOOK]),
-            'TXT_STATEMENT_MESSAGE'   => ucfirst(strtolower(str_replace('|', "<br />", $statement[STATEMENTS_MESSAGE])))
+            'TXT_STATEMENT_OFFICE'   => strtoupper($statement[LOCATIONS_CWA]),
+            'TXT_STATEMENT_FIPS'     => $statement[LOCATIONS_FIPS],
+            'TXT_STATEMENT_CITY'      => $statement[LOCATIONS_NAME],
+            'TXT_STATEMENT_STATE'     => $statement[LOCATIONS_STATE],
+            'TXT_STATEMENT_TIMESTAMP' => date('Y-m-d H:i:s O', $statement[ADVISORIES_ISSUED_TIME]),
+            'TXT_STATEMENT_MESSAGE'  => ucfirst(strtolower(str_replace('|', "<br />", $statement[ADVISORIES_STATEMENT]))),
+            'TXT_STATEMENT_ADVISORY' => $statement[ADVISORIES_ADVISORY]
         ));
         $forecast_cards_html .= $spotter_template->compile();
         $spotter_template->reset_template();
@@ -44,39 +49,16 @@ if ($b_has_forecast_cards) {
 }
 
 // Gather the Subscribed Offices
-$b_has_offices = (!empty($office_rows)) ? 1 : 0;
-if ($b_has_offices) {
+$b_has_locations = !empty($location_row) ? true : false;
+if ($b_has_locations) {
 
-    // Group them by state
-    $office_locations = array();
-    foreach ($office_rows as $office_row) {
-        $office_locations[$office_row[OFFICES_STATE]][$office_row[OFFICES_ID]] = $office_row[OFFICES_CITY];
-    }
-
-    $subscribed_offices_html = '';
-    $state_template = new Template('office_states_profile', false, false);
-    foreach ($office_locations as $state => $city_data) {
-
-        $cities_html = '';
-        $city_template = new Template('office_cities_profile', false, false);
-        foreach ($city_data as $office_id => $city) {
-            $city_template->setTemplateVars(array(
-                'TXT_OFFICE_ID'         => $office_id,
-                'TXT_OFFICE_CITY'       => $city,
-                'TXT_OFFICE_CITY_CLASS' => 'nws_office_city',
-                'I_OFFICE_PRESELECTED'  => ''
-            ));
-            $cities_html .= $city_template->compile();
-            $city_template->reset_template();
-        }
-
-        $state_template->setTemplateVars(array(
-            'TXT_OFFICE_STATE'  => $state,
-            'TXT_OFFICE_CITIES' => $cities_html
-        ));
-        $subscribed_offices_html .= $state_template->compile();
-        $state_template->reset_template();
-    }
+    $profile_location_template = new Template('profile_location', false, false);
+    $profile_location_template->setTemplateVars(array(
+        'TXT_USER_ID'         => $user_id,
+        'TXT_LOCATION_COUNTY' => $location_row[LOCATIONS_COUNTY],
+        'TXT_LOCATION_STATE'  => $location_row[LOCATIONS_STATE]
+    ));
+    $profile_location_html = $profile_location_template->compile();
 }
 
 //	$connection_errors = array();
@@ -95,7 +77,6 @@ if (!$user->is_follower) {
 }
 
 // Get the error-handling messages
-$messages_html = '';
 if (!empty($_SESSION['msg'])) {
     foreach ($_SESSION['msg'] as $type => $msgs) {
         $msg_template = new Template('msg', false, false);
@@ -118,13 +99,14 @@ $template->setTemplateVars(array(
     'TXT_USER_SCREEN_NAME'       => $user->screen_name,
     'TXT_LOGOUT_USER'            => 'Logout',
     'TXT_SPOTTER_FORECAST_CARDS' => $forecast_cards_html,
-    'TXT_SUBSCRIBED_OFFICES'     => $subscribed_offices_html,
+    'TXT_PROFILE_LOCATION' => $profile_location_html,
     'TXT_RELATIONSHIP_STATUS'    => $follow_class,
     'TXT_DM_STATUS'              => $dm_class,
     'TXT_USER_ID'                => $user->id,
     'TXT_MSGS'                   => $messages_html,
     'B_NO_RELATIONSHIP'          => !$user->is_follower,
-    'B_HAS_OFFICES'              => $b_has_offices,
-    'B_HAS_FORECAST_CARDS'       => $b_has_forecast_cards
+    'B_HAS_RELATIONSHIP'   => $user->is_follower,
+    'B_HAS_OFFICES'        => $b_has_locations,
+    'B_HAS_FORECAST_CARDS' => $b_has_forecast_cards
 ));
 $template->display();

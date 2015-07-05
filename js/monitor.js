@@ -1,33 +1,11 @@
 /**
- * Created by Chris on 5/18/2014.
+ * Created by @neotsn on 5/18/2014.
  */
 
-function monitor_offices_list() {
-	$('span[class^="nws_office_city"]').unbind().on('click', function () {
-		var thisClass = $(this).attr('class');
-		var officeId = $(this).attr('data-id');
-
-		if (thisClass == "nws_office_city_selected") {
-			// Currently selected, remove selection and remove input element for it
-			$('input[name="offices\\[' + officeId + '\\]"]').remove();
-			$(this).addClass('nws_office_city').removeClass('nws_office_city_selected');
-		} else {
-			var hiddenOfficeIdField = $('<input type="hidden" />').val(officeId).attr('name', 'offices[' + officeId + ']');
-			$("#offices_input_container").append(hiddenOfficeIdField);
-			$(this).removeClass('nws_office_city').addClass('nws_office_city_selected');
-		}
-	});
-}
-
 function monitor_profile_links() {
-	$("#edit_offices").unbind().on('click', function () {
+	$(".btn_show_location_selector").unbind().on('click', function () {
 		var user_id = $(this).attr('data-userid');
-		get_office_list(user_id);
-	});
-
-	$(".add_offices").unbind().on('click', function () {
-		var user_id = $(this).attr('data-userid');
-		get_office_list(user_id);
+		get_location_selector(user_id);
 	});
 
 	$("#disconnect_service").unbind().on('click', function () {
@@ -51,47 +29,73 @@ function monitor_profile_links() {
 						$(this).dialog("close");
 					});
 				},
-				Cancel: function () {
+				"Cancel": function () {
 					$(this).dialog("close");
 				}
 			}
 		});
 	});
+
+	$('.profile_show_full_statement').unbind().on('click', function () {
+		var button_text,
+			advisory_container = $('.profile_full_statement'),
+			button = $(this);
+
+		advisory_container.slideToggle({
+			done: function () {
+				button_text = ($(this).is(':visible') ? 'Hide ' : 'Show ') + 'Cached Advisory';
+				button.text(button_text);
+			}
+		});
+
+	});
 }
 
-function get_office_list(user_id) {
+function monitor_location_selector_dialog() {
+	// Listen for state-menu changes on the container
+	$('#locations_dialog').on('change', '#state_selector', function () {
+		$.ajax({
+			type: "GET",
+			url: "ajax_handler.php",
+			data: {
+				mode: "getLocationOptionsForState",
+				state: $(this).val()
+			}
+		}).done(function (response) {
+			$('#location_selector_container').html(response);
+		});
+	})
+}
+
+function get_location_selector(user_id) {
 	$.ajax({
 		type: "GET",
 		url: "ajax_handler.php",
 		data: {
-			mode: "getOfficelist",
+			mode: "getLocationSelector",
 			user_id: user_id
 		}
 	}).done(function (response) {
-		$("#offices_dialog").html(response).dialog({
-			height: window.innerHeight - 200,
-			width: window.innerWidth - 200,
+		$("#locations_dialog").html(response).dialog({
+			//height: 300,
+			width: 600,
+			title: "Change Your Location",
 			modal: true,
 			buttons: {
 				"Save": function () {
-					var offices = [];
-					$('input[name^="offices\\["]').each(function () {
-						offices.push($(this).val());
-					});
-
 					$.ajax({
 						type: "POST",
 						url: "ajax_handler.php",
 						data: {
-							mode: "saveOfficelist",
-							offices: offices,
+							mode: "saveLocation",
+							location_id: $('select[name="location_id"]').val(),
 							user_id: user_id
 						}
 					}).done(function () {
 						parent.location.reload();
 					});
 				},
-				Cancel: function () {
+				"Cancel": function () {
 					$(this).dialog("close");
 				}
 			}

@@ -18,14 +18,15 @@ class TwitterConnectionInfo
 
     public function __construct()
     {
-        $conn_info = parse_ini_file(PATH_CONNECTION_INFO, true);
+//        $connection_info = parse_ini_file(PATH_CONNECTION_INFO, true);
+        global $connection_info;
 
-        $this->consumer_key = $conn_info['twitter']['CONSUMER_KEY'];
-        $this->consumer_secret = $conn_info['twitter']['CONSUMER_SECRET'];
-        $this->oauth_callback = $conn_info['twitter']['OAUTH_CALLBACK'];
-        $this->access_token = $conn_info['twitter']['ACCESS_TOKEN'];
-        $this->access_token_secret = $conn_info['twitter']['ACCESS_TOKEN_SECRET'];
-        $this->app_twitter_id = $conn_info['twitter']['TWITTER_APP_USER_ID'];
+        $this->consumer_key = $connection_info['twitter']['CONSUMER_KEY'];
+        $this->consumer_secret = $connection_info['twitter']['CONSUMER_SECRET'];
+        $this->oauth_callback = $connection_info['twitter']['OAUTH_CALLBACK'];
+        $this->access_token = $connection_info['twitter']['ACCESS_TOKEN'];
+        $this->access_token_secret = $connection_info['twitter']['ACCESS_TOKEN_SECRET'];
+        $this->app_twitter_id = $connection_info['twitter']['TWITTER_APP_USER_ID'];
     }
 
     public function validateConsumer()
@@ -35,6 +36,7 @@ class TwitterConnectionInfo
             echo "Twitter API Key Validation Failed on Storm Spotter Status End.";
             exit;
         }
+
         return $result;
     }
 }

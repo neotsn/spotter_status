@@ -1,0 +1,101 @@
+@import url('responsive_grid.css');
+@import url('colors.css');
+
+*, header, section, footer {
+	font-family: "Droid Sans", sans-serif;
+	font-size: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: url("../images/storm-wallpaper.jpg") no-repeat fixed top center;
+	background-size: cover;
+	overflow-x: hidden;
+}
+
+img {
+	width: auto;
+	max-width: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p {
+	line-height: 1.5em;
+}
+
+h1 {
+	font-size: 64px;
+}
+
+h2 {
+	font-size: 48px;
+}
+
+h3 {
+	font-size: 32px;
+}
+
+h4 {
+	font-size: 24px;
+}
+
+h5 {
+	font-size: 16px;
+}
+
+/* Image Styles */
+.splash_logo {
+	max-width: 250px;
+	width: 100%;
+}
+
+/* Global Navigation */
+#header {
+	position: fixed;
+	height: 64px;
+	top: 0;
+}
+
+#header .header_logo {
+	max-width: 150px;
+}
+
+#header .header_logo img {
+	width: 100%;
+}
+
+#header .header_avatar {
+	width: 25px;
+}
+
+
+
+.codify {
+	font-size: 0.8em;
+	font-family: "Droid Sans Mono", monospace;
+	overflow-x: auto;
+}
+
+/*
+ *	Footer
+ */
+.overall_footer_msg {
+	float: left;
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 0.7em;
+	line-height: 1.2em;
+	color: #aaa;
+	margin-top: 10px;
+}

@@ -29,12 +29,11 @@ switch ($mode) {
         $t = new TwitterConnectionInfo();
 
         // Connect from the User's perspective...
-        $connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $user->oauth_token,
-            $user->oauth_token_secret);
+        $connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $user->oauth_token, $user->oauth_token_secret);
         $connection->post('friendships/destroy', array('screen_name' => 'noaaalerts'));
 
         // Delete the User
-        $db->delete(TABLE_USERS_OFFICES, array(USERS_OFFICES_USER_ID => $user->id)); // Cleanup Office Associations
+        $db->delete(TABLE_USERS_LOCATIONS, array(USERS_LOCATIONS_USER_ID => $user->id)); // Cleanup Location Associations
         $db->delete(TABLE_USERS, array(USERS_ID => $user->id));
 
         unset($user);
@@ -44,16 +43,14 @@ switch ($mode) {
         $user = new User($user_id);
         $user->validateUserSession();
 
-        // Destroy the friendship
+        // Start destroying the friendship
         $t = new TwitterConnectionInfo();
 
         // Connect from the User's perspective...
-        $connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $user->oauth_token,
-            $user->oauth_token_secret);
+        $connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $user->oauth_token, $user->oauth_token_secret);
 
         // Get the relationship status
-        $relation_result = $connection->get('friendships/show',
-            array('source_id' => $t->app_twitter_id, 'target_id' => $user->id));
+        $relation_result = $connection->get('friendships/show', array('source_id' => $t->app_twitter_id, 'target_id' => $user->id));
 
         // Did the User want to follow and aren't already following?
         $is_following = $relation_result->relationship->source->followed_by;
@@ -63,15 +60,23 @@ switch ($mode) {
             $friend_result = $connection->post('friendships/create', array('screen_name' => 'noaaalerts'));
 
             // Run the relationship check again to confirm
-            $relation_result = $connection->get('friendships/show',
-                array('source_id' => $t->app_twitter_id, 'target_id' => $user->id));
+            $relation_result = $connection->get('friendships/show', array('source_id' => $t->app_twitter_id, 'target_id' => $user->id));
+
+            // Bool helpers
             $is_following = ($relation_result->relationship->source->followed_by) ? 1 : 0;
             $can_dm = ($relation_result->relationship->source->can_dm) ? 1 : 0;
 
             // Update the follower status in the database
-            $update_pairs = array(USERS_IS_FOLLOWER => $is_following, USERS_CAN_DM => $can_dm);
+            $update_pairs = array(
+                USERS_IS_FOLLOWER => $is_following,
+                USERS_CAN_DM      => $can_dm
+            );
             $criteria_pairs = array(
-                array('field' => USERS_ID, 'op' => '=', 'value' => $user_id)
+                array(
+                    'field' => USERS_ID,
+                    'op'    => '=',
+                    'value' => $user_id
+                )
             );
             $db->update(TABLE_USERS, $update_pairs, $criteria_pairs);
         }
@@ -87,81 +92,112 @@ switch ($mode) {
 
         header("Location: ./profile.php");
         break;
-    case 'saveOfficelist':
-        $users_offices_params = array();
-        $cron_check_params = array();
-        $office_ids = array();
+    case 'saveLocation':
 
-        // If offices were sent, spool them
-        if (!empty($offices)) {
-            foreach ($offices as $office) {
-                $users_offices_params[] = array(
-                    USERS_OFFICES_OFFICE_ID => $office,
-                    USERS_OFFICES_USER_ID   => $user_id
-                );
+        $location_id = get_request('location_id', '');
+        $user_id = get_request('user_id', '');
 
-                $cron_check_params[] = array(
-                    CRON_OFFICE_ID => $office
-                );
-            }
+        if ($location_id && $user_id) {
+
+            // Clear out the old one user row(s)
+            $db->delete(TABLE_USERS_LOCATIONS, array(USERS_LOCATIONS_USER_ID => $user_id));
+
+            // Build the insert query
+            $params = array(
+                USERS_LOCATIONS_USER_ID     => $user_id,
+                USERS_LOCATIONS_LOCATION_ID => $location_id
+            );
+
+            $db->insert(TABLE_USERS_LOCATIONS, $params);
         }
-
-        // Clear old settings, and add new settings, if any
-        $db->delete(TABLE_USERS_OFFICES, array(USERS_OFFICES_USER_ID => $user_id));
-        if (!empty($users_offices_params)) {
-            $db->replaceMultiple(TABLE_USERS_OFFICES, $users_offices_params);
-        }
-
-        // Update CRON check
-        $db->replaceMultiple(TABLE_CRON_OFFICE_CHECK, $cron_check_params);
-
         break;
-    case 'getOfficelist':
+    case 'getLocationSelector':
         $user = new User($user_id);
         $user->validateUserSession();
 
-        $selected = $user->getUsersOfficeIds();
-
-        // Fetch all the offices
-        $office_rows = $db->query(SQL_SELECT_ALL_FROM_OFFICES);
-
-        // Group them by state
-        $offices_array = array();
-        foreach ($office_rows as $office_row) {
-            $offices_array[$office_row[OFFICES_STATE]][$office_row[OFFICES_ID]] = $office_row[OFFICES_CITY];
+        // Initialize
+        $location_id = '';
+        $selected_location_rows = array();
+        // Try for the user's selected data first...
+        if ($selected_location_row = $user->getUserLocation()) {
+            $state = $selected_location_row[LOCATIONS_STATE];
+            $location_id = $selected_location_row[LOCATIONS_ID];
+        } else if ($db->query(SQL_SELECT_FIRST_LOCATION_ROW)) {
+            // No luck, get the first location row
+            $result = $db->getNext();
+            $state = $result[LOCATIONS_STATE];
+            $location_id = $result[LOCATIONS_ID];
+        } else {
+            // Something went wrong...use a hardcode
+            $state = 'AK';
+            error_log('DB Error: Something went wrong getting locations, using hardcode. [A0SDJF]');
         }
 
-        // Generate the templates for each state
-        $states_html = '';
-        $state_template = new Template('office_states', false, false);
-        foreach ($offices_array as $state => $city_data) {
+        // Build the State Option Set
+        $state_rows = $db->query(SQL_SELECT_STATES_FROM_LOCATIONS);
 
-            $cities_html = '';
-            $city_template = new Template('office_cities', false, false);
-            foreach ($city_data as $office_id => $city) {
-                $city_template->setTemplateVars(array(
-                    'TXT_OFFICE_ID'         => $office_id,
-                    'TXT_OFFICE_CITY'       => $city,
-                    'TXT_OFFICE_CITY_CLASS' => (isset($selected[$office_id])) ? 'nws_office_city_selected' : 'nws_office_city',
-                    'I_OFFICE_PRESELECTED'  => (isset($selected[$office_id])) ? '<input type="hidden" value="' . $office_id . '" name="offices[' . $office_id . ']" />' : ''
-                ));
-                $cities_html .= $city_template->compile();
-                $city_template->reset_template();
-            }
+        $state_option_html = '';
+        $state_option_template = new Template('state_option', false, false);
+        foreach ($state_rows as $state_row) {
 
-            $state_template->setTemplateVars(array(
-                'TXT_OFFICE_STATE'  => $state,
-                'TXT_OFFICE_CITIES' => $cities_html
+            $state_option_template->setTemplateVars(array(
+                'TXT_LOCATION_STATE' => $state_row[LOCATIONS_STATE],
+                'TXT_IS_SELECTED'    => ($state_row[LOCATIONS_STATE] == $state) ? ' selected ' : ''
             ));
-            $states_html .= $state_template->compile();
-            $state_template->reset_template();
+            $state_option_html .= $state_option_template->compile();
+            $state_option_template->reset_template();
         }
 
-        $template = new Template('office_list', false, false);
+        // Put the options into the Selector template
+        $state_selector_template = new Template('state_selector', false, false);
+        $state_selector_template->setTemplateVars(array(
+            'I_STATE_OPTIONS' => $state_option_html
+        ));
+
+        // Compile the main template, and output
+        $template = new Template('location_selector_popup', false, false);
         $template->setTemplateVars(array(
-            'TXT_STATE_OFFICE_LIST' => $states_html
+            'I_STATE_SELECTOR'    => $state_selector_template->compile(),
+            'I_LOCATION_SELECTOR' => compileLocationSelectTemplate($state, $location_id)
         ));
         $template->display();
 
         break;
+
+    case 'getLocationOptionsForState':
+        $state = get_request('state', 'AK');
+        echo compileLocationSelectTemplate($state);
+        break;
+}
+
+function compileLocationSelectTemplate($state, $location_id = '')
+{
+    global $db;
+
+    $state = $state ?: 'AK';
+
+    // Build the Location Selector for the selected state
+    $state_locations = $db->query(SQL_SELECT_ALL_LOCATIONS_BY_STATE, array($state));
+
+    $location_option_html = '';
+    $location_option_template = new Template('location_option', false, false);
+    foreach ($state_locations as $location_row) {
+
+        $location_option_template->setTemplateVars(array(
+            'TXT_LOCATION_ID'     => $location_row[LOCATIONS_ID],
+            'TXT_LOCATION_NAME'   => ($location_row[LOCATIONS_NAME] != $location_row[LOCATIONS_COUNTY] && $location_row[LOCATIONS_NAME]) ? $location_row[LOCATIONS_NAME] . ' - ' : '',
+            'TXT_LOCATION_COUNTY' => $location_row[LOCATIONS_COUNTY],
+            'TXT_IS_SELECTED'     => ($location_row[LOCATIONS_ID] == $location_id) ? ' selected ' : ''
+        ));
+        $location_option_html .= $location_option_template->compile();
+        $location_option_template->reset_template();
+    }
+
+    // Put the options into the Selector template
+    $location_selector_template = new Template('location_selector', false, false);
+    $location_selector_template->setTemplateVars(array(
+        'I_LOCATION_OPTIONS' => $location_option_html
+    ));
+
+    return $location_selector_template->compile();
 }
