@@ -83,6 +83,7 @@ h5 {
 .codify {
 	font-size: 0.8em;
 	font-family: "Droid Sans Mono", monospace;
+	overflow-x: auto;
 }
 
 /*
