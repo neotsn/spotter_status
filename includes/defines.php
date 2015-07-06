@@ -7,7 +7,7 @@
  */
 
 // System
-define('VERSION', '2.0.0');
+define('VERSION', '2.0.1');
 
 // PATHS
 define('PATH_INCLUDES', PATH_ROOT . 'includes/');
@@ -94,6 +94,8 @@ define('SQL_DROP_TABLE_GENERIC', 'DROP TABLE IF EXISTS %tn ');
 define('REGEX_TEMPLATE_INCLUDE', '/<!-- INCLUDE (.+?) -->/ms');
 define('REGEX_TEMPLATE_CONDITIONS', '/<!-- IF ([{\w}]+)? -->(.+?)(?:<!-- ELSE -->(.+?))?<!-- ENDIF -->/ms');
 define('REGEX_SPOTTER_STATEMENT', '/\.SPOTTER INFORMATION STATEMENT\.\.\.[\s]+?([\S\s]*)$/');
+define('REGEX_SPOTTER_STATEMENT_OK', '/\.+SPOTTER AND EMERGENCY MANAGEMENT STATEMENT\.\.\.[\s]+([\S\s]*)(?:\.FLOODING\.\.\.)\s/');
+define('REGEX_EXCESS_WHITESPACE', '/[\s]+/');
 
 // URLs
 define('URL_AERIS_DOMAIN', 'https://api.aerisapi.com%e');

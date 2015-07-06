@@ -104,17 +104,21 @@ class Advisory extends \WebRequests
      */
     public function extractSpotterStatement($text)
     {
-        $response = null;
+        $response = '';
 
         preg_match_all(REGEX_SPOTTER_STATEMENT, trim($text), $matches);
 
         if (!empty($matches[1][0])) {
             $response = $this->sentence_case($matches[1][0]);
         } else {
-            // TODO Try for Oklahoma Spotter Statement Key
+            // Try for Oklahoma's specially labeled statement
+            preg_match_all(REGEX_SPOTTER_STATEMENT_OK, trim($text), $matches);
+            if (!empty($matches[1][0])) {
+                $response = $this->sentence_case($matches[1][0]);
+            }
         }
 
-        return $response;
+        return preg_replace(REGEX_EXCESS_WHITESPACE, ' ', $response);
     }
 
     public function updateAdvisoriesCache($zones, $advisory, $statement, $issued_time)
