@@ -141,6 +141,10 @@ class Advisory extends \WebRequests
 
     public function prepareTwitterMessage($statement, $area, $state, $cwa)
     {
+        if (empty($statement)) {
+            $statement = 'Spotter activation canceled.';
+        }
+
         $message = trim($area . ', ' . $state . ': ' . $statement);
 
         $arrayWords = explode(' ', $message);
