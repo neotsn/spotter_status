@@ -18,8 +18,8 @@
  *        Check if consumer token is set and if so send User to get a request token.
  */
 
-define('PATH_ROOT', './');
-require_once(PATH_ROOT . 'config.php');
+define('PATH_ROOT', dirname(__FILE__));
+require_once(PATH_ROOT . '/config.php');
 
 // Initialize Variables
 $errors = 0;

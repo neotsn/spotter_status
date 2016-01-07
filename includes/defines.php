@@ -7,15 +7,16 @@
  */
 
 // System
-define('VERSION', '2.0.3');
+define('VERSION', '2.0.4');
 
 // PATHS
-define('PATH_INCLUDES', PATH_ROOT . 'includes/');
-define('PATH_TEMPLATES', PATH_ROOT . 'templates/');
-define('PATH_CSS', PATH_ROOT . 'css/');
-define('PATH_JS', PATH_ROOT . 'js/');
-define('PATH_CLASSES', PATH_ROOT . 'includes/classes/');
-define('PATH_CONNECTION_INFO', '../../_private/connection_info.ini');
+define('PATH_INCLUDES', PATH_ROOT . '/includes/');
+define('PATH_TEMPLATES', PATH_ROOT . '/templates/');
+define('PATH_CLASSES', PATH_ROOT . '/includes/classes/');
+define('PATH_CONNECTION_INFO', dirname(dirname(PATH_ROOT)) . '/_private/connection_info.ini');
+// Display paths, no trailing slash - added at use for filename visibility
+define('PATH_CSS', '/css');
+define('PATH_JS', '/js');
 
 // Tables
 define('TABLE_ADVISORIES', 'advisories');

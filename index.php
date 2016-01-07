@@ -14,8 +14,8 @@
  */
 
 session_start();
-define('PATH_ROOT', './');
-require_once('config.php');
+define('PATH_ROOT', dirname(__FILE__));
+require_once(PATH_ROOT . '/config.php');
 
 $session_id = get_session('sid', null);
 $user_id = get_session('userid', null);

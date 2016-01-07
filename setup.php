@@ -11,8 +11,8 @@
  * User has successfully authenticated with Twitter. Access tokens saved to session and DB.
  */
 session_start();
-define('PATH_ROOT', './');
-require_once('config.php');
+define('PATH_ROOT', dirname(__FILE__));
+require_once(PATH_ROOT . '/config.php');
 
 // If access tokens are not available redirect to connect page.
 if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
