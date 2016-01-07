@@ -18,8 +18,8 @@
  *        Check if consumer token is set and if so send User to get a request token.
  */
 
-define('PATH_ROOT', './');
-require_once(PATH_ROOT . 'config.php');
+define('PATH_ROOT', dirname(__FILE__));
+require_once(PATH_ROOT . '/config.php');
 
 // Initialize Variables
 $errors = 0;
@@ -88,12 +88,14 @@ do {
                 // Extract the Statement and the full report
                 $statement = $a->extractSpotterStatement($response_data->details->body);
                 $advisory = $response_data->details->bodyFull;
+                $thisAdvisoryZoneCache = array(); // keep an advisory-related zone cacha for updating
 
                 // Start adding the Included Zones to the Zone Cache, so we don't request them again...
                 foreach ($response_data->includes->wxzones as $included_zone) {
 
                     // Put it in the cache
                     $zoneCache[$included_zone] = 1;
+                    $thisAdvisoryZoneCache[$included_zone] = 1;
 
                     // Are any users trying to get this zone's statement?
                     if (!empty($l->locations_users[$included_zone])) {
@@ -121,7 +123,7 @@ do {
                 }
 
                 // Write the reports to the database before alerting the users...in case we do a self-hosted advisory display
-                $a->updateAdvisoriesCache($zoneCache, $advisory, $statement, $response_data->timestamps->issued);
+                $a->updateAdvisoriesCache($thisAdvisoryZoneCache, $advisory, $statement, $response_data->timestamps->issued);
 
                 // We're done iterating Included Zones for this API Response...
                 // Did we have any Users to alert in the queue?

@@ -13,8 +13,8 @@
 
 session_start();
 
-define('PATH_ROOT', './');
-require_once('config.php');
+define('PATH_ROOT', dirname(__FILE__));
+require_once(PATH_ROOT . '/config.php');
 
 $t = new TwitterConnectionInfo();
 

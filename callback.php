@@ -14,8 +14,8 @@
 
 /* Start session and load lib */
 session_start();
-define('PATH_ROOT', './');
-require_once('config.php');
+define('PATH_ROOT', dirname(__FILE__));
+require_once(PATH_ROOT . '/config.php');
 
 /* If the oauth_token is old redirect to the connect page. */
 if (isset($_REQUEST['oauth_token']) && $_SESSION['oauth_token'] !== $_REQUEST['oauth_token']) {
