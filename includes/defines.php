@@ -7,7 +7,7 @@
  */
 
 // System
-define('VERSION', '2.0.4');
+define('VERSION', '2.0.5');
 
 // PATHS
 define('PATH_INCLUDES', PATH_ROOT . '/includes/');
