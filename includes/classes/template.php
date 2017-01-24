@@ -77,6 +77,7 @@ class Template
     public function compile()
     {
         $this->buildTemplate();
+
         return $this->htmlout;
     }
 
@@ -141,7 +142,7 @@ class Template
         $header->setTemplateVars(array(
             'PATH_CSS'     => PATH_CSS,
             'PATH_JS'      => PATH_JS,
-            'CSS_SPECIFIC' => (file_exists(PATH_CSS . $this->filename . '.css')) ? '<link rel="stylesheet" type="text/css" href="' . PATH_CSS . $this->filename . '.css">' : ''
+            'CSS_SPECIFIC' => (file_exists(PATH_ROOT . PATH_CSS . '/' . $this->filename . '.css')) ? '<link rel="stylesheet" type="text/css" href=".' . PATH_CSS . '/' . $this->filename . '.css">' : ''
         ));
         $this->header .= $header->compile();
     }

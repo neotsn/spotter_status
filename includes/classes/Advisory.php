@@ -145,33 +145,7 @@ class Advisory extends \WebRequests
             $statement = 'Spotter activation canceled.';
         }
 
-        $message = trim($area . ', ' . $state . ': ' . $statement);
-
-        $arrayWords = explode(' ', $message);
-        $messageLength = strlen($message);
-
-        // Max size of each line
-        $maxLineLength = 114;
-        $shortMessage = '';
-
-        // Auxiliar counters, foreach will use them
-        $currentLength = 0;
-
-        foreach ($arrayWords as $word) {
-            // +1 because the word will receive back the space in the end that it loses in explode()
-            $wordLength = strlen($word) + 1;
-
-            if (($currentLength + $wordLength) <= $maxLineLength) {
-                $shortMessage .= $word . ' ';
-
-                $currentLength += $wordLength;
-            } else {
-                break;
-            }
-        }
-
-        $shortMessage = trim($shortMessage); // trim it up
-        $shortMessage .= ($currentLength < $messageLength) ? '...' : ''; // add the dots if needed
+        $shortMessage = trim($area . ', ' . $state . ': ' . $statement); // trim it up
         $shortMessage .= ' ' . strtr(URL_NWS_ADVISORY, array('%o' => $cwa)); // add the URL
 
         $this->statement_hash = md5($shortMessage);
