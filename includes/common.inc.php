@@ -11,17 +11,13 @@
  */
 $connection_info = parse_ini_file(PATH_CONNECTION_INFO, true);
 
-/**
- * Class autoloader
- *
- * @param $class_name
- */
-function __autoload($class_name)
-{
-    if (file_exists(PATH_CLASSES . $class_name . ".php")) {
-        include PATH_CLASSES . $class_name . ".php";
+spl_autoload_register(
+    function ($className) {
+        if (file_exists(PATH_CLASSES . $className . ".php")) {
+            include PATH_CLASSES . $className . ".php";
+        }
     }
-}
+);
 
 /**
  * @param        $field
@@ -33,12 +29,14 @@ function __autoload($class_name)
 function get_request($field, $default, $type = 'string')
 {
     $value = (isset($_REQUEST[$field])) ? $_REQUEST[$field] : $default;
+
     return sanitize_request($type, $value);
 }
 
 function get_session($field, $default, $type = 'string')
 {
     $value = (isset($_SESSION[$field])) ? $_SESSION[$field] : $default;
+
     return sanitize_request($type, $value);
 }
 
@@ -58,6 +56,7 @@ function sanitize_request($type, $value)
             $value = preg_replace('/[^\d\.]/', '', $value);
             break;
     }
+
     return $value;
 }
 
@@ -74,5 +73,6 @@ function get_array_value($arr, $key, $default = '')
     if (isset($arr[$key])) {
         $result = $arr[$key];
     }
+
     return $result;
 }
