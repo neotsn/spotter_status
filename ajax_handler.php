@@ -6,6 +6,8 @@
  * Time: 6:29 PM
  */
 
+use Abraham\TwitterOAuth\TwitterOAuth;
+
 session_start();
 define('PATH_ROOT', dirname(__FILE__));
 require_once(PATH_ROOT . '/config.php');

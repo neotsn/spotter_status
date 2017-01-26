@@ -5,6 +5,7 @@
  * Date: 5/21/2014
  * Time: 7:42 PM
  */
+use Abraham\TwitterOAuth\TwitterOAuth;
 
 /**
  * @file
@@ -26,11 +27,11 @@ if (isset($_REQUEST['oauth_token']) && $_SESSION['oauth_token'] !== $_REQUEST['o
 $t = new TwitterConnectionInfo();
 
 /* Create TwitteroAuth object with app key/secret and token key/secret from default phase */
-$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $_SESSION['oauth_token'],
-    $_SESSION['oauth_token_secret']);
+$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
 
 /* Request access tokens from twitter */
-$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+$access_token = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
+//$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
 /* Save the access tokens. Normally these would be saved in a database for future use. */
 
@@ -39,7 +40,7 @@ unset($_SESSION['oauth_token']);
 unset($_SESSION['oauth_token_secret']);
 
 /* If HTTP response is 200 continue otherwise send to connect page to retry */
-if (200 == $connection->http_code) {
+if (200 == $connection->getLastHttpCode()) {
     /* The User has been verified and the access tokens can be saved for future use */
 
     $_SESSION['access_token'] = $access_token;
