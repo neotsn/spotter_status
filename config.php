@@ -7,5 +7,5 @@
  */
 
 require_once 'includes/defines.php';
-include_once(PATH_INCLUDES . 'common.inc.php');
-include_once(PATH_INCLUDES . 'twitteroauth/twitteroauth.php');
+require_once PATH_ROOT . '/vendor/autoload.php';
+include_once PATH_INCLUDES . 'common.inc.php';

@@ -1,0 +1,15 @@
+{
+  "name"              : "thepizzy/spotter-status",
+  "description"       : "SKYWARN Spotter Activation Alerts via Twitter DMs",
+  "minimum-stability" : "stable",
+  "license"           : "MIT",
+  "authors"           : [
+    {
+      "name"  : "@neotsn",
+      "email" : "skywarn@thepizzy.net"
+    }
+  ],
+  "require"           : {
+    "abraham/twitteroauth" : "^0.7.2"
+  }
+}
