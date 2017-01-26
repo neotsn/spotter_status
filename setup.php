@@ -27,7 +27,7 @@ $t = new TwitterConnectionInfo();
 $access_token = $_SESSION['access_token'];
 
 /* Create a TwitterOauth object with consumer/User tokens. */
-$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret, $access_token['oauth_token'],
+$connection = new \Abraham\TwitterOAuth\TwitterOAuth($t->consumer_key, $t->consumer_secret, $access_token['oauth_token'],
     $access_token['oauth_token_secret']);
 
 /* If method is set change API call made. Test is called by default. */
