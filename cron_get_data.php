@@ -6,6 +6,8 @@
  * Time: 11:01 AM
  */
 
+use Abraham\TwitterOAuth\TwitterOAuth;
+
 /**
  * @file
  * Requests User-selected Locations that haven't been updated in 3600sec
