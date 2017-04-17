@@ -5,6 +5,7 @@
  * Date: 5/21/2014
  * Time: 7:29 PM
  */
+use Abraham\TwitterOAuth\TwitterOAuth;
 
 /**
  * @file
@@ -21,7 +22,7 @@ $t = new TwitterConnectionInfo();
 // Get temporary credentials
 /** @var array $request_token */
 
-$connection = new \Abraham\TwitterOAuth\TwitterOAuth($t->consumer_key, $t->consumer_secret);
+$connection = new TwitterOAuth($t->consumer_key, $t->consumer_secret);
 
 $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => $t->oauth_callback));
 
