@@ -8,18 +8,31 @@
 
 namespace Skywarn\Controllers;
 
+/**
+ * Class AbstractBase
+ * @package Skywarn\Controllers
+ */
 abstract class AbstractBase implements ControllerInterface
 {
     protected
         $method,
         $url;
 
+    /**
+     * AbstractBase constructor.
+     *
+     * @param string $method
+     * @param string $url
+     */
     public function __construct($method, $url)
     {
         $this->method = $method;
         $this->url = $url;
     }
 
+    /**
+     * Attempt to execute the function named in the local $method property
+     */
     public function execute()
     {
         try {
