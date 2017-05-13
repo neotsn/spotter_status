@@ -10,13 +10,12 @@
 define('VERSION', '2.1.1');
 
 // PATHS
-define('PATH_INCLUDES', PATH_ROOT . '/includes/');
-define('PATH_TEMPLATES', PATH_ROOT . '/templates/');
-define('PATH_CLASSES', PATH_ROOT . '/includes/classes/');
+define('PATH_APP', PATH_ROOT . '/app/');
+define('PATH_VIEWS', PATH_ROOT . '/views/');
 define('PATH_CONNECTION_INFO', dirname(dirname(PATH_ROOT)) . '/_private/connection_info.ini');
 // Display paths, no trailing slash - added at use for filename visibility
-define('PATH_CSS', '/css');
-define('PATH_JS', '/js');
+define('PATH_CSS', '/resources/css/');
+define('PATH_JS', '/resources/js/');
 
 // Tables
 define('TABLE_ADVISORIES', 'advisories');
@@ -113,3 +112,14 @@ define('API_AERIS_AUTH_STRING', '&client_id=%i&client_secret=%s');
 define('API_TYPE_NONE', 0);
 define('API_TYPE_AERIS', 1);
 //define('API_TYPE_WUNDERGROUND', 2);
+
+// View Paths
+define('T_BASE_HEADER', 'bases/header');
+define('T_BASE_FOOTER', 'bases/footer');
+define('T_SPLASH', 'splash');
+define('T_PROFILE', 'profile');
+define('T_PARTIAL_LOCATION_SELECTOR_POPUP', 'partials/location_selector_popup');
+define('T_PARTIAL_LOCATION_SELECTOR', 'partials/location_selector');
+define('T_PARTIAL_PROFILE_LOCATION', 'partials/profile_location');
+define('T_PARTIAL_FORECAST_CARD', 'partials/forecast_card');
+define('T_PARTIAL_MESSAGE', 'partials/message');

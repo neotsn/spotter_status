@@ -7,6 +7,11 @@
  */
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Skywarn\Framework\Data\Mysql;
+use Skywarn\Framework\Data\TwitterConnectionInfo;
+use Skywarn\Framework\Logic\Advisory;
+use Skywarn\Framework\Logic\Location;
+use Skywarn\Framework\Logic\User;
 
 /**
  * @file
@@ -28,7 +33,7 @@ $errors = 0;
 $cleanup_user_ids = array();
 
 // Initialize Objects
-$db = new DbPdo();
+$db = new Mysql();
 $t = new TwitterConnectionInfo();
 $l = new Location();
 $a = new Advisory();
