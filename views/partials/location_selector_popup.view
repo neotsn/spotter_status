@@ -1,0 +1,32 @@
+<?php
+
+use Skywarn\Framework\Handlers\View;
+
+/**
+ * @var array $data
+ */
+
+$state = View::getArrayValue($data, 'TXT_STATE');
+$stateRows = View::getArrayValue($data, 'ARR_STATE_ROWS', array());
+?>
+
+<form>
+	<label for="state_selector" class="input-label">
+		Choose a State<br/>
+		<select id="state_selector" name="location_state">
+            <?php foreach ($stateRows as $stateRow):
+                $selected = ($stateRow[LOCATIONS_STATE] == $state) ? ' selected ' : '';
+                ?>
+
+				<option value="<?php echo $stateRow[LOCATIONS_STATE]; ?>" <?php echo $selected; ?>>
+                    <?php echo $stateRow[LOCATIONS_STATE]; ?>
+				</option>
+
+            <?php endforeach; ?>
+		</select>
+	</label>
+	<div id="location_selector_container">
+        <?php echo View::returnView(T_PARTIAL_LOCATION_SELECTOR, $data); ?>
+	</div>
+</form>
+<script>monitor_location_selector_dialog()</script>

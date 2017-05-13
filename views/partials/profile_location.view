@@ -1,0 +1,16 @@
+<?php
+use Skywarn\Framework\Handlers\View;
+
+/**
+ * @var array $data
+ */
+
+$userId = View::getArrayValue($data, 'TXT_USER_ID');
+$locationCounty = View::getArrayValue($data, 'TXT_LOCATION_COUNTY');
+$locationState = View::getArrayValue($data, 'TXT_LOCATION_STATE');
+
+?>
+
+<span class="button btn--primary btn_show_location_selector" data-userid="<?php echo $userId; ?>">
+    <?php echo $locationCounty; ?>, <?php echo $locationState; ?>
+</span>

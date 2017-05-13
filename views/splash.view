@@ -29,7 +29,7 @@
 									<h3 class="color-primary-1 mas align--center pbm">Get Started...</h3>
 
 									<p class="mas align--center">
-										<a href="./redirect.php"><img src="./images/sign_in_with_twitter.png" alt="Sign in with Twitter"/></a>
+										<a href="/redirect"><img src="./images/sign_in_with_twitter.png" alt="Sign in with Twitter"/></a>
 									</p>
 								</div>
 							</div>

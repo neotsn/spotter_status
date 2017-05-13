@@ -1,0 +1,15 @@
+<?php
+use Skywarn\Framework\Handlers\View;
+
+/**
+ * @var array $data
+ */
+
+$message = View::getArrayValue($data, 'TXT_MSG');
+$type = View::getArrayValue($data, 'TXT_TYPE');
+
+?>
+
+<div class="<?php echo $type; ?>_msg rounded-as bas align--center float--center pam mvl gd-half gt-half gm-full">
+    <?php echo $message; ?>
+</div>

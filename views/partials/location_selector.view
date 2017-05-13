@@ -1,0 +1,27 @@
+<?php
+
+use Skywarn\Framework\Handlers\View;
+
+/**
+ * @var array $data
+ */
+
+$locationId = View::getArrayValue($data, 'TXT_LOCATION_ID');
+$locationRows = View::getArrayValue($data, 'ARR_LOCATION_ROWS', array());
+?>
+
+<label for="location_selector" class="input-label">
+	Choose a Location<br/>
+	<select id="location_selector" name="location_id">
+        <?php foreach ($locationRows as $locationRow):
+            $locationName = ($location_row[LOCATIONS_NAME] != $location_row[LOCATIONS_COUNTY] && $location_row[LOCATIONS_NAME]) ? $location_row[LOCATIONS_NAME] . ' - ' : '';
+            $selected = ($location_row[LOCATIONS_ID] == $locationId) ? ' selected ' : '';
+            ?>
+
+			<option value="<?php echo $location_row[LOCATIONS_ID]; ?>" <?php echo $selected; ?>>
+                <?php echo $locationName; ?><?php echo $location_row[LOCATIONS_COUNTY]; ?>
+			</option>
+
+        <?php endforeach; ?>
+	</select>
+</label>
