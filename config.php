@@ -6,8 +6,8 @@
  * Time: 9:27 PM
  */
 
-require_once PATH_ROOT . '/defines.php';
-require_once PATH_ROOT . '/vendor/autoload.php';
+require_once 'defines.php';
+require_once 'vendor/autoload.php';
 
 spl_autoload_register(
     function ($className) {
