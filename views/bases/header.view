@@ -1,0 +1,17 @@
+<?php
+
+?>
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>ThePizzy.net's Storm Spotter Status Alerts</title>
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="<?php echo PATH_CSS; ?>global.css">
+	<link href='//fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+	<link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+	<link rel="icon" href="https://thepizzy.net/labs/spotter/images/skywarn_650.png" sizes="32x32"/>
+	<link rel="icon" href="https://thepizzy.net/labs/spotter/images/skywarn_650.png" sizes="192x192"/>
+	<link rel="apple-touch-icon-precomposed" href="https://thepizzy.net/labs/spotter/images/skywarn_650.png"/>
+</head>
+<body>

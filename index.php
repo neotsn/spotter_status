@@ -6,27 +6,15 @@
  * Time: 9:32 PM
  */
 
-/**
- * @file
- * Main splash page welcoming users and prompting them to sign in with Twitter.
- * For twitter connection:
- *        Check if consumer token is set and if so send User to get a request token.
- */
+use Skywarn\Framework\Handlers\Request;
+use Skywarn\Framework\Handlers\View;
 
 session_start();
 define('PATH_ROOT', dirname(__FILE__));
 require_once(PATH_ROOT . '/config.php');
 
-$session_id = get_session('sid', null);
-$user_id = get_session('userid', null);
-$msg = get_request('msg', null);
+$cprv = View::getRequestValue('cprv', '/index');
 
-if ($user_id && $session_id) {
-    $db = new DbPdo();
-    $user = new User($user_id);
-    $user->validateUserSession();
-    header('Location: ./profile.php');
-}
-
-$template = new Template('splash');
-$template->display();
+$requestHandler = new Request($cprv);
+$requestHandler->getControllerMethod();
+$requestHandler->runController();

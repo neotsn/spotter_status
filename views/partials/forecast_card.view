@@ -1,0 +1,48 @@
+<?php
+use Skywarn\Framework\Handlers\View;
+
+/**
+ * @var array $data
+ */
+
+$statementCity = View::getArrayValue($data, 'TXT_STATEMENT_CITY');
+$statementState = View::getArrayValue($data, 'TXT_STATEMENT_STATE');
+$statementOffice = View::getArrayValue($data, 'TXT_STATEMENT_OFFICE');
+$statementFIPS = View::getArrayValue($data, 'TXT_STATEMENT_FIPS');
+$statementTimestamp = View::getArrayValue($data, 'TXT_STATEMENT_TIMESTAMP');
+$statementMessage = View::getArrayValue($data, 'TXT_STATEMENT_MESSAGE');
+$statementAdvisory = View::getArrayValue($data, 'TXT_STATEMENT_ADVISORY');
+
+?>
+<div class="group forecase_card rounded-as border-color-complement-0 bas box-shadow phl mvm">
+	<div class="gd-row gt-row gm-row border-color-complement-1 bbs">
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-full">
+			<h5 class="color-complement-1 mvm"><?php echo "{$statementCity}, {$statementState} ({$statementOffice}:{$statementFIPS})"; ?></h5>
+		</div>
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-full">
+			<h5 class="color-complement-2 mvm align--right"><?php echo $statementTimestamp; ?></h5>
+		</div>
+	</div>
+	<div class="gd-row gt-row gm-row">
+		<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
+			<p class="phm ptl"><?php echo $statementMessage; ?></p>
+		</div>
+	</div>
+	<div class="gd-row gt-row gm-row">
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-half">
+			<p class="text--small align--left pvl phs color-primary-4 new-line">
+				<span class="clickable button--small btn--primary--clear rounded-as profile_show_full_statement">Show Cached Advisory</span>
+			</p>
+		</div>
+		<div class="gd-columns gt-columns gm-columns gd-half gt-half gm-half">
+			<p class="text--small align--right pvl phs new-line">
+				<a class="clickable button--small btn--complement--clear rounded-as" target="_blank" href="http://forecast.weather.gov/product.php?site=NWS&issuedby=<?php echo $statementOffice; ?>&product=HWO&format=txt&version=1&glossary=0">View NWS Source</a>
+			</p>
+		</div>
+	</div>
+	<div class="gd-row gt-row gm-row profile_full_statement" style="display:none;">
+		<div class="gd-columns gt-columns gm-columns gd-full gt-full gm-full">
+			<pre class="pal mhs mvm border-color-complement-2 bas rounded-am codify"><?php echo $statementAdvisory; ?></pre>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<section id="intro ">
+	<div class="group ptl mtl">
+		<div class="gd-row gt-row gm-row ptl mtl">
+			<div class="gd-columns gt-columns gd-1of5 gt-hide gm-hide">&nbsp;</div>
+			<div class="gd-columns gt-columns gd-1of5 gt-full gm-full brl border-color-primary-0 valign--middle align--center">
+				<img src="./images/skywarn_650.png" class="splash_logo phs pvl"/>
+			</div>
+			<div class="gd-columns gt-columns gm-columns gd-2of5 gt-full gm-full valign--middle">
+				<h1 class="pvm color-primary-2 text-shadow align--center">SKYWARN</h1>
+
+				<h2 class="pvs color-primary-1 text-shadow align--center">Storm Spotter Status</h2>
+			</div>
+			<div class="gd-columns gt-columns gd-1of5 gt-hide gm-hide">&nbsp;</div>
+		</div>
+		<div class="gd-row gt-row gm-row ptl mtl">
+			<div class="gd-columns gt-columns gd-1of5 gt-1of5 gm-hide">&nbsp;</div>
+			<div class="gd-columns gt-columns gd-3of5 gt-3of5 gm-full bg-color-primary-4 pam rounded-as box-shadow">
+
+				<div class="group mtm">
+					<div class="gd-row gt-row gm-row">
+						<div class="gd-columns gt-columns gd-half gt-half gm-full valign--middle">
+							<h3 class="color-primary-1 mas pas">Receive Spotter Information Statements via Twitter</h3>
+
+							<p class="color-primary-2 mam pas">Throughout the day, this service will check for an updated Hazardous Weather Outlook (HWO) for your chosen area and send a Twitter Direct Message (DM) containing the Spotter Information Statement and a link to the HWO.</p>
+						</div>
+						<div class="gd-columns gt-columns gd-half gt-half gm-full group">
+							<div class="gd-row gt-row gm-row prl">
+								<div class="gd-columns gt-columns gd-full gt-full gm-full bg-color-complement-3 pvm mbm border-color-complement-0 bas">
+									<h3 class="color-primary-1 mas align--center pbm">Get Started...</h3>
+
+									<p class="mas align--center">
+										<a href="/redirect"><img src="./images/sign_in_with_twitter.png" alt="Sign in with Twitter"/></a>
+									</p>
+								</div>
+							</div>
+							<div class="gd-row gt-row gm-row prl">
+								<div class="gd-columns gt-columns gd-full gt-full gm-full bg-color-primary-3 pvm mbm border-color-primary-0 bas">
+									<h3 class="color-primary-1 mas align--center">Learn More...</h3>
+
+									<p class="color-primary-2 mhs ptm pbl align--center">Check out the
+										<a class="color-primary-1" target="_blank" href="http://thepizzy.net/blog/labs/skywarn-storm-spotter-user-guide/">User Guide</a>.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="gd-columns gt-columns gd-1of5 gt-1of5 gm-hide">&nbsp;</div>
+		</div>
+	</div>
+</section>
