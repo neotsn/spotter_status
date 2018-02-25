@@ -65,6 +65,9 @@ class Advisory extends \WebRequests
         }
     }
 
+    /**
+     *
+     */
     public function prepareSingleUrl()
     {
         $this->queryStrings = array_unique($this->queryStrings);
@@ -85,6 +88,9 @@ class Advisory extends \WebRequests
         $this->handleResponses();
     }
 
+    /**
+     *
+     */
     public function getLastCachedResponse()
     {
         global $db;
@@ -121,6 +127,12 @@ class Advisory extends \WebRequests
         return preg_replace(REGEX_EXCESS_WHITESPACE, ' ', $response);
     }
 
+    /**
+     * @param $zones
+     * @param $advisory
+     * @param $statement
+     * @param $issued_time
+     */
     public function updateAdvisoriesCache($zones, $advisory, $statement, $issued_time)
     {
 
@@ -139,6 +151,14 @@ class Advisory extends \WebRequests
         $db->replaceMultiple(TABLE_ADVISORIES, $params);
     }
 
+    /**
+     * @param $statement
+     * @param $area
+     * @param $state
+     * @param $cwa
+     *
+     * @return string
+     */
     public function prepareTwitterMessage($statement, $area, $state, $cwa)
     {
         if (empty($statement)) {
@@ -153,6 +173,9 @@ class Advisory extends \WebRequests
         return $shortMessage;
     }
 
+    /**
+     * @param $queryString
+     */
     private function _buildSingleUrl($queryString)
     {
         $this->urls = array();
@@ -198,11 +221,16 @@ class Advisory extends \WebRequests
                     $this->data[] = $alertData;
                 }
             } else {
-                error_log($response->response);
+                error_log(json_encode($response));
             }
         }
     }
 
+    /**
+     * @param $string
+     *
+     * @return string
+     */
     private function sentence_case($string)
     {
         $sentences = preg_split('/([.?!]+)/', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
